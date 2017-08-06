@@ -1,0 +1,51 @@
+/////////////////////--- imports and requires ---/////////////////////////////////////
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:300,400,500&subset=latin,latin-ext);
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300');
+@import url('https://use.fontawesome.com/5295fd9a6f.css');
+//@require header
+@require colors
+//@require grid
+
+/////////////////////--- variables ---////////////////////////////////////////////////
+
+nav-width = 10%
+content-container = 70%
+
+/////////////////////--- styles ---///////////////////////////////////////////////////
+#main-container, #react-root
+  height: 100%
+
+html
+  height: 100%
+
+body
+  width: 100%
+  margin: 0px
+  height: 100%
+  font-family: 'Roboto'
+  font-weight: 300
+  background-color: background-body
+
+#nav-container
+  width: nav-width
+  float: left
+  display: inline-block
+  padding: 0px
+  height: inherit
+
+#content-container
+  //padding-top: 1%
+  min-height: 85%
+  max-width: 100%
+  //width: 100%
+  float: left
+  display: inline-block
+  height: inherit
+
+.login
+  margin-left: 0%
+  width: 8.33% * 3
+  display: inline-block;
+  text-align: right
+  line-height: 70px

@@ -1,0 +1,97 @@
+/////////////////////--- imports and requires ---/////////////////////////////////////
+
+@require colors
+//@require grid
+
+/////////////////////--- variables ---////////////////////////////////////////////////
+
+
+
+/////////////////////--- styles ---///////////////////////////////////////////////////
+
+.add
+  background-color: green-color
+  border-width: 0
+  border-radius: 50%
+  width: 40px
+  height: 40px
+  font-size: 30px
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.5)
+  color: text-primary-color
+  line-height: 40px
+  text-align: center
+  display: inline-block
+  margin-left: 20px
+  cursor: pointer
+
+#items-list
+  width: 100%
+  float: left
+  display: inline-block
+  padding: 0px
+  height: inherit
+
+#close-modal, #close-edit-modal
+  float: right
+  margin: 20px
+
+h1.items
+  margin: 20px 10% 0 10%
+  width: 80%
+  text-align: center
+
+#items-edit-modal
+  display: block
+
+#items-modal, #items-edit-modal
+  position: fixed
+  top: 70px
+  margin: 0 20px
+  left: 10%
+  right: 17%
+  width: auto
+  height: 85%
+  background-color: text-primary-color
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3)
+  z-index: 10
+  overflow: auto
+  animation-name: slideIn
+  animation-duration: 0.7s
+
+  form
+    width: 75%
+    margin: 0 auto
+    padding: 30px 0
+    border-bottom-width: 0
+
+    input[type="submit"]
+      background-color: green-color
+      border-width: 0
+      border-radius: 50%
+      width: 40px
+      height: 40px
+      font-size: 30px
+      box-shadow: 0 0px 10px rgba(0, 0, 0, 0.5)
+      color: text-primary-color
+      cursor: pointer
+
+    td
+      border-bottom-width: 0px
+
+      input
+        width: 100%
+
+.btn-sort
+  display: inline-block
+  margin-left: 4px
+  width: 15px
+
+#search-item
+  width: 78%
+  padding-left: 3%
+
+@keyframes slideIn
+  from
+    top: -85%
+  to
+    top: app-bar-height
