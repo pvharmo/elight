@@ -278,7 +278,7 @@ export default class SchemaType extends Component {
                     </DropDownMenu>
                   </TableRowColumn>
                 </TableRow>
-                {/*<TableRow>
+                <TableRow>
                   <TableRowColumn>
                     <label>{language().schemas.newField.LinkedField}</label>
                   </TableRowColumn>
@@ -287,14 +287,14 @@ export default class SchemaType extends Component {
                       value={this.state.fieldLinked}
                       onChange={this.handleChangeField}
                       multiple={this.state.multi} >
-                      {this.schemas({schema:this.state.schemaLinked}).map((schema)=>{
+                      {this.schemas({entity:this.state.schemaLinked}).map((schema)=>{
                         return (
                           <MenuItem key={schema.id} value={schema.name} primaryText={schema.name} />
                         );
                       })}
                     </DropDownMenu>
                   </TableRowColumn>
-                </TableRow>*/}
+                </TableRow>
               </TableBody>
             </Table>
           </Dialog>

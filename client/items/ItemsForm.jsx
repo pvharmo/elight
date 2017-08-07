@@ -20,7 +20,7 @@ export default class ItemsForm extends Component {
   }
 
   link() {
-    return Items.find({schema:this.props.schema.params.schema}).fetch();
+    return Items.find({entity:this.props.schema.params.schema}).fetch();
   }
 
   render () {
@@ -152,6 +152,8 @@ export default class ItemsForm extends Component {
       );
 
     case "link":
+    console.log(this.link());
+    console.log(this.props.schema.params.field);
       return (
         <TableRow>
           <TableRowColumn><label htmlFor={this.props.schema.name}>{this.props.schema.name}</label></TableRowColumn>
@@ -166,7 +168,7 @@ export default class ItemsForm extends Component {
                   <MenuItem
                     key={element.id}
                     value={element.id}
-                    primaryText={element[this.props.schema.params.field]} />
+                    primaryText={element[this.props.schema.params.field].value} />
                 );
               })}
             </DropDownMenu>

@@ -67,9 +67,17 @@ export default class ItemsFormWrapper extends Component {
     var item = this.state.item;
     item[id] = {};
     item[id].value = value;
-    item[id].type = "dropdown";
+    item[id].type = type;
     this.setState({item});
   }
+
+  /*handleChangeDropdown(id, type, event, index, value) {
+    var item = this.state.item;
+    item[id] = {};
+    item[id].value = value;
+    item[id].type = "link";
+    this.setState({item});
+  }*/
 
   handleChange(id, type, event, value) {
     var item = this.state.item;
@@ -135,7 +143,7 @@ export default class ItemsFormWrapper extends Component {
   }
 
   closeModal() {
-    this.setState({dialog: false});
+    this.setState({dialog: false, item:{}});
   }
 
   closeAlert() {

@@ -88,6 +88,7 @@ export default class ItemSingle extends Component {
 
             case "dropdown":
             case "tags":
+            console.log(this.props.item[header].value);
               return (
                 <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
                   <DropDownMenu value={this.props.item[header].value.join()} underlineStyle={{display:"none"}} >
