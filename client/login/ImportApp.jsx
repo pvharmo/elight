@@ -10,7 +10,7 @@ import json2csv from "json2csv";
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Papa from "babyparse";
-import {moment} from "meteor/momentjs:moment";
+import {moment} from "moment";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
