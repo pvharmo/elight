@@ -35,6 +35,10 @@ export default class SchemaType extends Component {
     };
   }
 
+  entities() {
+    return Entities.find().fetch();
+  }
+
   schemas(search) {
     if (!search) {
       search = {};
@@ -262,19 +266,19 @@ export default class SchemaType extends Component {
                     <label>{language().schemas.newField.linkedSchema}</label>
                   </TableRowColumn>
                   <TableRowColumn>
-                      <DropDownMenu
-                        value={this.state.schemaLinked}
-                        onChange={this.handleChangeSc}
-                        multiple={this.state.multi} >
-                        {this.sc().map((sc)=>{
-                          return (
-                            <MenuItem key={sc.id} value={sc.name} primaryText={sc.name} />
-                          );
-                        })}
-                      </DropDownMenu>
+                    <DropDownMenu
+                      value={this.state.schemaLinked}
+                      onChange={this.handleChangeSc}
+                      multiple={this.state.multi} >
+                      {this.entities().map((entity)=>{
+                        return (
+                          <MenuItem key={entity.id} value={entity.id} primaryText={entity.name} />
+                        );
+                      })}
+                    </DropDownMenu>
                   </TableRowColumn>
                 </TableRow>
-                <TableRow>
+                {/*<TableRow>
                   <TableRowColumn>
                     <label>{language().schemas.newField.LinkedField}</label>
                   </TableRowColumn>
@@ -290,7 +294,7 @@ export default class SchemaType extends Component {
                       })}
                     </DropDownMenu>
                   </TableRowColumn>
-                </TableRow>
+                </TableRow>*/}
               </TableBody>
             </Table>
           </Dialog>

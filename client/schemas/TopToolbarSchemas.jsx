@@ -185,8 +185,6 @@ export default class TopToolbarSchemas extends Component {
         onTouchTap={this.saveNewField} />
     ];
 
-    console.log(this.state.schemaLinked);
-
     return (
       <div>
         <MuiThemeProvider>
@@ -339,7 +337,7 @@ export default class TopToolbarSchemas extends Component {
                       </TableRowColumn>
                     </TableRow>
                   }
-                  {this.state.newFieldType == "link" &&
+                  {/*this.state.newFieldType == "link" &&
                     <TableRow>
                       <TableRowColumn>
                         <label>{language().schemas.newField.LinkedField}</label>
@@ -357,7 +355,7 @@ export default class TopToolbarSchemas extends Component {
                         </DropDownMenu>
                       </TableRowColumn>
                     </TableRow>
-                  }
+                  */}
                 </TableBody>
               </Table>
             </form>
