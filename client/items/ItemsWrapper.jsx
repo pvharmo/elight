@@ -216,10 +216,10 @@ export default class ItemsWrapper extends TrackerReact(React.Component) {
             <MuiThemeProvider>
               <Table >
                 <TableBody id="items-table-body" showRowHover={true} style={{overflowY: "auto"}} >
-                      {this.schemaItems().map( (item)=>{
-                        stripState = !stripState;
-                        return (<ItemSingle key={item.id} item={item} stripState={stripState} schema={this.state.selectedEntity} />);
-                      })}
+                  {this.schemaItems().map( (item)=>{
+                    stripState = !stripState;
+                    return (<ItemSingle key={item.id} item={item} stripState={stripState} schema={this.state.selectedEntity} />);
+                  })}
                 </TableBody>
               </Table>
             </MuiThemeProvider>

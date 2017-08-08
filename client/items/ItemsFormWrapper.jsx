@@ -205,8 +205,7 @@ export default class ItemsFormWrapper extends Component {
         <MuiThemeProvider>
           <Dialog
             actions={alert}
-            open={this.state.alert}
-          >
+            open={this.state.alert} >
             Un article avec ces propriétés existe déjà.
           </Dialog>
         </MuiThemeProvider>

@@ -141,12 +141,12 @@ export default class TopToolbar extends Component {
             </IconButton>
           </ToolbarGroup>
           <ToolbarGroup>
-          <FlatButton label={language().clear} primary={true} onTouchTap={this.clearSearch.bind(this)} />
+            <FlatButton label={language().clear} primary={true} onTouchTap={this.clearSearch.bind(this)} />
             <TextField id="simple-search-text-field" onChange={this.handleChangeText} hintText={language().items.search} hintStyle={{color:"rgba(0,0,0,0.6)"}} underlineStyle={{borderBottomColor:"rgba(0,0,0,0.2)"}} ></TextField>
             <DropDownMenu value={this.state.dropdown}  style={{marginRight:-24}} iconStyle={{fill:"rgba(0,0,0,0.7)"}} iconButton={<KeyboardArrowDown />} >
               {this.schema().map((schema) =>{
                 return (
-                  <MenuItem key={schema.name} value={schema.name} primaryText={schema.name} onTouchTap={this.selectMenuItem.bind(this, schema.name)} />
+                  <MenuItem key={schema.id} value={schema.id} primaryText={schema.name} onTouchTap={this.selectMenuItem.bind(this, schema.id)} />
                 );
               })}
             </DropDownMenu>
@@ -156,13 +156,13 @@ export default class TopToolbar extends Component {
             <Dialog title={language().items.advancedSearch} open={this.state.advancedSearchDialog} actions={actions} >
               <Table>
                 <TableBody>
-                {// Show every entries of schema
-                  this.schema().map( (schema)=>{
-                    return (
-                      <AdvancedSearchField key={schema.id} schema={schema} />
-                    );
-                  })}
-              </TableBody>
+                  {// Show every entries of schema
+                    this.schema().map( (schema)=>{
+                      return (
+                        <AdvancedSearchField key={schema.id} schema={schema} />
+                      );
+                    })}
+                </TableBody>
               </Table>
             </Dialog>
           </ToolbarGroup>

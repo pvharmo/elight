@@ -14,22 +14,42 @@ export default class AdvancedSearchField extends Component {
     super();
 
     this.state = {
-      dropdown: []
+      dropdown: [],
+      link: ""
     };
   }
 
-  handleChange(event, value) {
+  link() {
+    return Items.find({entity:this.props.schema.params.entity}).fetch();
+  }
+
+  handleLink(event, index, value) {
     var fields;
     if (Session.get("advanced-search") !== undefined) {
       fields = Session.get("advanced-search");
     } else {
       fields = {};
     }
-    fields[this.props.schema.name] = value;
+    fields[this.props.schema.id] = value;
     Session.set("advanced-search", fields);
   }
 
-  handleDropdown(event, i, value) {
+  handleChange(event, value, type) {
+    var fields;
+    if (Session.get("advanced-search") !== undefined) {
+      fields = Session.get("advanced-search");
+    } else {
+      fields = {};
+    }
+    if (type === "number") {
+      fields[this.props.schema.id] = Number(value);
+    } else {
+      fields[this.props.schema.id] = value;
+    }
+    Session.set("advanced-search", fields);
+  }
+
+  handleDropdown(event, index, value) {
     var fields;
     if (Session.get("advanced-search") !== undefined) {
       fields = Session.get("advanced-search");
@@ -37,7 +57,7 @@ export default class AdvancedSearchField extends Component {
       fields = {};
     }
     this.setState({dropdown: value});
-    fields[this.props.schema.name] = value;
+    fields[this.props.schema.id] = value;
     Session.set("advanced-search", fields);
   }
 
@@ -55,7 +75,7 @@ export default class AdvancedSearchField extends Component {
               max={this.props.schema.params.max}
               ref={this.props.schema.name}
               id={"item-edit-form-" + this.props.schema.name}
-              onChange={this.handleChange.bind(this)} />
+              onChange={this.handleChange.bind(this, "number")} />
           </TableRowColumn>
         </TableRow>
       );
@@ -121,6 +141,29 @@ export default class AdvancedSearchField extends Component {
     case "history":
       return (
         <TableRow>
+        </TableRow>
+      );
+
+    case "link":
+      return (
+        <TableRow>
+          <TableRowColumn><label htmlFor={this.props.schema.name}>{this.props.schema.name}</label></TableRowColumn>
+          <TableRowColumn>
+            <DropDownMenu
+              id={"item-form-" + this.props.schema.name}
+              value={this.state.dropdown}
+              onChange={this.handleDropdown.bind(this)}
+              multiple={this.props.schema.params.multi} >
+              {this.link().map((element)=>{
+                return(
+                  <MenuItem
+                    key={element.id}
+                    value={element.id}
+                    primaryText={element[this.props.schema.params.schema].value} />
+                );
+              })}
+            </DropDownMenu>
+          </TableRowColumn>
         </TableRow>
       );
 
