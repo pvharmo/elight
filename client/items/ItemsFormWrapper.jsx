@@ -71,13 +71,14 @@ export default class ItemsFormWrapper extends Component {
     this.setState({item});
   }
 
-  /*handleChangeDropdown(id, type, event, index, value) {
+  handleChangeLink(id, type, entity, schema, event, index, value) {
     var item = this.state.item;
     item[id] = {};
     item[id].value = value;
-    item[id].type = "link";
+    item[id].type = type;
+    item[id].link = {entity, schema};
     this.setState({item});
-  }*/
+  }
 
   handleChange(id, type, event, value) {
     var item = this.state.item;
@@ -118,7 +119,7 @@ export default class ItemsFormWrapper extends Component {
     var modifications = this.state.item;
     var history = {};
     history.item = {};
-    var formFields = this.oneSchema();
+    //var formFields = this.oneSchema();
     // Get value of each input of the form by their id
     /*for (var i = 0; i < formFields.length; i++) {
 
@@ -132,13 +133,12 @@ export default class ItemsFormWrapper extends Component {
         item[formFields[i].name] = this.state.dropdown[dropdownId.id];
       }
     }*/
-    item.entity = Session.get("selected-entity");
     var double = Items.findOne(item);
     if (double) {
       this.setState({alert:true});
     } else {
       this.closeModal();
-      Meteor.call("newItem",item, modifications);
+      Meteor.call("newItem",item, modifications, Session.get("selected-entity"));
     }
   }
 
@@ -191,11 +191,12 @@ export default class ItemsFormWrapper extends Component {
                       key={schema.id}
                       schema={schema}
                       dropdown={this.state.dropdown}
-                      handleChangeDropdown={this.handleChangeDropdown.bind(this, schema.name, schema.type)}
-                      handleChange={this.handleChange.bind(this, schema.name, schema.type)}
+                      handleChangeDropdown={this.handleChangeDropdown.bind(this, schema.id, schema.type)}
+                      handleChangeLink={this.handleChangeLink.bind(this, schema.id, schema.type, schema.params.entity, schema.params.schema)}
+                      handleChange={this.handleChange.bind(this, schema.id, schema.type)}
                       item={this.state.item}
-                      handleAddTag={this.handleAddTag.bind(this, schema.name, schema.type)}
-                      handleDeleteTag={this.handleDeleteTag.bind(this, schema.name, schema.type)} />);
+                      handleAddTag={this.handleAddTag.bind(this, schema.id, schema.type)}
+                      handleDeleteTag={this.handleDeleteTag.bind(this, schema.id, schema.type)} />);
                   })}
               </TableBody>
             </Table>

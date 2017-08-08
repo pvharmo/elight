@@ -20,15 +20,19 @@ export default class ItemsForm extends Component {
   }
 
   link() {
-    return Items.find({entity:this.props.schema.params.schema}).fetch();
+    return Items.find({entity:this.props.schema.params.entity}).fetch();
+  }
+
+  schema() {
+    return Schemas.findOne({id: this.props.schema.params.schema});
   }
 
   render () {
     var value;
-    if (this.props.item[this.props.schema.name] === undefined) {
+    if (this.props.item[this.props.schema.id] === undefined) {
       value = "";
     } else {
-      value = this.props.item[this.props.schema.name].value;
+      value = this.props.item[this.props.schema.id].value;
     }
     switch (this.props.schema.type) {
     case "number":
@@ -46,7 +50,7 @@ export default class ItemsForm extends Component {
               floatingLabelText={this.props.schema.params.units}
               id={"item-form-" + this.props.schema.name}
             />
-            </TableRowColumn>
+          </TableRowColumn>
         </TableRow>
       );
 
@@ -152,8 +156,6 @@ export default class ItemsForm extends Component {
       );
 
     case "link":
-    console.log(this.link());
-    console.log(this.props.schema.params.field);
       return (
         <TableRow>
           <TableRowColumn><label htmlFor={this.props.schema.name}>{this.props.schema.name}</label></TableRowColumn>
@@ -161,14 +163,14 @@ export default class ItemsForm extends Component {
             <DropDownMenu
               id={"item-form-" + this.props.schema.name}
               value={value}
-              onChange={this.props.handleChangeDropdown}
+              onChange={this.props.handleChangeLink}
               multiple={this.props.schema.params.multi} >
               {this.link().map((element)=>{
                 return(
                   <MenuItem
                     key={element.id}
                     value={element.id}
-                    primaryText={element[this.props.schema.params.field].value} />
+                    primaryText={element[this.schema().id].value} />
                 );
               })}
             </DropDownMenu>

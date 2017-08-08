@@ -77,11 +77,16 @@ export default class ItemsEditFormWrapper extends Component {
     //this.props.closeDialog();
   }
 
-  handleChange(name, value, type) {
+  handleChange(name, value, type, entity, schema) {
     var item = this.state.item;
     item[name] = {};
     item[name].value = value;
     item[name].type = type;
+    if (type === "link") {
+      item[name].link = {};
+      item[name].link.entity = entity;
+      item[name].link.schema = schema;
+    }
     this.setState(item);
   }
 
@@ -122,27 +127,27 @@ export default class ItemsEditFormWrapper extends Component {
 
     return (
       <div>
-      <MuiThemeProvider>
-        <Dialog title={language().items.edit} actions={actions} open={this.state.dialog} autoScrollBodyContent={true} >
-          <form>
-            <Table id="items-edit-form-table">
-              <TableBody>
-                {// Show every entries of schema
-                  this.oneSchema().map( (schema)=>{
-                    return (<ItemsEditForm
-                      key={schema.id}
-                      schema={schema}
-                      item={this.state.item}
-                      dropdown={this.state.dropdown}
-                      handleChange={this.handleChange.bind(this)}
-                      handleAddTag={this.handleAddTag.bind(this)}
-                      handleDeleteTag={this.handleDeleteTag.bind(this)} />);
-                  })}
-              </TableBody>
-            </Table>
-          </form>
-        </Dialog>
-      </MuiThemeProvider>
+        <MuiThemeProvider>
+          <Dialog title={language().items.edit} actions={actions} open={this.state.dialog} autoScrollBodyContent={true} >
+            <form>
+              <Table id="items-edit-form-table">
+                <TableBody>
+                  {// Show every entries of schema
+                    this.oneSchema().map( (schema)=>{
+                      return (<ItemsEditForm
+                        key={schema.id}
+                        schema={schema}
+                        item={this.state.item}
+                        dropdown={this.state.dropdown}
+                        handleChange={this.handleChange.bind(this)}
+                        handleAddTag={this.handleAddTag.bind(this)}
+                        handleDeleteTag={this.handleDeleteTag.bind(this)} />);
+                    })}
+                </TableBody>
+              </Table>
+            </form>
+          </Dialog>
+        </MuiThemeProvider>
       </div>
     );
   }

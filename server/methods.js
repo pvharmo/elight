@@ -456,10 +456,11 @@ Meteor.methods({
   ///////////- Items -////////////////////////////////
 
   // Creates new item
-  newItem(item, modifications) {
+  newItem(item, modifications, entity) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
+      item.entity = entity;
       item.id = new Meteor.Collection.ObjectID()._str;
       item.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
       item.E3c7a1r = 0;
@@ -472,7 +473,7 @@ Meteor.methods({
           for (var key in modifications) {
             modifications[key].operation = "set";
           }
-          var newHistory = {id, refItem:item, item, modifications, date: Date(), app: app};
+          var newHistory = {id, refItem:item, item, modifications, date: Date(), app, entity};
           History.insert(newHistory, function(err) {
             if (err) {
               console.error(err);
@@ -493,7 +494,7 @@ Meteor.methods({
         if (err) {
           console.error(err);
         } else {
-          History.remove({"item.id": id.id, app: id.app});
+          History.remove({"refItem.id": id.id, app: id.app});
         }
       });
     }
@@ -603,14 +604,35 @@ Meteor.methods({
 
   ///////////- datables -//////////////////////////////////////
 
-  datatableRequest(options) {
+  datatableRequest(options, module) {
     var skip = options.listSize * (options.page - 1);
+    var links = Schemas.find({type: "link", entity: module.params.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
+    var project = {};
+    /*for (var i = 0; i < links.length; i++) {
+      project.refItem = {};
+      project.item = {};
+      project.modifications = {};
+      project.refItem[links[i].name] = ;
+    };*/
+    console.log(module.params);
+    var lookup = {
+      from: Items,
+      localField: "refItem.Maison" + /*links[0].name + */".value",
+      foreignField: /*foreignField[0].name*/"Nom",
+      as: /*links[0].name*/"Nom"
+    };
+    console.log(module.params.entity);
     var aggregation = History.aggregate([
       {
         $match: {
           app: Meteor.users.findOne({_id:this.userId}).selectedApp,
-          entity: options.entity
+          "refItem.entity": module.params.entity
         }
+      }, {
+        $lookup: {from: "items",
+        localField: "refItem." + links[0].name + ".value",
+        foreignField: "id",
+        as: links[0].name}
       }, {
         $sort: options.sort
       }, {
@@ -631,11 +653,13 @@ Meteor.methods({
   chartRequest(module) {
     var aggregation = [];
     var _id = new Meteor.Collection.ObjectID()._str;
-    var field = Schemas.findOne({id: module.params.y}).name;
-    var legend = Schemas.findOne({id: module.params.chartLegend}).name;
+    var field = Schemas.findOne({id: module.params.y, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).name;
+    var legend = Schemas.findOne({id: module.params.chartLegend, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).name;
+    var links = Schemas.find({type: "link", entity: module.params.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
     var valuesSource = "$modifications.";
     var afterDate = module.params.afterDate;
     var beforeDate = module.params.beforeDate;
+    var project = {};
     if (module.params.x === "date"/* && module.params.groupByDate*/) {
       var groupByDate = {};
       switch (module.params.groupByDate) {

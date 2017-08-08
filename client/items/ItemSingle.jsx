@@ -36,7 +36,10 @@ export default class ItemSingle extends Component {
 
   // Delete selected item
   deleteItem() {
-    Meteor.call("deleteItem", {id:this.props.item.id});
+    var prompt = confirm("Êtes-vous sûr de vouloir supprimer cet article?");
+    if (prompt) {
+      Meteor.call("deleteItem", {id:this.props.item.id});
+    }
   }
 
   startEdit() {
@@ -88,7 +91,6 @@ export default class ItemSingle extends Component {
 
             case "dropdown":
             case "tags":
-            console.log(this.props.item[header].value);
               return (
                 <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
                   <DropDownMenu value={this.props.item[header].value.join()} underlineStyle={{display:"none"}} >
@@ -120,6 +122,13 @@ export default class ItemSingle extends Component {
                 return (<TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} ></TableRowColumn>);
               }
 
+            case "link":
+              return (
+                <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                  {Items.findOne({id:this.props.item[header].value})[Schemas.findOne({id: this.props.item[header].link.schema, entity: this.props.item[header].link.entity}).id].value}
+                </TableRowColumn>
+              );
+
             default:
               return (<TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>{this.props.item[header].value}</TableRowColumn>);
 
@@ -132,9 +141,7 @@ export default class ItemSingle extends Component {
         })}
         <TableRowColumn style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>
           <IconButton onTouchTap={this.startEdit.bind(this)} ><Create color={blue500} /></IconButton>
-          {nav.getUser().admin &&
-            <IconButton onTouchTap={this.deleteItem.bind(this)} ><Clear color={red500} /></IconButton>
-          }
+          <IconButton onTouchTap={this.deleteItem.bind(this)} ><Clear color={red500} /></IconButton>
 
         </TableRowColumn>
       </TableRow>

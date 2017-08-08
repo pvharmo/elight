@@ -29,42 +29,50 @@ export default class ItemsEditForm extends Component {
   }
 
   defaultValue() {
-    return this.state.editingItem[this.props.schema.name] ;
+    return this.state.editingItem[this.props.schema.id] ;
+  }
+
+  link() {
+    return Items.find({entity:this.props.schema.params.entity}).fetch();
   }
 
   handleChangeDropdown(type, event, index, value) {
-    this.props.handleChange(this.props.schema.name, value, type);
+    this.props.handleChange(this.props.schema.id, value, type);
+  }
+
+  handleChangeLink(type, entity, schema, event, index, value) {
+    this.props.handleChange(this.props.schema.id, value, type, entity, schema);
   }
 
   handleChangeNumber(type, event, value) {
-    this.props.handleChange(this.props.schema.name, Number(value), type);
+    this.props.handleChange(this.props.schema.id, Number(value), type);
   }
 
   handleChange(type, event, value) {
-    this.props.handleChange(this.props.schema.name, value, type);
+    this.props.handleChange(this.props.schema.id, value, type);
   }
 
   handleSuperSelect(type, value) {
-    this.props.handleChange(this.props.schema.name, value, type);
+    this.props.handleChange(this.props.schema.id, value, type);
   }
 
   handleAddTag(type, value) {
-    this.props.handleAddTag(this.props.schema.name, value, type);
+    this.props.handleAddTag(this.props.schema.id, value, type);
   }
 
   handleDeleteTag(type, value, index) {
-    this.props.handleDeleteTag(this.props.schema.name, index, type);
+    this.props.handleDeleteTag(this.props.schema.id, index, type);
   }
 
   render () {
     var value;
     var type;
-    if (this.props.item[this.props.schema.name] === undefined) {
+    if (this.props.item[this.props.schema.id] === undefined) {
       value = "";
-    } else if (this.props.item[this.props.schema.name].value === undefined) {
+    } else if (this.props.item[this.props.schema.id].value === undefined) {
       value = "";
     } else {
-      value = this.props.item[this.props.schema.name].value;
+      value = this.props.item[this.props.schema.id].value;
     }
     switch (this.props.schema.type) {
     case "number":
@@ -207,6 +215,29 @@ export default class ItemsEditForm extends Component {
               onRequestAdd={this.handleAddTag.bind(this, "tags")}
               onRequestDelete={this.handleDeleteTag.bind(this, "tags")}
             />
+          </TableRowColumn>
+        </TableRow>
+      );
+
+    case "link":
+      return (
+        <TableRow>
+          <TableRowColumn><label htmlFor={this.props.schema.name}>{this.props.schema.name}</label></TableRowColumn>
+          <TableRowColumn>
+            <DropDownMenu
+              id={"item-form-" + this.props.schema.name}
+              value={value}
+              onChange={this.handleChangeLink.bind(this, "link", this.props.schema.params.entity, this.props.schema.params.schema)}
+              multiple={this.props.schema.params.multi} >
+              {this.link().map((element)=>{
+                return(
+                  <MenuItem
+                    key={element.id}
+                    value={element.id}
+                    primaryText={element[this.props.schema.params.schema].value} />
+                );
+              })}
+            </DropDownMenu>
           </TableRowColumn>
         </TableRow>
       );
