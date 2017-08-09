@@ -42,6 +42,10 @@ export default class ItemSingle extends Component {
     }
   }
 
+  schemas() {
+    return Schemas.find({entity: Session.get("selected-entity")}).fetch();
+  }
+
   startEdit() {
     NavigationActions.openEditForm(this.props.item, this.props.schema);
     Session.set("edited-item", this.props.item);
@@ -67,15 +71,15 @@ export default class ItemSingle extends Component {
 
     return (
       <TableRow style={this.style} hoverable={true} >
-        {tableHeader.map((header)=>{
-          if (this.props.item[header]) {
-            switch (this.props.item[header].type) {
+        {this.schemas().map((header)=>{
+          if (this.props.item[header.id]) {
+            switch (header.type) {
             case "boolean":
             case "checkbox":
               return (
-                <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} >
+                <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} >
                   <Checkbox
-                    checked={this.props.item[header].value}
+                    checked={this.props.item[header.id]}
                     checkedIcon={<Done color={blue500} />}
                     uncheckedIcon={<AvNotInterested color={red500} />}
                     style={{margin:"0 auto", width:"24px"}} />
@@ -84,18 +88,18 @@ export default class ItemSingle extends Component {
 
             case "date":
               return (
-                <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                  {this.props.item[header].value.toLocaleDateString()}
+                <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                  {this.props.item[header.id].toLocaleDateString()}
                 </TableRowColumn>
               );
 
             case "dropdown":
             case "tags":
               return (
-                <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                  <DropDownMenu value={this.props.item[header].value.join()} underlineStyle={{display:"none"}} >
-                    <MenuItem value={this.props.item[header].value.join()} primaryText={this.props.item[header].value.join(", ")} style={{display:"none"}} />
-                    {this.props.item[header].value.map((value)=>{
+                <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                  <DropDownMenu value={this.props.item[header.id].join()} underlineStyle={{display:"none"}} >
+                    <MenuItem value={this.props.item[header.id].join()} primaryText={this.props.item[header.id].join(", ")} style={{display:"none"}} />
+                    {this.props.item[header.id].map((value)=>{
                       return <MenuItem key={value} primaryText={value} />;
                     })}
                   </DropDownMenu>
@@ -103,17 +107,17 @@ export default class ItemSingle extends Component {
               );
 
             case "object":
-              if (typeof this.props.item[header].value.getMonth === "function") {
+              if (typeof this.props.item[header.id].getMonth === "function") {
                 return (
-                  <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                    {this.props.item[header].value.toLocaleDateString()}
+                  <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                    {this.props.item[header.id].toLocaleDateString()}
                   </TableRowColumn>);
-              } else if (Array.isArray(this.props.item[header].value)) {
+              } else if (Array.isArray(this.props.item[header.id])) {
                 return (
-                  <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                    <DropDownMenu value={this.props.item[header].value.join()} underlineStyle={{display:"none"}} >
-                      <MenuItem value={this.props.item[header].value.join()} primaryText={this.props.item[header].value.join(", ")} style={{display:"none"}} />
-                      {this.props.item[header].value.map((value)=>{
+                  <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                    <DropDownMenu value={this.props.item[header.id].join()} underlineStyle={{display:"none"}} >
+                      <MenuItem value={this.props.item[header.id].join()} primaryText={this.props.item[header.id].join(", ")} style={{display:"none"}} />
+                      {this.props.item[header.id].map((value)=>{
                         return <MenuItem key={value} primaryText={value} />;
                       })}
                     </DropDownMenu>
@@ -124,18 +128,20 @@ export default class ItemSingle extends Component {
 
             case "link":
               return (
-                <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                  {Items.findOne({id:this.props.item[header].value})[Schemas.findOne({id: this.props.item[header].link.schema, entity: this.props.item[header].link.entity}).id].value}
+                <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                  {Items.findOne({id:this.props.item[header.id]})[header.params.schema]}
+                  {// Items.findOne({id:this.props.item[header.id]})[Schemas.findOne({id: this.props.item[header.id].link.schema, entity: this.props.item[header.id].link.entity}).id]
+                  }
                 </TableRowColumn>
               );
 
             default:
-              return (<TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>{this.props.item[header].value}</TableRowColumn>);
+              return (<TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>{this.props.item[header.id]}</TableRowColumn>);
 
             }
           } else {
             return (
-              <TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} ></TableRowColumn>
+              <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} ></TableRowColumn>
             );
           }
         })}

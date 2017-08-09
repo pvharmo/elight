@@ -69,10 +69,10 @@ export default class ItemsEditForm extends Component {
     var type;
     if (this.props.item[this.props.schema.id] === undefined) {
       value = "";
-    } else if (this.props.item[this.props.schema.id].value === undefined) {
+    } else if (this.props.item[this.props.schema.id] === undefined) {
       value = "";
     } else {
-      value = this.props.item[this.props.schema.id].value;
+      value = this.props.item[this.props.schema.id];
     }
     switch (this.props.schema.type) {
     case "number":
@@ -110,7 +110,7 @@ export default class ItemsEditForm extends Component {
       if (value === "") {
         value = null;
       } else {
-        var d = Date.parse(this.props.item[this.props.schema.name].value);
+        var d = Date.parse(this.props.item[this.props.schema.name]);
         value = new Date(d);
       }
       return (
@@ -234,7 +234,7 @@ export default class ItemsEditForm extends Component {
                   <MenuItem
                     key={element.id}
                     value={element.id}
-                    primaryText={element[this.props.schema.params.schema].value} />
+                    primaryText={element[this.props.schema.params.schema]} />
                 );
               })}
             </DropDownMenu>

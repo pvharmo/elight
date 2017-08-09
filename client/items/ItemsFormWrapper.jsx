@@ -65,49 +65,59 @@ export default class ItemsFormWrapper extends Component {
 
   handleChangeDropdown(id, type, event, index, value) {
     var item = this.state.item;
-    item[id] = {};
-    item[id].value = value;
-    item[id].type = type;
+    item[id] = value;
+    //item[id].value = value;
+    //item[id].type = type;
     this.setState({item});
   }
 
   handleChangeLink(id, type, entity, schema, event, index, value) {
     var item = this.state.item;
-    item[id] = {};
-    item[id].value = value;
-    item[id].type = type;
-    item[id].link = {entity, schema};
+    item[id] = value;
+    // item[id].value = value;
+    // item[id].type = type;
+    // item[id].link = {entity, schema};
     this.setState({item});
   }
 
   handleChange(id, type, event, value) {
     var item = this.state.item;
-    item[id] = {};
+    // item[id] = {};
+    // if (type === "number") {
+    //   item[id].value = Number(value);
+    // } else {
+    //   item[id].value = value;
+    // }
+    // item[id].type = type;
     if (type === "number") {
-      item[id].value = Number(value);
+      item[id] = Number(value);
     } else {
-      item[id].value = value;
+      item[id] = value;
     }
-    item[id].type = type;
     this.setState({item});
   }
 
   handleAddTag(name, type, value) {
     var item = this.state.item;
     if (!item[name] || item[name] === {}) {
-      item[name] = {};
-      item[name].value = [];
+      item[name] = [];
     }
-    item[name].value.push(value);
-    item[name].type = type;
+    item[name].push(value);
+    // if (!item[name] || item[name] === {}) {
+    //   item[name] = {};
+    //   item[name].value = [];
+    // }
+    // item[name].value.push(value);
+    // item[name].type = type;
     this.setState(item);
   }
 
   handleDeleteTag(name, type, value, index) {
     var item = this.state.item;
     //item[name] = {};
-    item[name].value.splice(index,1);
-    item[name].type = type;
+    item[name].splice(index,1);
+    // item[name].value.splice(index,1);
+    // item[name].type = type;
     this.setState(item);
   }
 

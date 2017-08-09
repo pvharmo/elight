@@ -79,33 +79,35 @@ export default class ItemsEditFormWrapper extends Component {
 
   handleChange(name, value, type, entity, schema) {
     var item = this.state.item;
-    item[name] = {};
-    item[name].value = value;
-    item[name].type = type;
-    if (type === "link") {
-      item[name].link = {};
-      item[name].link.entity = entity;
-      item[name].link.schema = schema;
-    }
+    item[name] = value;
+    // item[name].value = value;
+    // item[name].type = type;
+    // if (type === "link") {
+    //   item[name].link = {};
+    //   item[name].link.entity = entity;
+    //   item[name].link.schema = schema;
+    // }
     this.setState(item);
   }
 
   handleAddTag(name, value, type) {
     var item = this.state.item;
-    if (!item[name] || item[name] === {}) {
-      item[name] = {};
-      item[name].value = [];
-    }
-    item[name].value.push(value);
-    item[name].type = type;
+    // if (!item[name] || item[name] === {}) {
+    //   item[name] = {};
+    //   item[name].value = [];
+    // }
+    item[name].push(value);
+    // item[name].value.push(value);
+    // item[name].type = type;
     this.setState(item);
   }
 
   handleDeleteTag(name, index, type) {
     var item = this.state.item;
     //item[name] = {};
-    item[name].value.splice(index,1);
-    item[name].type = type;
+    item[name].splice(index,1);
+    // item[name].value.splice(index,1);
+    // item[name].type = type;
     this.setState(item);
   }
 

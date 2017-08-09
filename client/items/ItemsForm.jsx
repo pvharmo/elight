@@ -32,7 +32,7 @@ export default class ItemsForm extends Component {
     if (this.props.item[this.props.schema.id] === undefined) {
       value = "";
     } else {
-      value = this.props.item[this.props.schema.id].value;
+      value = this.props.item[this.props.schema.id];
     }
     switch (this.props.schema.type) {
     case "number":
@@ -170,7 +170,7 @@ export default class ItemsForm extends Component {
                   <MenuItem
                     key={element.id}
                     value={element.id}
-                    primaryText={element[this.schema().id].value} />
+                    primaryText={element[this.schema().id]} />
                 );
               })}
             </DropDownMenu>
