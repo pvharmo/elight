@@ -62,7 +62,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
       options[arg.id] = arg.value;
     }
     //console.log(Meteor.call("dataRequest", this.props.module.entity, this.state.sort, this.state.listSize, this.state.page));
-    Meteor.call("datatableRequest", options, function(err, res) {
+    Meteor.call("datatableRequest", options, _this.props.module, function(err, res) {
       if (err) {
         console.error(err);
       } else {
@@ -171,16 +171,16 @@ export default class FormWrapper extends TrackerReact(React.Component) {
   }
 
   cells(data, header, id) {
-    if (data[header.name]) {
-      switch (data[header.name].type) {
+    if (data[header.id]) {
+      switch (header.type) {
       case "date":
-        var d = moment(data[header.name].value);
+        var d = moment(data[header.id]);
         return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{d.format("D/M/YYYY")}</TableRowColumn>;
       case "checkbox":
         return (
           <TableRowColumn key={id + header} >
             <Checkbox
-              checked={data[header.name].value}
+              checked={data[header.id]}
               checkedIcon={<Done color={blue500} />}
               uncheckedIcon={<AvNotInterested color={red500} />}
               style={{margin:"0 auto", width:"24px"}} />
@@ -190,19 +190,21 @@ export default class FormWrapper extends TrackerReact(React.Component) {
       case "tags":
         return (
           <TableRowColumn key={id + header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-            <DropDownMenu value={data[header.name].value.join()} underlineStyle={{display:"none"}} >
+            <DropDownMenu value={data[header.id].join()} underlineStyle={{display:"none"}} >
               <MenuItem
-                value={data[header.name].value.join()}
-                primaryText={data[header.name].value.join(", ")}
+                value={data[header.id].join()}
+                primaryText={data[header.id].join(", ")}
                 style={{display:"none"}} />
-              {data[header.name].value.map((value)=>{
+              {data[header.id].map((value)=>{
                 return <MenuItem key={value} primaryText={value} />;
               })}
             </DropDownMenu>
           </TableRowColumn>
         );
+      case "link":
+        return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{Items.findOne({id: data[header.id], entity: header.params.entity})[header.params.schema]}</TableRowColumn>;
       default:
-        return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{data[header.name].value}</TableRowColumn>;
+        return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{data[header.id]}</TableRowColumn>;
       }
     } else {
       return <TableRowColumn key={id + header} ></TableRowColumn>;

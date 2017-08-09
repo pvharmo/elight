@@ -49,11 +49,10 @@ export default class FormWrapper extends TrackerReact(React.Component) {
   }
 
   chart() {
-    console.log("test");
     var module = this.props.module;
-    var labels = [];
+    var labels = this.state.labels;
 
-    if (this.props.module.params.x == "date") {
+    /*if (this.props.module.params.x == "date") {
 
       switch (this.props.module.params.groupByDate) {
       case "days":
@@ -70,7 +69,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
       default:
         labels = [1,2,3,4];
       }
-    }
+    }*/
 
     //console.log(this.state.datasets[0].data);
 
@@ -144,7 +143,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
           //console.log(res[i]);
           //console.log(graphEnd);
           //console.log(moment(res[i][res[i].length - 1]._id));
-          for (var y = 0; y < graphStartInterval; y++) {
+          for (var n = 0; n < graphStartInterval; n++) {
             data.push(0);
           }
           for (var j = 0; j < res[i].length; j++) {
@@ -166,7 +165,35 @@ export default class FormWrapper extends TrackerReact(React.Component) {
             labelsCount = data.length - 1;
           }
         }
+        if (_this.props.module.params.x == "date") {
+          switch (_this.props.module.params.groupByDate) {
+          case "days":
+            for (var d = graphStart.clone(); d.isBefore(graphEnd.clone().add(1, "days"), "days"); d.add(1, "days")) {
+              labels.push(d.format("D MMM Y"));
+            }
+            break;
+          case "months":
+            for (var m = graphStart.clone(); m.isBefore(graphEnd.clone().add(1, "months"), "months"); m.add(1, "months")) {
+              labels.push(m.format("MMM Y"));
+            }
+            break;
+          case "years":
+            for (var y = graphStart.clone(); y.isBefore(graphEnd.clone().add(1, "years"), "years"); y.add(1, "years")) {
+              labels.push(y.format("Y"));
+            }
+            break;
+          case "daysOfWeek":
+            labels = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+            break;
+          case "monthsOfYear":
+            labels = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            break;
+          default:
+
+          }
+        }
         _this.setState({datasets, labels, labelsCount});
+
       }
     });
   }

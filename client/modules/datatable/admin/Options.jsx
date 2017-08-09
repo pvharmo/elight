@@ -35,7 +35,8 @@ export default class Options extends TrackerReact(React.Component) {
   }
 
   handleChangeAction(param, event, index, value) {
-    if (param === "schemas") {
+    var links = [];
+    if (param === "schemas" || param === "schemasCurrent") {
       var schemas = [];
       this.schemas().map((schema)=>{
         schemas.push(schema.id);
@@ -43,11 +44,23 @@ export default class Options extends TrackerReact(React.Component) {
       var matches = [];
       value.map((val)=>{
         if (schemas.includes(val)) {
+          //var type = Schemas.findOne({id:val}).type;
           matches.push(val);
         }
       });
       value = matches;
-    }
+      if (param === "schemasCurrent") {
+        for (var i = 0; i < matches.length; i++) {
+          if (Schemas.findOne({id: matches[i]}).type === "link") {
+            links.push(matches[i]);
+          }
+        }
+        Meteor.call("updateParams", this.props.id, links, "params.links");
+      }
+    } /*else if(param === "schemasCurrent") {
+      console.log(value);
+      value = {value, type: Schemas.findOne({id:value}).type};
+    }*/
     this.setState({[param]: value});
     Meteor.call("updateParams", this.props.id, value, "params." + param);
   }

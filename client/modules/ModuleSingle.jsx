@@ -36,7 +36,10 @@ export default class ModuleSingle extends Component {
   }
 
   deleteModule() {
-    Meteor.call("deleteModule", this.props.module.id, this.props.module.order, this.props.module.page);
+    var prompt = confirm("Êtes-vous sûr de vouloir supprimer ce module?");
+    if (prompt) {
+      Meteor.call("deleteModule", this.props.module.id, this.props.module.order, this.props.module.page);
+    }
   }
 
   // Change state of editState to true
@@ -125,9 +128,7 @@ export default class ModuleSingle extends Component {
           </TableRowColumn>
           <TableRowColumn style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
             <IconButton onTouchTap={this.editModule.bind(this)} ><Create color={blue500} /></IconButton>
-            {nav.getUser().admin &&
-              <IconButton onTouchTap={this.deleteModule.bind(this)} ><Clear color={red500} /></IconButton>
-            }
+            <IconButton onTouchTap={this.deleteModule.bind(this)} ><Clear color={red500} /></IconButton>
           </TableRowColumn>
         </TableRow>
     );

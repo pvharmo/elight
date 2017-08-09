@@ -87,7 +87,7 @@ export default class Options extends TrackerReact(React.Component) {
   }
 
   items() {
-    return Items.find().fetch();
+    return Items.find({entity:this.module().params.entity}).fetch();
   }
 
   handleClose(dialog) {
@@ -256,7 +256,11 @@ export default class Options extends TrackerReact(React.Component) {
                       multiple={true}
                       style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
                       {this.items().map((item)=>{
-                        return <MenuItem key={item.id} value={item.id} primaryText={item[this.schemas()[0].name].value} />;
+                        if (this.schemas()[0]) {
+                          return <MenuItem key={item.id} value={item.id} primaryText={item[this.schemas()[0].id]} />;
+                        } else {
+                          return <div key={item.id}></div>;
+                        }
                       })}
                     </ DropDownMenu>
                   </TableRowColumn>

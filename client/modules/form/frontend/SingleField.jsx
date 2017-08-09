@@ -46,6 +46,7 @@ export default class SingleField extends Component {
     }
     switch (this.props.field.type) {
     case "text":
+    //console.log(this.props.fieldConnection);
       return (
         <TableRow>
           <TableRowColumn style={{textAlign:"right"}} >{this.props.field.name}</TableRowColumn>
@@ -54,7 +55,7 @@ export default class SingleField extends Component {
               id={this.props.fieldConnection.id}
               searchText={this.props.searchText}
               onUpdateInput={this.handleUpdateInput}
-              dataSource={this.props.data(this.props.fieldConnection.name)}
+              dataSource={this.props.data(this.props.fieldConnection.id)}
               openOnFocus={true}
               errorText={errorText}
               dataSourceConfig={{text: "value", value: "value"}}

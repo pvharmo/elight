@@ -607,21 +607,12 @@ Meteor.methods({
   datatableRequest(options, module) {
     var skip = options.listSize * (options.page - 1);
     var links = Schemas.find({type: "link", entity: module.params.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
-    var project = {};
-    /*for (var i = 0; i < links.length; i++) {
-      project.refItem = {};
-      project.item = {};
-      project.modifications = {};
-      project.refItem[links[i].name] = ;
-    };*/
-    console.log(module.params);
     var lookup = {
-      from: Items,
-      localField: "refItem.Maison" + /*links[0].name + */".value",
-      foreignField: /*foreignField[0].name*/"Nom",
-      as: /*links[0].name*/"Nom"
+      from: "items",
+      localField: "refItem." + links[0].id,
+      foreignField: "id",
+      as: links[0].id
     };
-    console.log(module.params.entity);
     var aggregation = History.aggregate([
       {
         $match: {
@@ -629,10 +620,7 @@ Meteor.methods({
           "refItem.entity": module.params.entity
         }
       }, {
-        $lookup: {from: "items",
-        localField: "refItem." + links[0].name + ".value",
-        foreignField: "id",
-        as: links[0].name}
+        $lookup: lookup
       }, {
         $sort: options.sort
       }, {
@@ -653,8 +641,8 @@ Meteor.methods({
   chartRequest(module) {
     var aggregation = [];
     var _id = new Meteor.Collection.ObjectID()._str;
-    var field = Schemas.findOne({id: module.params.y, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).name;
-    var legend = Schemas.findOne({id: module.params.chartLegend, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).name;
+    var field = Schemas.findOne({id: module.params.y, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).id;
+    var legend = Schemas.findOne({id: module.params.chartLegend, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).id;
     var links = Schemas.find({type: "link", entity: module.params.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
     var valuesSource = "$modifications.";
     var afterDate = module.params.afterDate;
@@ -705,8 +693,8 @@ Meteor.methods({
         }, {
           $group: {
             _id: groupByDate,
-            total: {[module.params.operation]: valuesSource + field + ".value"},
-            refItem: {$first: "$refItem." + legend + ".value"}
+            total: {[module.params.operation]: valuesSource + field},
+            refItem: {$first: "$refItem." + legend}
           }
         }, {
           $sort: {

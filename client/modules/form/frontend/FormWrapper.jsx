@@ -75,15 +75,13 @@ export default class FormWrapper extends TrackerReact(React.Component) {
       query.schema = this.state.schemaConnection;
     }
     var itemsArray = [];
-    var items = Items.find(this.state.query).fetch();
+    var items = Items.find(query).fetch();
 
     for (var i = 0; i < items.length; i++) {
       itemsArray[i] = items[i][fieldConnection];
       /*itemsArray[i] = (<MenuItem PrimaryText={items[i][fieldConnection]}
         children={<div key={items[i][fieldConnection]} ><div style={{textAlign: "right",color: "rgba(0,0,0,0.6)",height: "17px",fontSize: "11px"}}>{items[i][fieldConnection]}</div></div>} />);*/
     }
-
-
 
     //_.uniq(itemsArray,function(item, key) {return item[_this.props.operator.schemaField];});
 
@@ -136,7 +134,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
       default:
         for (var y = 0; y < this.fields().length; y++) {
           fieldConnection = Schemas.findOne({id:this.fields()[y].fieldConnection});
-          var field = fieldConnection.name + ".value";
+          var field = fieldConnection.id;
           switch (this.fields()[y].action) {
           case "search":
             search[field] = this.state.item[this.fields()[y].id];
@@ -148,10 +146,11 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$inc = {};
             }
             modificationsQuery.$inc[field] = Number(this.state.item[this.fields()[y].id]);
-            modifications[fieldConnection.name] = {};
-            modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
-            modifications[fieldConnection.name].type = fieldConnection.type;
-            modifications[fieldConnection.name].operation = "add";
+            // modifications[fieldConnection.name] = {};
+            // modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
+            // modifications[fieldConnection.name].type = fieldConnection.type;
+            // modifications[fieldConnection.name].operation = "add";
+            modifications[field] = Number(this.state.item[this.fields()[y].id]);
             break;
 
           case "substract":
@@ -159,10 +158,11 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$inc = {};
             }
             modificationsQuery.$inc[field] = -Number(this.state.item[this.fields()[y].id]);
-            modifications[fieldConnection.name] = {};
-            modifications[fieldConnection.name].value = -Number(this.state.item[this.fields()[y].id]);
-            modifications[fieldConnection.name].type = fieldConnection.type;
-            modifications[fieldConnection.name].operation = "substract";
+            // modifications[fieldConnection.name] = {};
+            // modifications[fieldConnection.name].value = -Number(this.state.item[this.fields()[y].id]);
+            // modifications[fieldConnection.name].type = fieldConnection.type;
+            // modifications[fieldConnection.name].operation = "substract";
+            modifications[field] = -Number(this.state.item[this.fields()[y].id]);
             break;
 
           case "multiply":
@@ -170,10 +170,11 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$mul = {};
             }
             modificationsQuery.$mul[field] = this.state.item[this.fields()[y].id];
-            modifications[fieldConnection.name] = {};
-            modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
-            modifications[fieldConnection.name].type = fieldConnection.type;
-            modifications[fieldConnection.name].operation = "multiply";
+            // modifications[fieldConnection.name] = {};
+            // modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
+            // modifications[fieldConnection.name].type = fieldConnection.type;
+            // modifications[fieldConnection.name].operation = "multiply";
+            modifications[field] = Number(this.state.item[this.fields()[y].id]);
             break;
 
           case "divide":
@@ -181,10 +182,11 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$mul = {};
             }
             modificationsQuery.$mul[field] = 1/this.state.item[this.fields()[y].id];
-            modifications[fieldConnection.name] = {};
-            modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
-            modifications[fieldConnection.name].type = fieldConnection.type;
-            modifications[fieldConnection.name].operation = "divide";
+            // modifications[fieldConnection.name] = {};
+            // modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
+            // modifications[fieldConnection.name].type = fieldConnection.type;
+            // modifications[fieldConnection.name].operation = "divide";
+            modifications[field] = Number(this.state.item[this.fields()[y].id]);
             break;
 
           case "modify":
@@ -192,10 +194,11 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$set = {};
             }
             modificationsQuery.$set[field] = this.state.item[this.fields()[y].id];
-            modifications[fieldConnection.name] = {};
-            modifications[fieldConnection.name].value = this.state.item[this.fields()[y].id];
-            modifications[fieldConnection.name].type = fieldConnection.type;
-            modifications[fieldConnection.name].operation = "modify";
+            // modifications[fieldConnection.name] = {};
+            // modifications[fieldConnection.name].value = this.state.item[this.fields()[y].id];
+            // modifications[fieldConnection.name].type = fieldConnection.type;
+            // modifications[fieldConnection.name].operation = "modify";
+            modifications[field] = this.state.item[this.fields()[y].id];
             break;
 
           default:
