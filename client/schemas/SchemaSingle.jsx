@@ -34,7 +34,10 @@ export default class SchemaSingle extends Component {
   }
 
   deleteField() {
-    Meteor.call("deleteField", this.props.schema.id, this.props.schema.order, this.props.schema.schema);
+    var prompt = confirm("Êtes-vous sûr de vouloir supprimer ce schéma?");
+    if (prompt) {
+      Meteor.call("deleteField", this.props.schema.id, this.props.schema.order, this.props.schema.schema);
+    }
   }
 
   // Change showInList
@@ -149,9 +152,7 @@ export default class SchemaSingle extends Component {
               <IconButton disabled={true} ><Clear color={red500} /></IconButton>
             </div>) : (<div>
               <IconButton onTouchTap={this.editSchema.bind(this)} ><Create color={blue500} /></IconButton>
-              {nav.getUser().admin &&
-                <IconButton onTouchTap={this.deleteField.bind(this)} ><Clear color={red500} /></IconButton>
-              }
+              <IconButton onTouchTap={this.deleteField.bind(this)} ><Clear color={red500} /></IconButton>
             </div>)}
           </TableRowColumn>
         </TableRow>

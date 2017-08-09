@@ -112,8 +112,8 @@ export default class TopToolbarSchemas extends Component {
       };
     } else if (this.state.newFieldType === "link") {
       params = {
-        schema: this.state.schemaLinked,
-        field: this.state.fieldLinked,
+        entity: this.state.schemaLinked,
+        schema: this.state.fieldLinked,
         multi
       };
     }
@@ -160,7 +160,7 @@ export default class TopToolbarSchemas extends Component {
   }
 
   handleChangeSc(event, index, value) {
-    this.setState({schemaLinked:value});
+    this.setState({schemaLinked: value});
   }
 
   handleChangeField(event, index, value) {

@@ -93,9 +93,12 @@ export default class rightDrawer extends Component {
   }
 
   deleteItem() {
-    this.handleClose();
-    if (this.props.deleteItem) {
-      this.props.deleteItem(this.state.id);
+    var prompt = confirm("Êtes-vous sûr de vouloir supprimer ce schéma?");
+    if (prompt) {
+      this.handleClose();
+      if (this.props.deleteItem) {
+        this.props.deleteItem(this.state.id);
+      }
     }
   }
 
@@ -115,16 +118,11 @@ export default class rightDrawer extends Component {
         keyboardFocused={true}
         onTouchTap={this.save.bind(this)}
       />,
+      <FlatButton
+        label={language().schemas.deleteEntity}
+        secondary={true}
+        onTouchTap={this.deleteItem.bind(this)} />
     ];
-
-    if (nav.getUser().admin && this.props.deleteItem) {
-      actions.unshift(
-        <FlatButton
-          label={language().schemas.deleteEntity}
-          secondary={true}
-          onTouchTap={this.deleteItem.bind(this)} />
-      );
-    }
 
     return (
       <div>
