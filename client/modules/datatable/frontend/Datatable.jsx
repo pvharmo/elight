@@ -356,22 +356,3 @@ export default class FormWrapper extends TrackerReact(React.Component) {
     );
   }
 }
-
-
-/*if (data[header.name].type === "date") {
-  var d = moment(data[header.name].value);
-  //var date = moment;
-  return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{d.format("D/M/YYYY")}</TableRowColumn>;
-} else if (data[header.name].type === "checkbox") {
-  return (
-    <TableRowColumn key={id + header} >
-      <Checkbox
-        checked={data[header.name].value}
-        checkedIcon={<Done color={blue500} />}
-        uncheckedIcon={<AvNotInterested color={red500} />}
-        style={{margin:"0 auto", width:"24px"}} />
-    </TableRowColumn>
-  );
-} else {
-  return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{data[header.name].value}</TableRowColumn>;
-}*/
