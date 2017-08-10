@@ -141,9 +141,9 @@ export default class Options extends TrackerReact(React.Component) {
                     onChange={this.handleChangeAction.bind(this, "x")}
                     multiple={false}
                     style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                    {/*this.schemas().map((schema)=>{
+                    {this.schemas().map((schema)=>{
                       return <MenuItem key={schema.id} value={schema.id} primaryText={schema.name} />;
-                    })*/}
+                    })}
                     <MenuItem value="date" primaryText="Date" />
                   </ DropDownMenu>
                   {this.module().params.x === "date" &&
@@ -208,12 +208,13 @@ export default class Options extends TrackerReact(React.Component) {
                 <TableRowColumn style={{textAlign:"right", borderBottom: "none"}} >{language().graphType}</TableRowColumn>
                 <TableRowColumn>
                   <DropDownMenu
-                    value={this.module().params.graphType}
-                    onChange={this.handleChangeAction.bind(this, "graphType")}
+                    value={this.module().params.chartType}
+                    onChange={this.handleChangeAction.bind(this, "chartType")}
                     style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
                     <MenuItem value="line" primaryText="Lignes" />
-                    {/*<MenuItem value="bar" primaryText="Barres" />
-                    <MenuItem value="pie" primaryText="Secteurs" />*/}
+                    <MenuItem value="bar" primaryText="Barres" />
+                    <MenuItem value="radar" primaryText="Radar" />
+                    {/*<MenuItem value="pie" primaryText="Secteurs" />*/}
                   </ DropDownMenu>
                 </TableRowColumn>
               </TableRow>

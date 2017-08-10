@@ -473,7 +473,8 @@ Meteor.methods({
           for (var key in modifications) {
             modifications[key].operation = "set";
           }
-          var newHistory = {id, refItem:item, item, modifications, date: Date(), app, entity};
+          var date = new Date();
+          var newHistory = {id, refItem:item, item, modifications, date: new Date(date.toISOString()), app, entity};
           History.insert(newHistory, function(err) {
             if (err) {
               console.error(err);
@@ -605,15 +606,15 @@ Meteor.methods({
   ///////////- datables -//////////////////////////////////////
 
   datatableRequest(options, module) {
-    var skip = options.listSize * (options.page - 1);
-    var links = Schemas.find({type: "link", entity: module.params.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
-    var lookup = {
+    let skip = options.listSize * (options.page - 1);
+    let links = Schemas.find({type: "link", entity: module.params.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
+    let lookup = {
       from: "items",
       localField: "refItem." + links[0].id,
       foreignField: "id",
       as: links[0].id
     };
-    var aggregation = History.aggregate([
+    let aggregation = History.aggregate([
       {
         $match: {
           app: Meteor.users.findOne({_id:this.userId}).selectedApp,
@@ -648,26 +649,26 @@ Meteor.methods({
     var afterDate = module.params.afterDate;
     var beforeDate = module.params.beforeDate;
     var project = {};
-    if (module.params.x === "date"/* && module.params.groupByDate*/) {
-      var groupByDate = {};
-      switch (module.params.groupByDate) {
+    if (module.params.x === "date"/* && module.params.groupBy*/) {
+      var groupBy = {};
+      switch (module.params.groupBy) {
       case "days":
-        groupByDate = {day: {$dayOfMonth: "$date"}, month: {$subtract: [{$month: "$date"}, 1]}, year: {$year: "$date"}};
+        groupBy = {day: {$dayOfMonth: "$date"}, month: {$subtract: [{$month: "$date"}, 1]}, year: {$year: "$date"}};
         break;
       case "daysOfWeek":
-        groupByDate = {dayOfWeek: {$dayOfWeek: "$date"}};
+        groupBy = {dayOfWeek: {$dayOfWeek: "$date"}};
         break;
       case "months":
-        groupByDate = {month: {$subtract: [{$month: "$date"}, 1]}, year: {$year: "$date"}};
+        groupBy = {month: {$subtract: [{$month: "$date"}, 1]}, year: {$year: "$date"}};
         break;
       case "monthsOfYear":
-        groupByDate = {month: {$month: "$date"}};
+        groupBy = {month: {$month: "$date"}};
         break;
       case "years":
-        groupByDate = {year: {$year: "$date"}};
+        groupBy = {year: {$year: "$date"}};
         break;
       default:
-        groupByDate = {day: {$dayOfMonth: "$date"}, month: {$subtract: [{$month: "$date"}, 1]}, year: {$year: "$date"}};
+        groupBy = {day: {$dayOfMonth: "$date"}, month: {$subtract: [{$month: "$date"}, 1]}, year: {$year: "$date"}};
       }
     }
     if (module.params.valuesSource === "HistoryVariations") {
@@ -681,30 +682,51 @@ Meteor.methods({
     if (!beforeDate) {
       beforeDate = "9999-12-30T23:59:59.999Z";
     }
-    for (var i = 0; i < module.params.items.length; i++) {
-      aggregation.push(History.aggregate([
-        {
-          $match: {
-            app: Meteor.users.findOne({_id:this.userId}).selectedApp,
-            "refItem.entity": module.params.entity,
-            "refItem.id": module.params.items[i],
-            date: {$gt: new Date(afterDate), $lt: new Date(beforeDate)}
-          }
-        }, {
-          $group: {
-            _id: groupByDate,
-            total: {[module.params.operation]: valuesSource + field},
-            refItem: {$first: "$refItem." + legend}
-          }
-        }, {
+    for (let i = 0; i < module.params.items.length; i++) {
+      let aggregate = [{
+        $match: {
+          app: Meteor.users.findOne({_id:this.userId}).selectedApp,
+          "refItem.entity": module.params.entity,
+          "refItem.id": module.params.items[i],
+          date: {$gt: new Date(afterDate), $lt: new Date(beforeDate)}
+        }
+      }];
+      if (links.length > 0) {
+        for (let i = 0; i < links; i++) {
+          aggregate[i + 1] = {
+            $lookup: {
+              from: "items",
+              localField: "refItem." + links[0].id,
+              foreignField: "id",
+              as: links[0].id
+            }
+          };
+        }
+      }
+      aggregate.push({
+        $group: {
+          _id: groupBy,
+          total: {[module.params.operation]: valuesSource + field},
+          refItem: {$first: "$refItem." + legend}
+        }
+      });
+      if (module.params.x === "date") {
+        aggregate.push({
           $sort: {
             "_id.year": 1,
             "_id.month": 1,
             "_id.day": 1,
             "_id.dayOfWeek": 1
           }
-        }
-      ]));
+        });
+      } else {
+        aggregate.push({
+          $sort: {
+            "_id": 1
+          }
+        });
+      }
+      aggregation.push(History.aggregate(aggregate));
     }
     return aggregation;
     //return [[{_id: {day: 1, month: 3, year: 2017}, total: 5, refItem:"5eabe8b4edefd350530b789a"}]];
