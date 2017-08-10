@@ -127,6 +127,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
         var labels = [];
         var graphStart = moment(res[0][0]._id);
         var graphEnd = moment(res[0][res[0].length - 1]._id);
+        var groupByDate = _this.props.module.params.groupByDate;
         for (var x = 1; x < res.length; x++) {
           if (moment(res[x][0]._id).isBefore(graphStart)) {
             graphStart = moment(res[x][0]._id);
@@ -135,30 +136,50 @@ export default class FormWrapper extends TrackerReact(React.Component) {
             graphEnd = moment(res[x][res[x].length - 1]._id);
           }
         }
+        console.log(groupByDate);
         for (var i = 0; i < res.length; i++) {
           var data = [];
-          var groupByDate = _this.props.module.params.groupByDate;
-          var graphStartInterval = moment(res[i][0]._id).diff(graphStart, _this.props.module.params.groupByDate);
-          var graphEndInterval = graphEnd.diff(moment(res[i][res[i].length - 1]._id), _this.props.module.params.groupByDate);
-          //console.log(res[i]);
-          //console.log(graphEnd);
-          //console.log(moment(res[i][res[i].length - 1]._id));
-          for (var n = 0; n < graphStartInterval; n++) {
-            data.push(0);
-          }
-          for (var j = 0; j < res[i].length; j++) {
-            data.push(res[i][j].total);
-            if (j + 1 < res[i].length) {
-              var datasetStart = moment(res[i][j]._id);
-              var datasetEnd = moment(res[i][j + 1]._id);
-              var datasetInterval = datasetEnd.diff(datasetStart, _this.props.module.params.groupByDate);
-              for (var k = 0; k < datasetInterval - 1; k++) {
+          if (groupByDate === "days" || groupByDate === "months" || groupByDate === "years") {
+            var graphStartInterval = moment(res[i][0]._id).diff(graphStart, _this.props.module.params.groupByDate);
+            var graphEndInterval = graphEnd.diff(moment(res[i][res[i].length - 1]._id), _this.props.module.params.groupByDate);
+            for (var n = 0; n < graphStartInterval; n++) {
+              data.push(null);
+            }
+            for (var j = 0; j < res[i].length; j++) {
+              data.push(res[i][j].total);
+              if (j + 1 < res[i].length) {
+                var datasetStart = moment(res[i][j]._id);
+                var datasetEnd = moment(res[i][j + 1]._id);
+                var datasetInterval = datasetEnd.diff(datasetStart, _this.props.module.params.groupByDate);
+                for (var k = 0; k < datasetInterval - 1; k++) {
+                  data.push(0);
+                }
+              }
+            }
+            for (var z = 0; z < graphEndInterval; z++) {
+              data.push(0);
+            }
+          } else if (groupByDate === "daysOfWeek") {
+            var dayOfWeek = 0;
+            for (var dw = 1; dw <= 7; dw++) {
+              if (res[i][dayOfWeek] && dw === res[i][dayOfWeek]._id.dayOfWeek) {
+                data.push(res[i][dayOfWeek].total);
+                dayOfWeek++;
+              } else {
+                console.log("test");
                 data.push(0);
               }
             }
-          }
-          for (var z = 0; z < graphEndInterval; z++) {
-            data.push(0);
+          } else if (groupByDate === "monthsOfYear") {
+            var monthOfYear = 0;
+            for (var my = 0; my < 12; my++) {
+              if (res[i][monthOfYear] && my === res[i][monthOfYear]._id.month) {
+                data.push(res[i][monthOfYear].total);
+                monthOfYear++;
+              } else {
+                data.push(0);
+              }
+            }
           }
           datasets.push({data, label: res[i][0].refItem, borderColor: borderColors[i], backgroundColor: backbroundColors[i]});
           if (labelsCount < data.length) {
