@@ -183,7 +183,6 @@ export default class ChartWrapper extends TrackerReact(React.Component) {
       if (err) {
         console.error(err);
       } else {
-        console.log(res);
         var datasets = _this.state.datasets;
         var labels = [];
         if (_this.props.module.params.x == "date") {

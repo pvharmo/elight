@@ -5,7 +5,6 @@ import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../languages/languages.js";
 import list from "../stores/FormStore.js";
 import nav from "../stores/NavigationStore.js";
-import * as NavigationActions from "../actions/NavigationActions.js";
 
 import TopToolbarPages from "./TopToolbarModules.jsx";
 import FormFieldsWrapper from "./form/admin/FormFields.jsx";
@@ -137,8 +136,8 @@ export default class ModulesWrapper extends TrackerReact(React.Component) {
 
     return(
       <div className="row" style={style} >
-      <TopToolbarPages />
-      <ModulesRightDrawer />
+        <TopToolbarPages />
+        <ModulesRightDrawer />
         <div id="modules-fields-list">
           <MuiThemeProvider>
             <Dialog title={language().pages.newPage} open={this.state.newPageDialog} actions={actions} >
