@@ -2,7 +2,6 @@
 import React from "react";
 import {mount} from "react-mounter";
 import { Accounts } from "meteor/accounts-base";
-
 import language from "./languages/languages.js";
 import * as NavigationActions from "./actions/NavigationActions.js";
 
@@ -17,17 +16,7 @@ import AppWrapper from "./apps/AppWrapper.jsx";
 import ModuleSettingsWrapper from "./modules/ModuleSettingsWrapper.jsx";
 import Account from "./login/Account.jsx";
 
-/*var idleTimer;
-
-function startTimer() {
-  idleTimer = setTimeout(function() {
-    Meteor.logout();
-  }, 1800000);
-}*/
-
 var resetIdleTimer = function() {
-  /*clearTimeout(idleTimer);
-  startTimer();*/
   Meteor.call("idleTimer");
 };
 
@@ -36,7 +25,6 @@ var admin = /\/admin\//;
 setInterval(function() {
   if (Meteor.users.find().fetch()[0]) {
     if (window.location.pathname.match(admin) && !Meteor.users.find().fetch()[0].login && !Meteor.loggingIn()) {
-      //location.reload();
       Meteor.logout(function() {
         Meteor.call("onLogout");
         location.reload();

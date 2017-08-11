@@ -63,27 +63,6 @@ export default class AppWrapper extends TrackerReact(React.Component) {
     return renderModule;
   }
 
-  module() {
-    return ({
-      "id": "6DksQmaeJ3C6uA9Qo",
-      "name": "test",
-      "type": "qXDkf8K8T98gvBjxx",
-      "order": 1,
-      "page": "3MPmW68fwaFS3LDW9",
-      "params": {
-        "entity": "Fko6QjprxwF96zR3v",
-        "schemas": [
-          "TQz6HEZupzSiXFQFK",
-          "8rNGDXexz2Fwmr29i"
-        ],
-        "schema": [
-          "TQz6HEZupzSiXFQFK"
-        ]
-      },
-      "user": "bT887up7DAJgbLKDh"
-    });
-  }
-
   render() {
     var height = window.innerHeight - 78;
     var width = window.innerWidth;
