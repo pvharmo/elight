@@ -1,8 +1,9 @@
-/*jshint esversion: 6 */
+
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import language from "../../../languages/languages.js";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
+import * as pageActions from "../../../actions/PageActions.js";
 
 import SingleField from "./SingleField.jsx";
 
@@ -17,8 +18,6 @@ import FloatingActionButton from "material-ui/FloatingActionButton";
 import IconButton from "material-ui/IconButton";
 import Done from "material-ui/svg-icons/action/done";
 import Clear from "material-ui/svg-icons/content/clear";
-
-//Operators = new Mongo.Collection("operators");
 
 export default class FormWrapper extends TrackerReact(React.Component) {
 
@@ -63,7 +62,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
     var newStateItem = this.state.item;
     var query = this.state.query;
     newStateItem[field] = text;
-    query[connection + ".value"] = {$regex: ".*" + text + ".*", $options:"i"};
+    query[connection] = {$regex: ".*" + text + ".*", $options:"i"};
     this.setState({item:newStateItem, query:query});
   }
 
@@ -79,11 +78,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
 
     for (var i = 0; i < items.length; i++) {
       itemsArray[i] = items[i][fieldConnection];
-      /*itemsArray[i] = (<MenuItem PrimaryText={items[i][fieldConnection]}
-        children={<div key={items[i][fieldConnection]} ><div style={{textAlign: "right",color: "rgba(0,0,0,0.6)",height: "17px",fontSize: "11px"}}>{items[i][fieldConnection]}</div></div>} />);*/
     }
-
-    //_.uniq(itemsArray,function(item, key) {return item[_this.props.operator.schemaField];});
 
     return _.uniq(itemsArray);
   }
@@ -101,7 +96,6 @@ export default class FormWrapper extends TrackerReact(React.Component) {
     var item = {};
     var modifications = {};
 
-    var module = Modules.findOne({page:Pages.findOne({id:this.props.id}).name});
     var error = {};
     var errorBool = false;
     for (var i = 0; i < this.fields().length; i++) {
@@ -114,7 +108,10 @@ export default class FormWrapper extends TrackerReact(React.Component) {
     if (!errorBool) {
       var fieldConnection;
       switch (this.props.module.params.action) {
-      case "create-item":
+      case "search":
+        pageActions.searchItem(this.props.module.id, this.state.item);
+        break;
+      case "createItem":
         for (var x = 0; x < this.fields().length; x++) {
           fieldConnection = Schemas.findOne({id:this.fields()[x].fieldConnection});
           modificationsQuery[fieldConnection.name] = this.state.item[this.fields()[x].id];
@@ -122,7 +119,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
         Meteor.call("createItem", search, modificationsQuery);
         break;
 
-      case "delete-item":
+      case "deleteItem":
         if (search !== {}) {
           Meteor.call("deleteItem", search, modificationsQuery);
         } else {
@@ -130,8 +127,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
         }
         break;
 
-      case "modify-item":
-      default:
+      case "modifyItem":
         for (var y = 0; y < this.fields().length; y++) {
           fieldConnection = Schemas.findOne({id:this.fields()[y].fieldConnection});
           var field = fieldConnection.id;
@@ -146,10 +142,6 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$inc = {};
             }
             modificationsQuery.$inc[field] = Number(this.state.item[this.fields()[y].id]);
-            // modifications[fieldConnection.name] = {};
-            // modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
-            // modifications[fieldConnection.name].type = fieldConnection.type;
-            // modifications[fieldConnection.name].operation = "add";
             modifications[field] = Number(this.state.item[this.fields()[y].id]);
             break;
 
@@ -158,10 +150,6 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$inc = {};
             }
             modificationsQuery.$inc[field] = -Number(this.state.item[this.fields()[y].id]);
-            // modifications[fieldConnection.name] = {};
-            // modifications[fieldConnection.name].value = -Number(this.state.item[this.fields()[y].id]);
-            // modifications[fieldConnection.name].type = fieldConnection.type;
-            // modifications[fieldConnection.name].operation = "substract";
             modifications[field] = -Number(this.state.item[this.fields()[y].id]);
             break;
 
@@ -170,10 +158,6 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$mul = {};
             }
             modificationsQuery.$mul[field] = this.state.item[this.fields()[y].id];
-            // modifications[fieldConnection.name] = {};
-            // modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
-            // modifications[fieldConnection.name].type = fieldConnection.type;
-            // modifications[fieldConnection.name].operation = "multiply";
             modifications[field] = Number(this.state.item[this.fields()[y].id]);
             break;
 
@@ -182,10 +166,6 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$mul = {};
             }
             modificationsQuery.$mul[field] = 1/this.state.item[this.fields()[y].id];
-            // modifications[fieldConnection.name] = {};
-            // modifications[fieldConnection.name].value = Number(this.state.item[this.fields()[y].id]);
-            // modifications[fieldConnection.name].type = fieldConnection.type;
-            // modifications[fieldConnection.name].operation = "divide";
             modifications[field] = Number(this.state.item[this.fields()[y].id]);
             break;
 
@@ -194,18 +174,16 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               modificationsQuery.$set = {};
             }
             modificationsQuery.$set[field] = this.state.item[this.fields()[y].id];
-            // modifications[fieldConnection.name] = {};
-            // modifications[fieldConnection.name].value = this.state.item[this.fields()[y].id];
-            // modifications[fieldConnection.name].type = fieldConnection.type;
-            // modifications[fieldConnection.name].operation = "modify";
             modifications[field] = this.state.item[this.fields()[y].id];
             break;
 
           default:
+            console.error("Aucune action sélectionné.");
           }
         }
         Meteor.call("modifyItem", search, modificationsQuery, this.props.module.params.autocreate, modifications);
         break;
+      default:
       }
 
       var fields = this.fields();
@@ -245,7 +223,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               titleStyle={{fontWeight: "400", fontSize: "24px"}}
               style={{paddingBottom: "8px"}}
             />
-          <CardText style={{paddingTop: "8px"}} >
+            <CardText style={{paddingTop: "8px"}} >
               <Table selectable={false} >
                 <TableBody displayRowCheckbox={false} >
                   {this.fields().map((field,i)=>{

@@ -68,18 +68,21 @@ export default class Options extends TrackerReact(React.Component) {
                 <TableRowColumn style={{textAlign:"right"}} >{language().actionOnConfirm}</TableRowColumn>
                 <TableRowColumn>
                   <DropDownMenu value={this.module().params.action} onChange={this.handleChangeAction} >
-                    <MenuItem value="modify-item" primaryText="Modify item" />
-                    {/*<MenuItem value="create-item" primaryText="Create item" />
-                    <MenuItem value="delete-item" primaryText="Delete item" />*/}
+                    <MenuItem value="search" primaryText="Recherche" />
+                    <MenuItem value="modifyItem" primaryText="Modifier l'article" />
+                    {/*<MenuItem value="createItem" primaryText="Create item" />
+                    <MenuItem value="deleteItem" primaryText="Delete item" />*/}
                   </ DropDownMenu>
                 </TableRowColumn>
               </TableRow>
-              <TableRow>
-                <TableRowColumn style={{textAlign:"right"}} >{language().autocreate}</TableRowColumn>
-                <TableRowColumn >
-                  <Checkbox checked={this.module().params.autocreate} onCheck={this.handleCheck} />
-                </TableRowColumn>
-              </TableRow>
+              {this.module().params.action === "modifyItem" &&
+                <TableRow>
+                  <TableRowColumn style={{textAlign:"right"}} >{language().autocreate}</TableRowColumn>
+                  <TableRowColumn >
+                    <Checkbox checked={this.module().params.autocreate} onCheck={this.handleCheck} />
+                  </TableRowColumn>
+                </TableRow>
+              }
             </TableBody>
           </Table>
         </MuiThemeProvider>

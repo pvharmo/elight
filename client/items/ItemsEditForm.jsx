@@ -148,32 +148,6 @@ export default class ItemsEditForm extends Component {
         </TableRow>
       );
 
-    /*case "multiselect":
-      if (value === "") {
-        value = [];
-      }
-      return (
-        <TableRow>
-          <TableRowColumn><label htmlFor={this.props.schema.name}>{this.props.schema.name}</label></TableRowColumn>
-          <TableRowColumn>
-            <SuperSelectField
-              id={"item-edit-form-" + this.props.schema.name}
-              value={this.props.item[this.props.schema.name]}
-              onChange={this.handleSuperSelect}
-              multiple
-              checkPosition='right'
-              unCheckedIcon={null}
-              menuCloseButton={<FlatButton label='close' />} >
-              {this.props.schema.params.elements.map((element)=>{
-                return(
-                  <div key={element} value={element} >{element}</div>
-                );
-              })}
-            </SuperSelectField>
-          </TableRowColumn>
-        </TableRow>
-      );*/
-
     case "checkbox":
       if (value === "") {
         value = false;

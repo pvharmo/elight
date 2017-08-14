@@ -46,7 +46,10 @@ export default class FormFieldSingle extends Component {
   }
 
   deleteField() {
-    Meteor.call("deleteFormField", this.props.field.id, /*this.props.field.order,*/ this.props.field.module);
+    var prompt = confirm("Êtes-vous sûr de vouloir supprimer ce champ?");
+    if (prompt) {
+      Meteor.call("deleteFormField", this.props.field.id, /*this.props.field.order,*/ this.props.field.module);
+    }
   }
 
   // Change state of editState to true
@@ -173,9 +176,7 @@ export default class FormFieldSingle extends Component {
           </TableRowColumn>
           <TableRowColumn style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
             <IconButton onTouchTap={this.editField.bind(this)} disabled={true} ><Create color={blue500} /></IconButton>
-            {nav.getUser().admin &&
-              <IconButton onTouchTap={this.deleteField.bind(this)} ><Clear color={red500} /></IconButton>
-            }
+            <IconButton onTouchTap={this.deleteField.bind(this)} ><Clear color={red500} /></IconButton>
           </TableRowColumn>
         </TableRow>
       );

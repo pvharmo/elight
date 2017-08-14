@@ -14,7 +14,6 @@ import ItemsEditForm from "./ItemsEditForm.jsx";
 // Component that render the form to create a new item
 export default class ItemsEditFormWrapper extends Component {
 
-  // Subscribe to userSchemas
   constructor(props) {
     super(props);
 

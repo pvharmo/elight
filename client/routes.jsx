@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+
 import React from "react";
 import {mount} from "react-mounter";
 import { Accounts } from "meteor/accounts-base";

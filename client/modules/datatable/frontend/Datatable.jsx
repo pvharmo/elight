@@ -5,10 +5,10 @@ import language from "../../../languages/languages.js";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import moment from "moment";
 import _ from "lodash";
+import * as pageActions from "../../../actions/PageActions.js";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import {cyan50, red500, blue500} from "material-ui/styles/colors";
-//import DataTables from "material-ui-datatables";
 import {Card, CardActions, CardHeader, CardText, CardMedia} from "material-ui/Card";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
 import Snackbar from "material-ui/Snackbar";
@@ -170,6 +170,10 @@ export default class FormWrapper extends TrackerReact(React.Component) {
     return pageCountArray;
   }
 
+  rowSelection(index) {
+    pageActions.searchItem(this.props.module.id, this.data()[index]);
+  }
+
   cells(data, header, id) {
     if (data[header.id]) {
       switch (header.type) {
@@ -223,7 +227,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               style={{paddingBottom: "8px"}}
             />
             <CardText style={{paddingBottom: "8px"}} >
-              <Table selectable={false}>
+              <Table selectable={true} onRowSelection={this.rowSelection.bind(this)} >
                 <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
                   <TableRow>
                     {this.props.module.params.showDate &&
@@ -305,7 +309,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
                     }
                     var d = moment(data.date);
                     return (
-                      <TableRow key={id} hoverable={true} selectable={false} >
+                      <TableRow key={id} hoverable={true} selectable={true} >
                         <TableRowColumn style={{textAlign: "center"}} >{d.format("D/M/YYYY")}</TableRowColumn>;
                         {this.columnsCurrent().map((header)=>{
                           return this.cells(data.refItem, header, id);

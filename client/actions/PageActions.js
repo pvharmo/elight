@@ -1,7 +1,8 @@
 import dispatcher from "../dispatcher";
 
-export function formSearch() {
+export function searchItem(id, item) {
   dispatcher.dispatch({
-    type: "FORM-SEARCH"
+    type: "SEARCH-ITEM",
+    data: {id, item}
   });
 }
