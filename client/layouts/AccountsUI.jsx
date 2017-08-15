@@ -37,8 +37,8 @@ export default class AccountsUI extends Component {
   }
 
   userEmail() {
-    thisObject = this;
-    setTimeout(function() {thisObject.setState({email:Meteor.users.find().fetch()[0].emails[0].address}); }, 1000);
+    var _this = this;
+    setTimeout(function() {_this.setState({email:Meteor.users.find().fetch()[0].emails[0].address}); }, 1000);
     return this.state.email;
   }
 

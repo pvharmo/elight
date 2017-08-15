@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
@@ -153,6 +153,10 @@ export default class Account extends TrackerReact(React.Component) {
     this.setState({importAppDialog: false});
   }
 
+  deleteAccount() {
+    Meteor.call("deleteUser");
+  }
+
   render() {
     return (
       <div>
@@ -170,10 +174,12 @@ export default class Account extends TrackerReact(React.Component) {
                 <TableRowColumn style={{verticalAlign:"middle"}}>
                   {this.state.editEmail === false ? (
                     <div>{this.user() && this.user().emails[0].address}
-                    <IconButton onTouchTap={this.editEmail.bind(this)} ><Create color={blue500} /></IconButton></div>
+                      <IconButton onTouchTap={this.editEmail.bind(this)} ><Create color={blue500} /></IconButton>
+                    </div>
                   ) : (
                     <div><TextField id="email" value={this.state.email} onChange={this.handleChange.bind(this)} />
-                    <IconButton onTouchTap={this.saveEmail.bind(this)} ><Done color={blue500} /></IconButton></div>
+                      <IconButton onTouchTap={this.saveEmail.bind(this)} ><Done color={blue500} /></IconButton>
+                    </div>
                   )}
                 </TableRowColumn>
               </TableRow>
@@ -199,6 +205,12 @@ export default class Account extends TrackerReact(React.Component) {
                 <TableRowColumn style={{textAlign:"right"}} >Importer des fichiers</TableRowColumn>
                 <TableRowColumn>
                   <RaisedButton label={"Importer"} onTouchTap={this.openImportApp.bind(this)} />
+                </TableRowColumn>
+              </TableRow>
+              <TableRow style={{borderBottom: "0px none"}} >
+                <TableRowColumn style={{textAlign:"right"}} >Supprimer le compte</TableRowColumn>
+                <TableRowColumn>
+                  <RaisedButton label={"Supprimer"} onTouchTap={this.deleteAccount.bind(this)} />
                 </TableRowColumn>
               </TableRow>
             </TableBody>

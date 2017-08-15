@@ -16,19 +16,43 @@ import AppWrapper from "./apps/AppWrapper.jsx";
 import ModuleSettingsWrapper from "./modules/ModuleSettingsWrapper.jsx";
 import Account from "./login/Account.jsx";
 
+var idleTimer = 0;
+
 var resetIdleTimer = function() {
-  Meteor.call("idleTimer");
+  idleTimer = 0;
+  /*if (callIdleTimer) {
+    callIdleTimer = false;
+    setTimeout(()=>{
+      Meteor.call("idleTimer", (error)=>{
+        console.log("test");
+      });
+      callIdleTimer = true;
+    }, 5000);
+  }*/
 };
 
 var admin = /\/admin\//;
+var app = /\/app\//;
 
 setInterval(function() {
-  if (Meteor.users.find().fetch()[0]) {
-    if (window.location.pathname.match(admin) && !Meteor.users.find().fetch()[0].login && !Meteor.loggingIn()) {
-      Meteor.logout(function() {
-        Meteor.call("onLogout");
-        location.reload();
-      });
+  if (!Meteor.userId() && !Meteor.loggingIn() && (window.location.pathname.match(admin) || window.location.pathname.match(app))) {
+    /*Meteor.logout(function(error) {
+    Meteor.call("onLogout");
+    location.reload();
+    });*/
+    location.reload();
+  }
+}, 500);
+
+setInterval(function() {
+  if (window.location.pathname.match(admin) || window.location.pathname.match(app)) {
+    if (idleTimer === 0) {
+      Meteor.call("idleTimer");
+      idleTimer += 5;
+    } else if (idleTimer > 1800) {
+      Meteor.logout();
+    } else {
+      idleTimer += 5;
     }
   }
 }, 5000);
@@ -144,8 +168,8 @@ FlowRouter.route("/",{
   }
 });
 
-FlowRouter.route("/page/:id",{
-  name: "page",
+FlowRouter.route("/app/:id",{
+  name: "app",
   action(params) {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {

@@ -89,6 +89,17 @@ export default class Header extends TrackerReact(React.Component) {
     }, 100);
   }
 
+  module() {
+    var id;
+    var module = Modules.find().fetch()[0];
+    if (module) {
+      id = module.id;
+    } else {
+      id = "";
+    }
+    return id;
+  }
+
   render() {
     return (
       <div>
@@ -99,13 +110,15 @@ export default class Header extends TrackerReact(React.Component) {
             style = {{"position": "fixed"}}
             onLeftIconButtonTouchTap = {this.openLeftNav.bind(this)}
             iconElementRight = {
-              //<IconButton>
-                //<NavigationMoreVert onTouchTap={this.toggleMenu.bind(this)} />
-              //</IconButton>
               <DropDownMenu
                 value=""
                 underlineStyle={{display:"none"}}
                 iconButton={<NavigationMoreVert />} >
+                {FlowRouter.getRouteName() !== "app" ? (
+                  <MenuItem primaryText={"Application"} href={"/app/"+ this.module()} />
+                ) : (
+                  <MenuItem primaryText={"Administrateur"} href="/admin/schemas" />
+                )}
                 <MenuItem primaryText={language().menu.account} href="/admin/account" />
                 <MenuItem primaryText={language().menu.logout} onTouchTap={this.logout.bind(this)} />
               </DropDownMenu>

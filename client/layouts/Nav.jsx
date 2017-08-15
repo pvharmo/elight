@@ -112,13 +112,17 @@ export default class Nav extends TrackerReact(React.Component) {
           <MuiThemeProvider>
             <paper>
               <Menu autoWidth={true} value={this.state.page} onChange={this.navigateTo.bind(this)} style={{maxWidth: "200px"}} >
-                <MenuItem value={"schemas"} href="/admin/schemas" primaryText={language().menu.schemas} onTouchTap={this.schemas.bind(this)} />
-                <MenuItem value={"items"} href="/admin/items" primaryText={language().menu.items} onTouchTap={this.items.bind(this)} />
-                <MenuItem value={"modules"} href="/admin/modules" primaryText={language().menu.pages} onTouchTap={this.modules.bind(this)} />
-                <Divider />
-                {this.pages().map((page)=>{
-                  return <MenuItem value={page.id} key={page.id} href={"/page/" + page.id} primaryText={page.name} onTouchTap={this.frontend.bind(this)} />;
-                })}
+                {FlowRouter.getRouteName() !== "app" ? (
+                  <div>
+                    <MenuItem value={"schemas"} href="/admin/schemas" primaryText={language().menu.schemas} onTouchTap={this.schemas.bind(this)} />
+                    <MenuItem value={"items"} href="/admin/items" primaryText={language().menu.items} onTouchTap={this.items.bind(this)} />
+                    <MenuItem value={"modules"} href="/admin/modules" primaryText={language().menu.pages} onTouchTap={this.modules.bind(this)} />
+                  </div>
+                ) : (
+                  this.pages().map((page)=>{
+                    return <MenuItem value={page.id} key={page.id} href={"/app/" + page.id} primaryText={page.name} onTouchTap={this.frontend.bind(this)} />;
+                  })
+                )}
               </Menu>
             </paper>
           </MuiThemeProvider>
