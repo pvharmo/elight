@@ -3,18 +3,18 @@ import React from "react";
 import {mount} from "react-mounter";
 import { Accounts } from "meteor/accounts-base";
 import language from "./languages/languages.js";
-import * as NavigationActions from "./actions/NavigationActions.js";
+import * as NavigationActions from "./flux/actions/NavigationActions.js";
 
-import {MainLayout} from "./layouts/MainLayout.jsx";
+import {MainLayout} from "./components/layouts/MainLayout.jsx";
 
-import login from "./login/login.jsx";
-import signup from "./login/signup.jsx";
-import SchemasWrapper from "./schemas/SchemasWrapper.jsx";
-import ItemsWrapper from "./items/ItemsWrapper.jsx";
-import ModulesWrapper from "./modules/ModulesAdminWrapper.jsx";
-import AppWrapper from "./apps/AppWrapper.jsx";
-import ModuleSettingsWrapper from "./modules/ModuleSettingsWrapper.jsx";
-import Account from "./login/Account.jsx";
+import login from "./components/login/login.jsx";
+import signup from "./components/login/signup.jsx";
+import SchemasWrapper from "./components/admin/schemas/SchemasWrapper.jsx";
+import ItemsWrapper from "./components/admin/items/ItemsWrapper.jsx";
+import ModulesWrapper from "./components/admin/modules/ModulesAdminWrapper.jsx";
+import AppWrapper from "./components/layouts/AppWrapper.jsx";
+import ModuleSettingsWrapper from "./components/admin/modules/ModuleSettingsWrapper.jsx";
+import Account from "./components/login/Account.jsx";
 
 var idleTimer = 0;
 

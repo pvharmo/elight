@@ -34,7 +34,8 @@
     "react-mounter": "^1.2.0",
     "react-redux": "^5.0.6",
     "react-tap-event-plugin": "^2.0.1",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "tether-shepherd": "^1.8.1"
   },
   "devDependencies": {
     "why-did-you-update": "0.0.8"
