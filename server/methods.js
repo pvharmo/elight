@@ -15,6 +15,22 @@ Meteor.methods({
     Meteor.users.update({_id:Meteor.userId()}, {$set:{"login": false}});
   },
 
+  sendVerificationLink() {
+    let userId = Meteor.userId();
+    if (userId) {
+      return Accounts.sendVerificationEmail(userId);
+    }
+  },
+
+  deleteUser() {
+    if(!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    } else {
+      Meteor.users.update({_id:Meteor.userId()}, {$set:{login: false}});
+      Meteor.users.remove({_id:Meteor.userId()});
+    }
+  },
+
   changeEmail(email) {
     if(!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
@@ -27,11 +43,11 @@ Meteor.methods({
     var userId = Meteor.userId;
 
     Meteor.clearTimeout(timer);
-    timer = Meteor.setTimeout(function () {
+    var timer = Meteor.setTimeout(function () {
       //Meteor.users.update({_id: userId}, {$set : { "services.resume.loginTokens" : [] }});
-      Meteor.users.update({_id:userId}, {$set:{"login": false}});
+      Meteor.users.update({_id:userId}, {$set:{"services.resume.loginTokens": []}});
       return true;
-    }, 1800000);
+    }, 1850000);
   },
 
   importItems(keys, items) {
@@ -55,9 +71,10 @@ Meteor.methods({
     if(!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     } else {
-      Apps.insert({name, users: [Meteor.userId()]}, function(id, err) {
+      var id = new Meteor.Collection.ObjectID()._str;
+      Apps.insert({id, name, users:[{user: Meteor.userId(), roles: ["owner"]}]}, function(err) {
         if (!err) {
-          Meteor.users.update({_id: Meteor.userId()}, {$push : { "Apps" : [id]}, $set: {"selectedApp" : id}});
+          Meteor.users.update({_id: Meteor.userId()}, {$push: {apps:id}, $set: {"selectedApp" : id}});
         }
       });
     }
@@ -67,7 +84,7 @@ Meteor.methods({
     if(!Meteor.userId() && !(Meteor.userId() in Apps.findOne({id}).users)) {
       throw new Meteor.Error("not-authorized");
     } else {
-      Apps.update({_id:id}, {$set:{name:newName}});
+      Apps.update({id}, {$set:{name:newName}});
     }
   },
 
@@ -75,7 +92,7 @@ Meteor.methods({
     if(!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     } else {
-      Meteor.users.update({_id: Meteor.userId()}, {$set: {"selectedApp" : id}});
+      Meteor.users.update({id: Meteor.userId()}, {$set: {"selectedApp" : id}});
       //Meteor.users.findOne({_id:this.userId}).selectedApp = id;
     }
   },
@@ -84,7 +101,7 @@ Meteor.methods({
     if(!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     } else {
-      Apps.remove({_id:id});
+      Apps.remove({id:id});
       Entities.remove({app:id});
       Schemas.remove({app:id});
       Fields.remove({app:id});
@@ -474,7 +491,8 @@ Meteor.methods({
             modifications[key].operation = "set";
           }
           var date = new Date();
-          var newHistory = {id, refItem:item, item, modifications, date: new Date(date.toISOString()), app, entity};
+          var user = Meteor.userId();
+          var newHistory = {id, refItem:item, item, modifications, date: new Date(date.toISOString()), app, entity, user};
           History.insert(newHistory, function(err) {
             if (err) {
               console.error(err);
@@ -557,9 +575,10 @@ Meteor.methods({
         }
         var id = new Meteor.Collection.ObjectID()._str;
         var item = Items.findOne(query);
+        var user = Meteor.userId();
         var date = new Date();
         History.update({"refItem.id": item.id}, {$set:{refItem:item}});
-        var newHistory = {id, refItem: item,item: item, modifications: modifications, date: new Date(date.toISOString()), app: app};
+        var newHistory = {id, refItem: item,item: item, modifications: modifications, date: new Date(date.toISOString()), app, user};
         History.insert(newHistory, function(err) {
           if (err) {
             console.error(err);

@@ -8,7 +8,7 @@ Meteor.publish("user", function() {
 Apps = new Mongo.Collection("apps");
 
 Meteor.publish("userApps", function(){
-  var user = Meteor.users.findOne({_id: this.userId});
+  var user = Meteor.users.find({_id: this.userId}).fetch()[0];
   return Apps.find({users: {$elemMatch: {$eq: this.userId}}});
 });
 
