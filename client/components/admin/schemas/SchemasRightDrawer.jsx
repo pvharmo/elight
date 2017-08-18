@@ -18,7 +18,7 @@ import IconButton from "material-ui/IconButton";
 import RemoveCircleOutline from "material-ui/svg-icons/content/remove-circle-outline";
 import Create from "material-ui/svg-icons/content/create";
 
-Entities = new Mongo.Collection("entities");
+
 
 export default class SchemasRightDrawer extends TrackerReact(React.Component) {
 

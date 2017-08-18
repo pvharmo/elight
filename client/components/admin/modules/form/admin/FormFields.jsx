@@ -208,10 +208,10 @@ export default class FormFieldsWrapper extends TrackerReact(React.Component) {
                   <DropDownMenu value={this.state.connection} onChange={this.handleChange.connection} >
                     {this.schemas().map((field)=>{
                       return (<MenuItem
-                                key={field.id}
-                                value={field.id}
-                                children={this.menuItems(field.entityName)}
-                                primaryText={field.name} />);
+                        key={field.id}
+                        value={field.id}
+                        children={this.menuItems(field.entityName)}
+                        primaryText={field.name} />);
                     })}
                   </DropDownMenu>
                 </TableRowColumn>

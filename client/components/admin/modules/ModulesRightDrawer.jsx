@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+
 import React, {Component} from "react";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../../../languages/languages.js";

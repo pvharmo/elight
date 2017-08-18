@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+
 import React, {Component} from "react";
 import language from "../../../languages/languages.js";
 import nav from "../../../flux/stores/NavigationStore.js";
@@ -165,10 +165,10 @@ export default class SchemaSingle extends Component {
         <TableRow>
           <TableRowColumn style={{width:24, color: "rgba(0,0,0,0.9)", paddingLeft: 34, paddingRight: 34}} >
             <Checkbox
-                checked={this.props.schema.showInList}
-                onCheck={this.toggleChecked.bind(this)}
-                checkedIcon={<Visibility />} uncheckedIcon={<VisibilityOff />}
-                disabled={this.disabledCheckbox} />
+              checked={this.props.schema.showInList}
+              onCheck={this.toggleChecked.bind(this)}
+              checkedIcon={<Visibility />} uncheckedIcon={<VisibilityOff />}
+              disabled={this.disabledCheckbox} />
           </TableRowColumn>
           <TableRowColumn className="name-field">
             <TextField id={"fieldName-" + this.props.schema.name} defaultValue={this.props.schema.name} />

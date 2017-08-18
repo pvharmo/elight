@@ -160,7 +160,7 @@ class NavStore extends EventEmitter {
   handleActions(action) {
     switch (action.type) {
 
-      // ******************* Schemas ******************
+    // ******************* Schemas ******************
 
     case "SCHEMAS":
       this.schemas();

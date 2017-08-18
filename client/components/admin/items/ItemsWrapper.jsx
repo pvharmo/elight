@@ -19,9 +19,6 @@ import IconButton from "material-ui/IconButton";
 import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
 import ArrowDropUp from "material-ui/svg-icons/navigation/arrow-drop-up";
 
-Items = new Mongo.Collection("items");
-History = new Mongo.Collection("history");
-
 //Component that wrap the form and the list of items
 export default class ItemsWrapper extends TrackerReact(React.Component) {
 

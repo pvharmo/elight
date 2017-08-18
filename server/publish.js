@@ -14,6 +14,20 @@ Meteor.publish("userApps", function(){
 
 //////////////////////////////////////////////////
 
+Roles = new Mongo.Collection("roles");
+
+Meteor.publish("appRoles", function(){
+  if (this.userId) {
+    selectedApp = Meteor.users.findOne({_id:this.userId}).selectedApp;
+
+    if (selectedApp) {
+      return Roles.find({app: selectedApp},{fields:{app:0}});
+    }
+  }
+});
+
+//////////////////////////////////////////////////
+
 Entities = new Mongo.Collection("entities");
 
 Meteor.publish("appEntities", function(){

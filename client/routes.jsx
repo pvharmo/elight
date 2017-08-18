@@ -5,18 +5,27 @@ import { Accounts } from "meteor/accounts-base";
 import language from "./languages/languages.js";
 import * as NavigationActions from "./flux/actions/NavigationActions.js";
 
-import {MainLayout} from "./components/layouts/MainLayout.jsx";
+import {MainLayout} from "./components/frame/MainLayout.jsx";
 
 import login from "./components/login/login.jsx";
 import signup from "./components/login/signup.jsx";
 import SchemasWrapper from "./components/admin/schemas/SchemasWrapper.jsx";
 import ItemsWrapper from "./components/admin/items/ItemsWrapper.jsx";
-import ModulesWrapper from "./components/admin/modules/ModulesAdminWrapper.jsx";
-import AppWrapper from "./components/layouts/AppWrapper.jsx";
+import ModulesWrapper from "./components/admin/modules/ModulesWrapper.jsx";
+import RolesWrapper from "./components/admin/roles/Wrapper.jsx";
+import AppWrapper from "./components/frame/AppWrapper.jsx";
 import ModuleSettingsWrapper from "./components/admin/modules/ModuleSettingsWrapper.jsx";
 import Account from "./components/login/Account.jsx";
 
 var idleTimer = 0;
+
+Modules = new Mongo.Collection("modules");
+Pages = new Mongo.Collection("pages");
+Items = new Mongo.Collection("items");
+History = new Mongo.Collection("history");
+Schemas = new Mongo.Collection("schemas");
+Entities = new Mongo.Collection("entities");
+Roles = new Mongo.Collection("roles");
 
 var resetIdleTimer = function() {
   idleTimer = 0;
@@ -137,6 +146,20 @@ FlowRouter.route("/admin/modules",{
         resetIdleTimer: resetIdleTimer
       });
       NavigationActions.modules();
+    } else {
+      FlowRouter.go("/login");
+    }
+  }
+});
+
+FlowRouter.route("/admin/roles",{
+  name: "roles",
+  action() {
+    if (Meteor.userId() || Meteor.loggingIn()) {
+      mount(MainLayout, {
+        content: (<RolesWrapper />),
+        resetIdleTimer: resetIdleTimer
+      });
     } else {
       FlowRouter.go("/login");
     }

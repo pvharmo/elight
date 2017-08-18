@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
@@ -7,7 +7,7 @@ import nav from "../../../flux/stores/NavigationStore.js";
 import * as NavigationActions from "../../../flux/actions/NavigationActions.js";
 
 import SchemaSingle from "./SchemaSingle.jsx";
-import TopToolbarSchemas from "./TopToolbarSchemas.jsx";
+import TopToolbar from "./TopToolbar.jsx";
 import RightDrawer from "../rightDrawer/RightDrawer.jsx";
 import SchemasRightDrawer from "./SchemasRightDrawer";
 
@@ -21,8 +21,6 @@ import FlatButton from "material-ui/FlatButton";
 import RaisedButton from "material-ui/RaisedButton";
 import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
 import ArrowDropUp from "material-ui/svg-icons/navigation/arrow-drop-up";
-
-Schemas = new Mongo.Collection("schemas");
 
 export default class SchemasWrapper extends TrackerReact(React.Component) {
 
@@ -171,7 +169,7 @@ export default class SchemasWrapper extends TrackerReact(React.Component) {
 
     return (
       <div className="row" style={style} >
-        <TopToolbarSchemas />
+        <TopToolbar />
         <SchemasRightDrawer />
         <div id="schema-fields-list">
           <MuiThemeProvider>

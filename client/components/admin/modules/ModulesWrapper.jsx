@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
@@ -6,7 +6,7 @@ import language from "../../../languages/languages.js";
 import list from "../../../flux/stores/FormStore.js";
 import nav from "../../../flux/stores/NavigationStore.js";
 
-import TopToolbarPages from "./TopToolbarModules.jsx";
+import TopToolbar from "./TopToolbar.jsx";
 import FormFieldsWrapper from "./form/admin/FormFields.jsx";
 import ModulesRightDrawer from "./ModulesRightDrawer.jsx";
 
@@ -22,12 +22,6 @@ import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
 import ArrowDropUp from "material-ui/svg-icons/navigation/arrow-drop-up";
 
 import ModuleSingle from "./ModuleSingle.jsx";
-//import FormWrapper from "./form/admin/Form.jsx";
-
-
-Modules = new Mongo.Collection("modules");
-ModuleTypes = new Mongo.Collection("moduleTypes");
-Pages = new Mongo.Collection("pages");
 
 export default class ModulesWrapper extends TrackerReact(React.Component) {
   constructor() {
@@ -136,7 +130,7 @@ export default class ModulesWrapper extends TrackerReact(React.Component) {
 
     return(
       <div className="row" style={style} >
-        <TopToolbarPages />
+        <TopToolbar />
         <ModulesRightDrawer />
         <div id="modules-fields-list">
           <MuiThemeProvider>
