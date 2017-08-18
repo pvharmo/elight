@@ -117,7 +117,8 @@ export default class Nav extends TrackerReact(React.Component) {
                     <MenuItem value={"schemas"} href="/admin/schemas" primaryText={language().menu.schemas} onTouchTap={this.schemas.bind(this)} />
                     <MenuItem value={"items"} href="/admin/items" primaryText={language().menu.items} onTouchTap={this.items.bind(this)} />
                     <MenuItem value={"modules"} href="/admin/modules" primaryText={language().menu.pages} onTouchTap={this.modules.bind(this)} />
-                    <MenuItem value={"roles"} href="/admin/roles" primaryText={"Roles"} />
+                    <MenuItem value={"roles"} href="/admin/roles" primaryText={"Rôles"} />
+                    <MenuItem value={"users"} href="/admin/users" primaryText={"Utilisateurs"} />
                   </div>
                 ) : (
                   this.pages().map((page)=>{

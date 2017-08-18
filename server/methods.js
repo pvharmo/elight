@@ -40,7 +40,7 @@ Meteor.methods({
   },
 
   idleTimer() {
-    var userId = Meteor.userId;
+    var userId = Meteor.userId();
 
     Meteor.clearTimeout(timer);
     var timer = Meteor.setTimeout(function () {
@@ -92,8 +92,7 @@ Meteor.methods({
     if(!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     } else {
-      Meteor.users.update({id: Meteor.userId()}, {$set: {"selectedApp" : id}});
-      //Meteor.users.findOne({_id:this.userId}).selectedApp = id;
+      Meteor.users.update({_id: Meteor.userId()}, {$set: {"selectedApp" : id}});
     }
   },
 

@@ -13,6 +13,7 @@ import SchemasWrapper from "./components/admin/schemas/SchemasWrapper.jsx";
 import ItemsWrapper from "./components/admin/items/ItemsWrapper.jsx";
 import ModulesWrapper from "./components/admin/modules/ModulesWrapper.jsx";
 import RolesWrapper from "./components/admin/roles/Wrapper.jsx";
+import UsersWrapper from "./components/admin/users/Wrapper.jsx";
 import AppWrapper from "./components/frame/AppWrapper.jsx";
 import ModuleSettingsWrapper from "./components/admin/modules/ModuleSettingsWrapper.jsx";
 import Account from "./components/login/Account.jsx";
@@ -158,6 +159,20 @@ FlowRouter.route("/admin/roles",{
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<RolesWrapper />),
+        resetIdleTimer: resetIdleTimer
+      });
+    } else {
+      FlowRouter.go("/login");
+    }
+  }
+});
+
+FlowRouter.route("/admin/users",{
+  name: "users",
+  action() {
+    if (Meteor.userId() || Meteor.loggingIn()) {
+      mount(MainLayout, {
+        content: (<UsersWrapper />),
         resetIdleTimer: resetIdleTimer
       });
     } else {

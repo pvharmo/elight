@@ -5,6 +5,17 @@ Meteor.publish("user", function() {
   return Meteor.users.find({_id: this.userId}, {fields: {selectedApp: 1, login: 1}});
 });
 
+Meteor.publish("usersList", function() {
+  if (this.userId) {
+    selectedApp = Meteor.users.findOne({_id:this.userId}).selectedApp;
+    var usersApp = Apps.findOne({id: selectedApp}).users;
+
+    if (selectedApp) {
+      return Meteor.users.find({_id: {$in: usersApp}});
+    }
+  }
+});
+
 Apps = new Mongo.Collection("apps");
 
 Meteor.publish("userApps", function(){
