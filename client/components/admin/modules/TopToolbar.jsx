@@ -1,9 +1,9 @@
 
 import React, {Component} from "react";
-import language from "../../../languages/languages.js";
+import language from "/client/languages/languages.js";
 import * as NavigationActions from "../../../flux/actions/NavigationActions.js";
 import nav from "../../../flux/stores/NavigationStore.js";
-import moduleTypes from "./moduleTypes.js";
+import moduleTypes from "/lib/moduleTypes.json";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import {cyan50, cyan500, red500, blue500, grey600} from "material-ui/styles/colors";
@@ -101,7 +101,7 @@ export default class TopToolbarPages extends Component {
   }
 
   moduleTypes() {
-    return moduleTypes;
+    return moduleTypes.types;
   }
 
   closeAlert() {

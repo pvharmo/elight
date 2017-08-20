@@ -93,13 +93,13 @@ export default class rightDrawer extends Component {
   }
 
   deleteItem() {
-    var prompt = confirm("Êtes-vous sûr de vouloir supprimer ce schéma?");
-    if (prompt) {
-      this.handleClose();
-      if (this.props.deleteItem) {
-        this.props.deleteItem(this.state.id);
-      }
-    }
+    // var prompt = confirm("Êtes-vous sûr de vouloir supprimer ce schéma?");
+    // if (prompt) {
+    this.handleClose();
+    //   if (this.props.deleteItem) {
+    this.props.deleteItem(this.state.id);
+    //   }
+    // }
   }
 
   render() {
@@ -119,7 +119,7 @@ export default class rightDrawer extends Component {
         onTouchTap={this.save.bind(this)}
       />,
       <FlatButton
-        label={language().schemas.deleteEntity}
+        label={"Supprimer"}
         secondary={true}
         onTouchTap={this.deleteItem.bind(this)} />
     ];

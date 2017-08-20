@@ -74,15 +74,19 @@ export default class ItemsEditFormWrapper extends Component {
     this.setState(item);
   }
 
-  handleAddTag(name, value, type) {
+  handleAddTag(id, value, type) {
     var item = this.state.item;
-    item[name].push(value);
+    if (item[id]) {
+      item[id].push(value);
+    } else {
+      item[id] = [value];
+    }
     this.setState(item);
   }
 
-  handleDeleteTag(name, index, type) {
+  handleDeleteTag(id, index, type) {
     var item = this.state.item;
-    item[name].splice(index,1);
+    item[id].splice(index,1);
     this.setState(item);
   }
 

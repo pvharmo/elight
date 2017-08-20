@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../../../languages/languages.js";
-import moduleTypes from "./moduleTypes.js";
+import moduleTypes from "/lib/moduleTypes.json";
 import lodash from "lodash";
 
 import FormFieldsWrapper from "./form/admin/FormFields.jsx";

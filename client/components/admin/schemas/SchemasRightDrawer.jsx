@@ -18,8 +18,6 @@ import IconButton from "material-ui/IconButton";
 import RemoveCircleOutline from "material-ui/svg-icons/content/remove-circle-outline";
 import Create from "material-ui/svg-icons/content/create";
 
-
-
 export default class SchemasRightDrawer extends TrackerReact(React.Component) {
 
   constructor() {
@@ -55,12 +53,16 @@ export default class SchemasRightDrawer extends TrackerReact(React.Component) {
   }
 
   deleteEntity(entity) {
+    console.log(entity);
     var r = confirm("Are you sure you want to delete this schema. This action cannot be reversed. Every fields will be deleted.");
     if(r === true) {
-      Session.set("selected-entity", undefined);
-      Session.set("selected-entity-name", undefined);
+      // Session.set("selected-entity", undefined);
+      // Session.set("selected-entity-name", undefined);
       this.handleClose;
-      Meteor.call("deleteSchema", entity);
+      Meteor.call("deleteSchema", entity, function() {
+        var newSelection = Entities.findOne({id: {$ne: entity}});
+        NavigationActions.selectSchema(newSelection.id);
+      });
     }
   }
 

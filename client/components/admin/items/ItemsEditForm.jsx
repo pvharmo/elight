@@ -110,8 +110,8 @@ export default class ItemsEditForm extends Component {
       if (value === "") {
         value = null;
       } else {
-        var d = Date.parse(this.props.item[this.props.schema.name]);
-        value = new Date(d);
+        // var d = Date.parse(this.props.item[this.props.schema.name]);
+        value = new Date(this.props.item[this.props.schema.id]);
       }
       return (
         <TableRow>

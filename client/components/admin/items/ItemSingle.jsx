@@ -72,7 +72,7 @@ export default class ItemSingle extends Component {
     return (
       <TableRow style={this.style} hoverable={true} >
         {this.schemas().map((header)=>{
-          if (this.props.item[header.id]) {
+          if (this.props.item[header.id] && header.showInList) {
             switch (header.type) {
             case "boolean":
             case "checkbox":
@@ -95,16 +95,25 @@ export default class ItemSingle extends Component {
 
             case "dropdown":
             case "tags":
-              return (
-                <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                  <DropDownMenu value={this.props.item[header.id].join()} underlineStyle={{display:"none"}} >
-                    <MenuItem value={this.props.item[header.id].join()} primaryText={this.props.item[header.id].join(", ")} style={{display:"none"}} />
-                    {this.props.item[header.id].map((value)=>{
-                      return <MenuItem key={value} primaryText={value} />;
-                    })}
-                  </DropDownMenu>
-                </TableRowColumn>
-              );
+              var values;
+              if (typeof this.props.item[header.id] === "object") {
+                return (
+                  <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                    <DropDownMenu value={this.props.item[header.id].join()} underlineStyle={{display:"none"}} >
+                      <MenuItem value={this.props.item[header.id].join()} primaryText={this.props.item[header.id].join(", ")} style={{display:"none"}} />
+                      {this.props.item[header.id].map((value)=>{
+                        return <MenuItem key={value} primaryText={value} />;
+                      })}
+                    </DropDownMenu>
+                  </TableRowColumn>
+                );
+              } else {
+                return (
+                  <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>
+                    {this.props.item[header.id]}
+                  </TableRowColumn>
+                );
+              }
 
             case "object":
               if (typeof this.props.item[header.id].getMonth === "function") {
@@ -139,7 +148,7 @@ export default class ItemSingle extends Component {
               return (<TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>{this.props.item[header.id]}</TableRowColumn>);
 
             }
-          } else {
+          } else if (header.showInList) {
             return (
               <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} ></TableRowColumn>
             );

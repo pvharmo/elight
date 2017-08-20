@@ -53,7 +53,7 @@ export default class Header extends TrackerReact(React.Component) {
   title() {
     var user = Meteor.users.find().fetch()[0];
     if (user) {
-      var app = Apps.find({_id:user.selectedApp}).fetch()[0];
+      var app = Apps.find({id:user.selectedApp}).fetch()[0];
       if (app) {
         return app.name;
       } else {

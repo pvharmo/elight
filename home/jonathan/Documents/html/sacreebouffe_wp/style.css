@@ -1,0 +1,279 @@
+/*
+Theme Name: Sacrée Bouffe
+Description: Gabarit graphique pour sacreebouffe.ca.
+Version: 1.0
+Author: Jonathan Caron-Roberge
+*/
+
+body {
+  color: #333333;
+  background-color: #FFFDF7;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-family: 'Alegreya', serif;
+  text-align: center;
+  margin: 45px 0;
+}
+
+h2 {
+  font-family: 'Great Vibes', serif;
+  color: #c0a756;
+  font-size: 52px;
+  text-align: center;
+  font-weight: 300;
+  margin: 15px 0;
+}
+
+p {
+  font-family: 'Cabin', serif;
+  line-height: 32px;
+  font-size: 17px;
+  color: #777777;
+}
+
+nav {
+  position: fixed;
+  width: 100%;
+  height: 85px;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  color: #FFFDF7;
+  box-shadow: 0px 2px 7px 0px rgba(0,0,0,0.3);
+}
+
+nav ul {
+  width: 700px;
+  margin: 0 auto;
+  right: 15%;
+  top: 0;
+  position: fixed;
+}
+
+nav ul li {
+  float: left;
+  list-style-type: none;
+  text-align: center;
+  line-height: 85px;
+  margin: 0 30px;
+  font-family: 'Cabin';
+  font-size: 18px;
+}
+
+nav ul li.active {
+  color: #c0a756;
+}
+
+header{
+  background-image: url("images/opt_food-kitchen-cutting-board-cooking.jpg");
+  background-size: cover;
+  position: relative;
+  height: 100vh;
+  /*font-size: 50px;*/
+  text-align: center;
+  color: #FFFDF7;
+}
+
+header h1 {
+  font-size: 170px;
+  font-family: 'Amatic SC', cursive;
+  margin: auto 0;
+  font-weight: 500;
+  text-shadow: 2px 2px rgba(0,0,0,0.2);
+}
+
+#logo-nav {
+  margin: 15px 8%;
+  font-family: 'Amatic SC';
+  font-size: 30px;
+}
+
+a {
+  color: #c0a756;
+}
+
+nav a {
+  color: #FFFDF7;
+  text-decoration: none;
+}
+
+nav a.actif {
+  color: #c0a756;
+}
+
+#titre {
+  margin: auto;
+  margin-top: -150px;
+  margin-left: -350px;
+  height: 300px;
+  width: 700px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+#presentation {
+  background-image: url("");
+  display: block;
+  margin: 0;
+}
+
+#description {
+  margin: auto;
+  display: inline-block;
+  width: 44%;
+  margin: 0 3%;
+}
+
+#description h2 {
+  margin-top: 60px;
+  margin-bottom: 0px;
+}
+
+#desc-img-sep {
+  display: inline-block;
+  width: 20px;
+  float: right;
+  max-height: 800px;
+}
+
+#desc-img {
+  display: inline-block;
+  width: 48%;
+  height: 800px;
+  float: right;
+}
+
+#desc-img img {
+  margin: auto;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+#calendrier {
+  background-image: url("images/opt_cooking-ingredient-cuisine-kitchen.jpg");
+  background-size: cover;
+  position: relative;
+  height: 800px;
+  font-size: 42px;
+  font-family: 'Oswald';
+  text-align: center;
+  color: #FFFDF7;
+  padding-top: 55px;
+}
+
+#prochaines-cuisines-conteneur {
+  margin: 45px auto;
+  width: 900px;
+}
+
+.prochaines-cuisines {
+  width: 45%;
+  float: left;
+}
+
+.prochaines-cuisines-separateur {
+  width: 10%;
+  float: left;
+}
+
+.prochaines-cuisines h4 {
+  margin: 20px 50px;
+}
+
+.prochaines-cuisines h5 {
+  margin: 20px 50px;
+}
+
+#enactus {
+  height: 200px;
+  padding: 75px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5) inset;
+}
+
+#enactus-container {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+#logo-enactus {
+  display: inline-block;
+  float: left;
+  width: 250px;
+}
+
+#presentation-enactus {
+  display: inline-block;
+  width: 900px;
+}
+
+#contact {
+  padding: 100px 25px;
+  text-align: center;
+  background-image: url("images/opt_mushrooms-brown-mushrooms-cook-eat.jpg");
+}
+
+#boite-contact {
+  background-color: rgba(255, 255, 255, 0.95);
+  width: 750px;
+  margin: auto;
+  padding: 50px 25px;
+}
+
+#formulaire-contact {
+  display: inline-block;
+  width: 750px;
+  /*margin: 25px;*/
+}
+
+#info-contact {
+  display: inline-block;
+  width: 250px;
+  margin: 100px 25px 25px 25px;
+  vertical-align: top;
+}
+
+input {
+  width: 600px;
+  height: 20px;
+  padding: 10px 20px;
+  margin: 15px;
+  border-style: none;
+  color: #81703a;
+  font-size: 17px;
+}
+
+::placeholder {
+  color: #81703a;
+  font-size: 17px;
+}
+
+textarea {
+  width: 600px;
+  height: 170px;
+  padding: 10px 20px;
+  margin: 15px;
+  border-style: none;
+  color: #81703a;
+  font-family: 'Cabin', serif;
+  font-size: 17px;
+}
+
+button {
+  background-color: #c0a756;
+  border-style: none;
+  padding: 10px 25px;
+  color: #fff;
+  font-family: 'Cabin', serif;
+  font-size: 17px;
+}
+
+#carte {
+  height: 500px;
+}
+
+footer {
+  text-align: center;
+}

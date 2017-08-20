@@ -82,7 +82,9 @@ export default class SchemasWrapper extends TrackerReact(React.Component) {
     if (double) {
       this.setState({alert:true});
     } else {
-      Meteor.call("newSchema", schemaName);
+      Meteor.call("newSchema", schemaName, function(err, res) {
+        NavigationActions.selectSchema(res);
+      });
       this.setState({newSchemaDialog: false});
       this.setState({newSchemaName: ""});
 

@@ -19,8 +19,11 @@ Meteor.publish("usersList", function() {
 Apps = new Mongo.Collection("apps");
 
 Meteor.publish("userApps", function(){
-  var user = Meteor.users.find({_id: this.userId}).fetch()[0];
-  return Apps.find({users: {$elemMatch: {$eq: this.userId}}});
+  this.autorun(function (computation) {
+    var user = Meteor.users.findOne({_id: this.userId});
+    // return Apps.find({users: {$elemMatch: {$eq: this.userId}}});
+    return Apps.find({id: {$in: user.apps}});
+  });
 });
 
 //////////////////////////////////////////////////

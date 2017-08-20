@@ -49,7 +49,10 @@ export default class ModulesRightDrawer extends TrackerReact(React.Component) {
   deletePage(page) {
     var r = confirm(language().pages.deleteConfirmation);
     if(r === true) {
-      Meteor.call("deletePage", page);
+      Meteor.call("deletePage", page, function() {
+        var newSelection = Pages.findOne({id: {$ne: page}});
+        NavigationActions.selectPage(newSelection.id);
+      });
       Session.set("selected-page", undefined);
       Session.set("selected-page-name", undefined);
     }
@@ -103,55 +106,4 @@ export default class ModulesRightDrawer extends TrackerReact(React.Component) {
         } />
     );
   }
-
-  /*render() {
-    const actions = [
-      <FlatButton
-        label={language().cancel}
-        primary={true}
-        onTouchTap={this.handleClose}
-      />,
-      <FlatButton
-        label={language().save}
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={this.save}
-      />,
-    ];
-    if (nav.getUser().admin) {
-      actions.unshift(
-        <FlatButton
-          label={language().pages.deletePage}
-          secondary={true}
-          onTouchTap={this.deletePage.bind(this)} />
-      );
-    }
-    return (
-      <div>
-        <MuiThemeProvider>
-          <RaisedButton label={language().pages.newPage} fullWidth={true} primary={true} onTouchTap={this.newPage.bind(this)} />
-        </MuiThemeProvider>
-        <MuiThemeProvider>
-          <List>
-            {this.pages().map((page)=>{
-              return (
-                <ListItem key={page.id}
-                  primaryText={page.name}
-                  onTouchTap={this.selectPage.bind(this,page.id)}
-                  rightIcon={<IconButton onTouchTap={this.editPage.bind(this, page.id)} style={{padding:0}} ><Create color={blue500} /></IconButton>} />
-              );
-            })}
-          </List>
-        </MuiThemeProvider>
-        <MuiThemeProvider>
-          <Dialog title={language().pages.editPage} open={this.state.edit} actions={actions} >
-            <TextField
-              id={"edit-page-name"}
-              value={this.state.text}
-              onChange={this.handleChange} />
-          </Dialog>
-        </MuiThemeProvider>
-      </div>
-    );
-  }*/
 }

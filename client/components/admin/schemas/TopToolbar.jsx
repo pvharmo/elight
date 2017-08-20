@@ -160,7 +160,7 @@ export default class TopToolbarSchemas extends Component {
   }
 
   handleChangeSc(event, index, value) {
-    this.setState({schemaLinked: value});
+    this.setState({schemaLinked: value});
   }
 
   handleChangeField(event, index, value) {

@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../../../languages/languages.js";
-import list from "../../../flux/stores/FormStore.js";
+import * as NavigationActions from "../../../flux/actions/NavigationActions.js";
 import nav from "../../../flux/stores/NavigationStore.js";
 
 import TopToolbar from "./TopToolbar.jsx";
@@ -73,7 +73,9 @@ export default class ModulesWrapper extends TrackerReact(React.Component) {
       this.setState({alert:true});
     } else {
       this.setState({newPageDialog: false});
-      Meteor.call("newPage", this.state.newPagesName);
+      Meteor.call("newPage", this.state.newPagesName, function(err, res) {
+        NavigationActions.selectPage(res);
+      });
       this.setState({newPagesName: ""});
     }
   }

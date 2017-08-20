@@ -10,6 +10,8 @@ import ChartWrapper from "../admin/modules/chart/frontend/Chart.jsx";
 
 import { Scrollbars } from "react-custom-scrollbars";
 
+import moduleTypes from "/lib/moduleTypes.json";
+
 export default class AppWrapper extends TrackerReact(React.Component) {
 
   constructor(props) {
@@ -18,7 +20,6 @@ export default class AppWrapper extends TrackerReact(React.Component) {
     this.state = {
       subscription: {
         modules: Meteor.subscribe("userModules"),
-        moduleTypes: Meteor.subscribe("userModuleTypes"),
         schemas: Meteor.subscribe("userSchemas"),
         page: Meteor.subscribe("userPage"),
         items: Meteor.subscribe("userItems"),
@@ -31,7 +32,6 @@ export default class AppWrapper extends TrackerReact(React.Component) {
 
   componentWillUnmount() {
     this.state.subscription.modules.stop();
-    this.state.subscription.moduleTypes.stop();
     this.state.subscription.schemas.stop();
     this.state.subscription.page.stop();
     this.state.subscription.items.stop();
@@ -43,7 +43,6 @@ export default class AppWrapper extends TrackerReact(React.Component) {
     var renderModule = [];
     if (page.length > 0) {
       var modules = Modules.find({page:page[0].id}, {sort:{order:1}}).fetch();
-      var moduleTypes = ModuleTypes.find().fetch();
       for (var i = 0; i < modules.length; i++) {
         switch (modules[i].type) {
         case "Datatable":

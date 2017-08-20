@@ -192,17 +192,19 @@ export default class ItemsWrapper extends TrackerReact(React.Component) {
               <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{borderBottom: "2px solid rgba(0,0,0,0.5)"}} >
                 <TableRow>
                   {this.oneSchema().map((header)=>{
-                    return (
-                      <TableHeaderColumn key={header.id} style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500, paddingBottom: "0"}} >
-                        {header.name}
-                        <IconButton className={"btn-sort-up-" + header.id} onTouchTap={this.sortBy.bind(this,-1,header.id)} style={{padding:0, width:30, height: 30, verticalAlign: "middle"}} >
-                          <ArrowDropUp />
-                        </IconButton>
-                        <IconButton className={"btn-sort-down-" + header.id}  onTouchTap={this.sortBy.bind(this,1,header.id)} style={{display:"none",padding:0, width: 30, height: 30,  verticalAlign: "middle"}} >
-                          <ArrowDropDown />
-                        </IconButton>
-                      </TableHeaderColumn>
-                    );
+                    if (header.showInList) {
+                      return (
+                        <TableHeaderColumn key={header.id} style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500, paddingBottom: "0"}} >
+                          {header.name}
+                          <IconButton className={"btn-sort-up-" + header.id} onTouchTap={this.sortBy.bind(this,-1,header.id)} style={{padding:0, width:30, height: 30, verticalAlign: "middle"}} >
+                            <ArrowDropUp />
+                          </IconButton>
+                          <IconButton className={"btn-sort-down-" + header.id}  onTouchTap={this.sortBy.bind(this,1,header.id)} style={{display:"none",padding:0, width: 30, height: 30,  verticalAlign: "middle"}} >
+                            <ArrowDropDown />
+                          </IconButton>
+                        </TableHeaderColumn>
+                      );
+                    }
                   })}
                   <TableHeaderColumn style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500}} >{language().items.edit}</TableHeaderColumn>
                 </TableRow>
