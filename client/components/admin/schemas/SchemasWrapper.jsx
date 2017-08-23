@@ -2,37 +2,25 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
-import language from "../../../languages/languages.js";
-import nav from "../../../flux/stores/NavigationStore.js";
-import * as NavigationActions from "../../../flux/actions/NavigationActions.js";
+import adminStore from "/client/flux/stores/adminStore.js";
 
 import SchemaSingle from "./SchemaSingle.jsx";
-import TopToolbar from "./TopToolbar.jsx";
-import RightDrawer from "../rightDrawer/RightDrawer.jsx";
-import SchemasRightDrawer from "./SchemasRightDrawer";
+import SchemaTopToolbar from "./SchemaTopToolbar.jsx";
 
-import { Scrollbars } from "react-custom-scrollbars";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import IconButton from "material-ui/IconButton";
-import Dialog from "material-ui/Dialog";
-import TextField from "material-ui/TextField";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
-import ArrowDropUp from "material-ui/svg-icons/navigation/arrow-drop-up";
+import {DragDropContextProvider} from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
+
+import {Scrollbars} from "react-custom-scrollbars";
+import List from "material-ui/List";
 
 export default class SchemasWrapper extends TrackerReact(React.Component) {
 
   constructor() {
     super();
 
-    this.openNewSchemaDialog = this.openNewSchemaDialog.bind(this);
-    this.cancelNewSchema = this.cancelNewSchema.bind(this);
-    this.newSchema = this.newSchema.bind(this);
-    this.handleChangeNewSchema = this.handleChangeNewSchema.bind(this);
+    this.update = this.update.bind(this);
 
-    nav.on("new-schema", this.openNewSchemaDialog);
+    adminStore.on("entity-selected", this.update);
 
     this.state = {
       subscription: {
@@ -43,183 +31,49 @@ export default class SchemasWrapper extends TrackerReact(React.Component) {
       newSchemaDialog: false,
       newSchemaName: "",
       alert: false,
-      editSchemaText: ""
+      editSchemaText: "",
+      entity: ""
     };
   }
 
   componentWillUnmount() {
+    adminStore.removeListener("entity-selected", this.update);
+
     this.state.subscription.schemas.stop();
     this.state.subscription.entities.stop();
-
-    nav.removeListener("new-schema", this.openNewSchemaDialog);
   }
 
-  selectSchema(schema) {
-    Session.set("selected-entity", schema);
+  fields() {
+    return Schemas.find({entity: adminStore.getStructure().entity}, {sort: {order:1}}).fetch();
   }
 
-  oneSchema() {
-    return Schemas.find({entity: Session.get("selected-entity")},{sort: {order:1}}).fetch();
+  update() {
+    this.forceUpdate();
   }
 
-  openNewSchemaDialog() {
-    this.setState({newSchemaDialog: true});
-  }
-
-  cancelNewSchema() {
-    this.setState({newSchemaDialog: false});
-  }
-
-  handleChangeNewSchema(event, value) {
-    this.setState({newSchemaName: value});
-  }
-
-  newSchema() {
-    var schemaName = this.state.newSchemaName;
-
-    var double = Entities.findOne({name: schemaName});
-
-    if (double) {
-      this.setState({alert:true});
-    } else {
-      Meteor.call("newSchema", schemaName, function(err, res) {
-        NavigationActions.selectSchema(res);
-      });
-      this.setState({newSchemaDialog: false});
-      this.setState({newSchemaName: ""});
-
-      NavigationActions.newSchemaUpdate();
-    }
-  }
-
-  // Creates a new field
-  addField(event) {
-    event.defaultPrevented;
-    event.preventDefault();
-    var text = this.refs.fieldName.value.trim();
-    var type = this.refs.fieldType.value.trim();
-    var schema = Session.get("selected-entity-name");
-    var thisRefs = this.refs;
-    var thisState = this.state;
-    var params = {};
-    switch (type) {
-    case "number":
-      var step = thisRefs.step.value.trim();
-      var min = thisRefs.minNumber.value.trim();
-      var max = thisRefs.maxNumber.value.trim();
-      params = {
-        step:step,
-        min:min,
-        max:max
-      };
-      break;
-    case "dropdown":
-      var dropdown = [];
-      for (var i = 0; i < thisState.dropdown.length; i++) {
-        var x = "dropdown-" + i;
-        dropdown[i] = thisRefs[x].value.trim();
-      }
-      params = dropdown;
-      break;
-    default:
-      params = {};
-    }
-    // Call the method on the server to create the new field
-    Meteor.call("addField", text, type, schema, params, ()=>{
-      this.refs.fieldName.value = "";
-      this.refs.fieldType.value = "";
-    });
-  }
-
-  closeAlert() {
-    this.setState({alert:false});
+  onHover(id) {
+    this.setState({hover:id});
   }
 
   render() {
-    var stripState = true;
-    var height = window.innerHeight - 199;
-
-    const actions = [
-      <FlatButton
-        label={language().cancel}
-        primary={true}
-        onTouchTap={this.cancelNewSchema}
-      />,
-      <FlatButton
-        label={language().save}
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={this.newSchema}
-      />,
-    ];
-
-    const alert = [
-      <FlatButton
-        label={language().close}
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={this.closeAlert.bind(this)}
-      />
-    ];
-
-    var style = {};
-
-    if (window.innerWidth > 1600) {
-      style.paddingRight = "300px";
-      style.width = window.innerWidth - 500;
-    }
+    var height = window.innerHeight - 203;
 
     return (
-      <div className="row" style={style} >
-        <TopToolbar />
-        <SchemasRightDrawer />
+      <div className="row" >
+        <SchemaTopToolbar entity={this.state.entity} />
         <div id="schema-fields-list">
-          <MuiThemeProvider>
-            <Dialog title={language().schemas.newEntity} open={this.state.newSchemaDialog} actions={actions} >
-              <TextField hintText={language().schemas.newEntityName} onChange={this.handleChangeNewSchema} />
-            </Dialog>
-          </MuiThemeProvider>
-          <MuiThemeProvider>
-            <Dialog
-              actions={alert}
-              open={this.state.alert} >
-              Ce schéma existe déjà.
-            </Dialog>
-          </MuiThemeProvider>
-          <MuiThemeProvider>
-            <Table>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{borderBottom: "2px solid rgba(0,0,0,0.5)"}} >
-                <TableRow>
-                  <TableHeaderColumn style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500, width: 44}} >
-                    {language().schemas.list.showInList}
-                  </TableHeaderColumn>
-                  <TableHeaderColumn style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500}} >
-                    {language().schemas.list.name}
-                  </TableHeaderColumn>
-                  <TableHeaderColumn style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500}} >
-                    {language().schemas.list.type}
-                  </TableHeaderColumn>
-                  <TableHeaderColumn style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500}} >
-                    {language().schemas.list.order}
-                  </TableHeaderColumn>
-                  <TableHeaderColumn style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500}} >
-                    {language().schemas.list.edit}
-                  </TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-            </Table>
-          </MuiThemeProvider>
           <Scrollbars style={{width: "100%", height}} >
-            <MuiThemeProvider>
-              <Table>
-                <TableBody>
-                  {this.oneSchema().map( (schema)=>{
-                    stripState = !stripState;
-                    return (<SchemaSingle key={schema.id} stripState={stripState} schema={schema} />);
-                  })}
-                </TableBody>
-              </Table>
-            </MuiThemeProvider>
+            <DragDropContextProvider backend={HTML5Backend}>
+              <List>
+                {this.fields().map( (schema)=>{
+                  return (<SchemaSingle
+                    key={schema.id}
+                    schema={schema}
+                    onHover={this.onHover.bind(this)}
+                    hover={this.state.hover} />);
+                })}
+              </List>
+            </DragDropContextProvider>
           </Scrollbars>
         </div>
       </div>
