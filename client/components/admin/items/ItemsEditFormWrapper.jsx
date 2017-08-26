@@ -7,7 +7,7 @@ import nav from "../../../flux/stores/NavigationStore.js";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Dialog from "material-ui/Dialog";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 
 import ItemsEditForm from "./ItemsEditForm.jsx";
 
@@ -93,12 +93,12 @@ export default class ItemsEditFormWrapper extends Component {
   render() {
 
     const actions = [
-      <FlatButton
+      <Button
         label={language().cancel}
         primary={true}
         onTouchTap={this.closeDialog}
       />,
-      <FlatButton
+      <Button
         label={language().save}
         primary={true}
         keyboardFocused={true}

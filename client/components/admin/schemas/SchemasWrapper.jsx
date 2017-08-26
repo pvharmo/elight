@@ -7,13 +7,13 @@ import adminStore from "/client/flux/stores/adminStore.js";
 import SchemaSingle from "./SchemaSingle.jsx";
 import SchemaTopToolbar from "./SchemaTopToolbar.jsx";
 
-import {DragDropContextProvider} from "react-dnd";
+import {DragDropContext} from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
 import {Scrollbars} from "react-custom-scrollbars";
 import List from "material-ui/List";
 
-export default class SchemasWrapper extends TrackerReact(React.Component) {
+class SchemasWrapper extends TrackerReact(React.Component) {
 
   constructor() {
     super();
@@ -63,20 +63,20 @@ export default class SchemasWrapper extends TrackerReact(React.Component) {
         <SchemaTopToolbar entity={this.state.entity} />
         <div id="schema-fields-list">
           <Scrollbars style={{width: "100%", height}} >
-            <DragDropContextProvider backend={HTML5Backend}>
-              <List>
-                {this.fields().map( (schema)=>{
-                  return (<SchemaSingle
-                    key={schema.id}
-                    schema={schema}
-                    onHover={this.onHover.bind(this)}
-                    hover={this.state.hover} />);
-                })}
-              </List>
-            </DragDropContextProvider>
+            <List>
+              {this.fields().map( (schema)=>{
+                return (<SchemaSingle
+                  key={schema.id}
+                  schema={schema}
+                  onHover={this.onHover.bind(this)}
+                  hover={this.state.hover} />);
+              })}
+            </List>
           </Scrollbars>
         </div>
       </div>
     );
   }
 }
+
+export default DragDropContext(HTML5Backend)(SchemasWrapper);

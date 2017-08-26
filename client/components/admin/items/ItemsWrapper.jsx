@@ -1,41 +1,41 @@
-/*jshint esversion: 6 */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../../../languages/languages.js";
-import nav from "../../../flux/stores/NavigationStore.js";
+import adminStore from "/client/flux/stores/adminStore.js";
 
-import ItemsForm from "./ItemsForm.jsx";
 import ItemSingle from "./ItemSingle.jsx";
-import ItemsFormWrapper from "./ItemsFormWrapper.jsx";
-import TopToolbar from "./TopToolbar.jsx";
-import ItemsEditFormWrapper from "./ItemsEditFormWrapper.jsx";
-import ItemsRightDrawer from "./ItemsRightDrawer.jsx";
+import TopToolbar from "./ItemsTopToolbar.jsx";
 
-import { Scrollbars } from "react-custom-scrollbars";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
+import {Scrollbars} from "react-custom-scrollbars";
+import Table, {TableBody, TableHead, TableRow, TableCell} from "material-ui/Table";
 import IconButton from "material-ui/IconButton";
-import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
-import ArrowDropUp from "material-ui/svg-icons/navigation/arrow-drop-up";
+import ArrowDropDown from "material-ui-icons/ArrowDropDown";
+import ArrowDropUp from "material-ui-icons/ArrowDropUp";
 
-//Component that wrap the form and the list of items
+
 export default class ItemsWrapper extends TrackerReact(React.Component) {
 
-  //subscribe to userItems and userSchemas
   constructor() {
     super();
 
-    this.searchItem = this.searchItem.bind(this);
-    this.getSelectedSchema = this.getSelectedSchema.bind(this);
-    this.advancedSearch = this.advancedSearch.bind(this);
-    this.clearSearch = this.clearSearch.bind(this);
+    this.setSearch = this.setSearch.bind(this);
+    this.update = this.update.bind(this);
+
+    adminStore.on("search-records", this.setSearch);
+    adminStore.on("entity-selected", this.update);
+
+    // this.searchItem = this.searchItem.bind(this);
+    // this.getSelectedSchema = this.getSelectedSchema.bind(this);
+    // this.advancedSearch = this.advancedSearch.bind(this);
+    // this.clearSearch = this.clearSearch.bind(this);
 
     this.state = {
       subscription: {
-        items:Meteor.subscribe("userItems"),
-        schemas:Meteor.subscribe("userSchemas"),
-        entities: Meteor.subscribe("userEntities"),
+        items:Meteor.subscribe("appItems"),
+        schemas:Meteor.subscribe("appSchemas"),
+        entities: Meteor.subscribe("appEntities"),
         history: Meteor.subscribe("appHistory"),
       },
       header: "",
@@ -45,36 +45,31 @@ export default class ItemsWrapper extends TrackerReact(React.Component) {
     };
   }
 
-  componentWillMount() {
-    var _state = this.state;
-    _state.selectedEntity = Session.get("selected-entity");
-    this.setState(_state);
 
-    nav.on("schema-selected", this.getSelectedSchema);
-    nav.on("search-item", this.searchItem);
-    nav.on("advanced-search", this.advancedSearch);
-    nav.on("clear-search", this.clearSearch);
-  }
-
-  // Stop subscription to items and schemas
   componentWillUnmount() {
+    adminStore.removeListener("search-records", this.setSearch);
+    adminStore.removeListener("entity-selected", this.update);
+
     this.state.subscription.items.stop();
     this.state.subscription.schemas.stop();
     this.state.subscription.entities.stop();
+  }
 
-    nav.removeListener("schema-selected", this.getSelectedSchema);
-    nav.removeListener("search-item", this.searchItem);
-    nav.removeListener("advanced-search", this.advancedSearch);
-    nav.removeListener("clear-search", this.clearSearch);
+  update() {
+    this.forceUpdate();
   }
 
   getSelectedSchema() {
-    this.setState({selectedEntity: Session.get("selected-entity")});
+    this.setState({selectedEntity: adminStore.getStructure().entity});
   }
 
-  // Fetch Items collection for the selected schema
+  setSearch() {
+    this.setState({search: adminStore.getStructure.search});
+  }
+
   schemaItems() {
-    var entity = this.state.selectedEntity;
+
+    var entity = adminStore.getStructure().entity;
     var sortQuery = {};
     sortQuery[this.state.header] = this.state.sortOrder;
     var query = {};
@@ -111,12 +106,12 @@ export default class ItemsWrapper extends TrackerReact(React.Component) {
     return _.uniq(schemasArray);
   }
 
-  selectSchema(schema) {
-    Session.set("selected-entity", schema);
-  }
+  // selectSchema(schema) {
+  //   Session.set("selected-entity", schema);
+  // }
 
   oneSchema() {
-    return Schemas.find({entity: Session.get("selected-entity")},{sort: {order:1}}).fetch();
+    return Schemas.find({entity: adminStore.getStructure().entity},{sort: {order:1}}).fetch();
   }
 
   sortBy(order,header) {
@@ -133,15 +128,15 @@ export default class ItemsWrapper extends TrackerReact(React.Component) {
     }
   }
 
-  searchItem() {
+  /*searchItem() {
     var search = {};
     search[nav.getItemSearch().dropdown] = nav.getItemSearch().text;
     var searchHeader = nav.getItemSearch().dropdown;
     this.setState({search: search});
     this.setState({searchHeader: [searchHeader]});
-  }
+  }*/
 
-  advancedSearch() {
+  /*advancedSearch() {
     var fields = Session.get("advanced-search");
     var keys = [];
     for (var k in fields) {
@@ -149,7 +144,7 @@ export default class ItemsWrapper extends TrackerReact(React.Component) {
     }
     this.setState({search: fields});
     this.setState({searchHeader: keys});
-  }
+  }*/
 
   clearSearch() {
     this.setState({search: {}});
@@ -169,59 +164,53 @@ export default class ItemsWrapper extends TrackerReact(React.Component) {
 
   render() {
     Session.set("tableHeader", this.tableHeader());
-    var tableHeader = this.tableHeader();
     var stripState = true;
     var height = window.innerHeight - 199;
 
-    var style = {};
-
-    if (window.innerWidth > 1600) {
-      style.paddingRight = "300px";
-      style.width = window.innerWidth - 500;
-    }
-
     return (
-      <div className="row" style={style} >
+      <div className="row" >
         <TopToolbar />
-        <ItemsRightDrawer />
-        <ItemsEditFormWrapper />
         <div id="items-list">
-          <ItemsFormWrapper />
-          <MuiThemeProvider>
+          <Scrollbars style={{width: "100%", height}} >
             <Table >
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{borderBottom: "2px solid rgba(0,0,0,0.5)"}} >
+              <TableHead style={{borderBottom: "2px solid rgba(0,0,0,0.5)"}} >
                 <TableRow>
                   {this.oneSchema().map((header)=>{
                     if (header.showInList) {
                       return (
-                        <TableHeaderColumn key={header.id} style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500, paddingBottom: "0"}} >
+                        <TableCell
+                          key={header.id}
+                          style={{fontSize:18, color: "rgba(0,0,0,0.8)", fontWeight: 500, paddingBottom: "0", flex:1}} >
                           {header.name}
-                          <IconButton className={"btn-sort-up-" + header.id} onTouchTap={this.sortBy.bind(this,-1,header.id)} style={{padding:0, width:30, height: 30, verticalAlign: "middle"}} >
+                          <IconButton
+                            className={"btn-sort-up-" + header.id}
+                            onClick={this.sortBy.bind(this,-1,header.id)}
+                            style={{padding:0, width:30, height: 30, verticalAlign: "middle"}} >
                             <ArrowDropUp />
                           </IconButton>
-                          <IconButton className={"btn-sort-down-" + header.id}  onTouchTap={this.sortBy.bind(this,1,header.id)} style={{display:"none",padding:0, width: 30, height: 30,  verticalAlign: "middle"}} >
+                          <IconButton
+                            className={"btn-sort-down-" + header.id}
+                            onClick={this.sortBy.bind(this,1,header.id)}
+                            style={{display:"none",padding:0, width: 30, height: 30,  verticalAlign: "middle"}} >
                             <ArrowDropDown />
                           </IconButton>
-                        </TableHeaderColumn>
+                        </TableCell>
                       );
                     }
                   })}
-                  <TableHeaderColumn style={{fontSize:18, color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 500}} >{language().items.edit}</TableHeaderColumn>
                 </TableRow>
-              </TableHeader>
+              </TableHead>
+              <TableBody id="items-table-body" style={{overflowY: "auto"}} >
+                {this.schemaItems().map( (item)=>{
+                  stripState = !stripState;
+                  return (<ItemSingle
+                    key={item.id}
+                    item={item}
+                    stripState={stripState}
+                    schema={this.state.selectedEntity} />);
+                })}
+              </TableBody>
             </Table>
-          </MuiThemeProvider>
-          <Scrollbars style={{width: "100%", height}} >
-            <MuiThemeProvider>
-              <Table >
-                <TableBody id="items-table-body" showRowHover={true} style={{overflowY: "auto"}} >
-                  {this.schemaItems().map( (item)=>{
-                    stripState = !stripState;
-                    return (<ItemSingle key={item.id} item={item} stripState={stripState} schema={this.state.selectedEntity} />);
-                  })}
-                </TableBody>
-              </Table>
-            </MuiThemeProvider>
           </Scrollbars>
         </div>
       </div>

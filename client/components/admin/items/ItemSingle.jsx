@@ -1,25 +1,20 @@
-/*jshint esversion: 6 */
+
 import React, {Component} from "react";
-import PropTypes from "prop-types";
 import * as NavigationActions from "../../../flux/actions/NavigationActions.js";
-import nav from "../../../flux/stores/NavigationStore.js";
+import * as adminActions from "/client/flux/actions/adminActions.js";
+import adminStore from "/client/flux/stores/adminStore.js";
 
-import ItemsEditFormWrapper from "./ItemsEditFormWrapper.jsx";
-
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import {cyan50, red500, blue500} from "material-ui/styles/colors";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import ChipInput from "material-ui-chip-input";
+import {TableRow, TableCell} from "material-ui/Table";
+import {cyan, red, blue} from "material-ui/colors";
+import Menu, {MenuItem} from "material-ui/Menu";
 import Checkbox from "material-ui/Checkbox";
 import IconButton from "material-ui/IconButton";
-import Create from "material-ui/svg-icons/content/create";
-import Clear from "material-ui/svg-icons/content/clear";
-import Done from "material-ui/svg-icons/action/done";
-import AvNotInterested from "material-ui/svg-icons/av/not-interested";
-import Cancel from "material-ui/svg-icons/navigation/cancel";
+import Create from "material-ui-icons/Create";
+import Clear from "material-ui-icons/Clear";
+import Done from "material-ui-icons/Done";
+import AvNotInterested from "material-ui-icons/NotInterested";
 
-// Component that render every single items
+
 export default class ItemSingle extends Component {
 
   constructor() {
@@ -31,10 +26,9 @@ export default class ItemSingle extends Component {
 
     this.closeDialog = this.closeDialog.bind(this);
 
-    this.style = {};
+    // this.style = {};
   }
 
-  // Delete selected item
   deleteItem() {
     var prompt = confirm("Êtes-vous sûr de vouloir supprimer cet article?");
     if (prompt) {
@@ -43,7 +37,7 @@ export default class ItemSingle extends Component {
   }
 
   schemas() {
-    return Schemas.find({entity: Session.get("selected-entity")}).fetch();
+    return Schemas.find({entity: adminStore.getStructure().entity}, {sort:{order: 1}}).fetch();
   }
 
   startEdit() {
@@ -56,41 +50,44 @@ export default class ItemSingle extends Component {
     this.setState({editingItem:false});
   }
 
+  selectRow() {
+    adminActions.editRecord(this.props.item);
+  }
+
   render() {
-    if (this.props.stripState) {
+    /*if (this.props.stripState) {
       this.style = {
-        backgroundColor: cyan50,
+        backgroundColor: cyan[50],
         borderBottom: "0px solid rgba(0,0,0,0)"
       };
     } else {
       this.style = {
         borderBottom: "0px solid rgba(0,0,0,0)"
       };
-    }
-    var tableHeader = Session.get("tableHeader");
+    }*/
 
     return (
-      <TableRow style={this.style} hoverable={true} >
+      <TableRow hover onClick={this.selectRow.bind(this)} >
         {this.schemas().map((header)=>{
           if (this.props.item[header.id] && header.showInList) {
             switch (header.type) {
             case "boolean":
             case "checkbox":
               return (
-                <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} >
+                <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} >
                   <Checkbox
                     checked={this.props.item[header.id]}
-                    checkedIcon={<Done color={blue500} />}
-                    uncheckedIcon={<AvNotInterested color={red500} />}
+                    checkedIcon={<Done color={blue[500]} />}
+                    uncheckedIcon={<AvNotInterested color={red[500]} />}
                     style={{margin:"0 auto", width:"24px"}} />
-                </TableRowColumn>
+                </TableCell>
               );
 
             case "date":
               return (
-                <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
                   {this.props.item[header.id].toLocaleDateString()}
-                </TableRowColumn>
+                </TableCell>
               );
 
             case "dropdown":
@@ -98,67 +95,62 @@ export default class ItemSingle extends Component {
               var values;
               if (typeof this.props.item[header.id] === "object") {
                 return (
-                  <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                    <DropDownMenu value={this.props.item[header.id].join()} underlineStyle={{display:"none"}} >
+                  <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                    <Menu value={this.props.item[header.id].join()} underlineStyle={{display:"none"}} >
                       <MenuItem value={this.props.item[header.id].join()} primaryText={this.props.item[header.id].join(", ")} style={{display:"none"}} />
                       {this.props.item[header.id].map((value)=>{
                         return <MenuItem key={value} primaryText={value} />;
                       })}
-                    </DropDownMenu>
-                  </TableRowColumn>
+                    </Menu>
+                  </TableCell>
                 );
               } else {
                 return (
-                  <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>
+                  <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>
                     {this.props.item[header.id]}
-                  </TableRowColumn>
+                  </TableCell>
                 );
               }
 
             case "object":
               if (typeof this.props.item[header.id].getMonth === "function") {
                 return (
-                  <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                  <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
                     {this.props.item[header.id].toLocaleDateString()}
-                  </TableRowColumn>);
+                  </TableCell>);
               } else if (Array.isArray(this.props.item[header.id])) {
                 return (
-                  <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                    <DropDownMenu value={this.props.item[header.id].join()} underlineStyle={{display:"none"}} >
+                  <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                    <Menu value={this.props.item[header.id].join()} underlineStyle={{display:"none"}} >
                       <MenuItem value={this.props.item[header.id].join()} primaryText={this.props.item[header.id].join(", ")} style={{display:"none"}} />
                       {this.props.item[header.id].map((value)=>{
                         return <MenuItem key={value} primaryText={value} />;
                       })}
-                    </DropDownMenu>
-                  </TableRowColumn>);
+                    </Menu>
+                  </TableCell>);
               } else {
-                return (<TableRowColumn key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} ></TableRowColumn>);
+                return (<TableCell key={header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} ></TableCell>);
               }
 
             case "link":
               return (
-                <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+                <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
                   {Items.findOne({id:this.props.item[header.id]})[header.params.schema]}
                   {// Items.findOne({id:this.props.item[header.id]})[Schemas.findOne({id: this.props.item[header.id].link.schema, entity: this.props.item[header.id].link.entity}).id]
                   }
-                </TableRowColumn>
+                </TableCell>
               );
 
             default:
-              return (<TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>{this.props.item[header.id]}</TableRowColumn>);
+              return (<TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}}>{this.props.item[header.id]}</TableCell>);
 
             }
           } else if (header.showInList) {
             return (
-              <TableRowColumn key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} ></TableRowColumn>
+              <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} ></TableCell>
             );
           }
         })}
-        <TableRowColumn style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}}>
-          <IconButton onTouchTap={this.startEdit.bind(this)} ><Create color={blue500} /></IconButton>
-          <IconButton onTouchTap={this.deleteItem.bind(this)} ><Clear color={red500} /></IconButton>
-
-        </TableRowColumn>
       </TableRow>
     );
   }

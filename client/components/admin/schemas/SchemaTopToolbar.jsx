@@ -7,6 +7,8 @@ import formStore from "/client/flux/stores/formStore.js";
 
 import Form from "../../FormGenerator/Form.jsx";
 
+import {grey} from "material-ui/colors";
+import Typography from "material-ui/Typography";
 import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
 import Toolbar from "material-ui/Toolbar";
 import Menu, {MenuItem} from "material-ui/Menu";
@@ -74,7 +76,7 @@ export default class TopToolbarSchemas extends Component {
     if (entity) {
       return entity;
     } else {
-      return {name:""};
+      return {name:"Sélectionnez une entité"};
     }
   }
 
@@ -153,13 +155,13 @@ export default class TopToolbarSchemas extends Component {
     this.setState({entitiesMenu: true, anchorEl: event.currentTarget});
   }
 
-  onRequestClose() {
-    this.setState({entitiesMenu: false, anchorEl: undefined});
+  onRequestClose(item) {
+    this.setState({[item]: false, anchorEl: undefined});
   }
 
   selectEntity(entity) {
     adminActions.selectEntity(entity.id);
-    this.onRequestClose();
+    this.onRequestClose("entitiesMenu");
   }
 
   update() {
@@ -190,29 +192,21 @@ export default class TopToolbarSchemas extends Component {
       {type:"dropdown", name: "params.entity", label:language().schemas.newField.linkedSchema, options:this.entitiesArray(), condition(data) {
         if (data.type === "link") {
           return true;
-        } else {
-          return false;
         }
       }},
       {type:"dropdown", name: "params.field", label:language().schemas.newField.linkedField, options:this.schemasArray(), condition(data) {
         if (data.type === "link") {
           return true;
-        } else {
-          return false;
         }
       }},
       {type: "chip", name: "params.elements", label: language().schemas.newField.elements, condition(data) {
         if (data.type === "dropdown") {
           return true;
-        } else {
-          return false;
         }
       }},
       {type: "checkbox", name: "params.multi", label: language().schemas.newField.multi, condition(data) {
         if (data.type === "dropdown") {
           return true;
-        } else {
-          return false;
         }
       }}
     ];
@@ -223,7 +217,8 @@ export default class TopToolbarSchemas extends Component {
 
     return (
       <div>
-        <Toolbar style={{backgroundColor:"rgba(0,0,0,0.1)"}}>
+        <Toolbar style={{backgroundColor:grey[200]}}>
+          <Typography>{"Entité sélectionné: "}</Typography>
           <Button onClick={this.handleClick.bind(this)} >
             {this.entity().name}
           </Button>
@@ -242,7 +237,7 @@ export default class TopToolbarSchemas extends Component {
             <ContentAdd />
           </IconButton>
           <div style={{flex:1}}></div>
-          <Button onClick={this.newField.bind(this)} >
+          <Button color="accent" onClick={this.newField.bind(this)} >
             Nouveau champ
           </Button>
         </Toolbar>

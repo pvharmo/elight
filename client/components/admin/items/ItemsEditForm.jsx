@@ -4,12 +4,9 @@ import React, {Component} from "react";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
 import TextField from "material-ui/TextField";
 import Checkbox from "material-ui/Checkbox";
-import DatePicker from "material-ui/DatePicker";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import ChipInput from "material-ui-chip-input";
-import SuperSelectField from "material-ui-superselectfield";
-import FlatButton from "material-ui/FlatButton";
+import Menu, {MenuItem} from "material-ui/Menu";
+// import ChipInput from "material-ui-chip-input";
+import Button from "material-ui/Button";
 
 // Component that render each fields of the form that create a new item
 export default class ItemsEditForm extends Component {
@@ -116,7 +113,7 @@ export default class ItemsEditForm extends Component {
       return (
         <TableRow>
           <TableRowColumn><label htmlFor={this.props.schema.name}>{this.props.schema.name}</label></TableRowColumn>
-          <TableRowColumn><DatePicker
+          <TableRowColumn><TextField
             type={this.props.schema.type}
             id={"item-edit-form-" + this.props.schema.name}
             value={value}
@@ -133,7 +130,7 @@ export default class ItemsEditForm extends Component {
         <TableRow>
           <TableRowColumn><label htmlFor={this.props.schema.name}>{this.props.schema.name}</label></TableRowColumn>
           <TableRowColumn>
-            <DropDownMenu
+            <Menu
               id={"item-edit-form-" + this.props.schema.name}
               value={value}
               onChange={this.handleChangeDropdown.bind(this, "dropdown")}
@@ -143,7 +140,7 @@ export default class ItemsEditForm extends Component {
                   <MenuItem key={element} value={element} primaryText={element} />
                 );
               })}
-            </DropDownMenu>
+            </Menu>
           </TableRowColumn>
         </TableRow>
       );
@@ -176,7 +173,7 @@ export default class ItemsEditForm extends Component {
         </TableRow>
       );
 
-    case "tags":
+    /*case "tags":
       if (value === "") {
         value = [];
       }
@@ -191,14 +188,14 @@ export default class ItemsEditForm extends Component {
             />
           </TableRowColumn>
         </TableRow>
-      );
+      );*/
 
     case "link":
       return (
         <TableRow>
           <TableRowColumn><label htmlFor={this.props.schema.name}>{this.props.schema.name}</label></TableRowColumn>
           <TableRowColumn>
-            <DropDownMenu
+            <Menu
               id={"item-form-" + this.props.schema.name}
               value={value}
               onChange={this.handleChangeLink.bind(this, "link", this.props.schema.params.entity, this.props.schema.params.schema)}
@@ -211,7 +208,7 @@ export default class ItemsEditForm extends Component {
                     primaryText={element[this.props.schema.params.schema]} />
                 );
               })}
-            </DropDownMenu>
+            </Menu>
           </TableRowColumn>
         </TableRow>
       );
