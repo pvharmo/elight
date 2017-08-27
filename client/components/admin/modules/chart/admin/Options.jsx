@@ -2,24 +2,26 @@ import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../languages/languages.js";
+import formStore from "/client/flux/stores/formStore.js";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import Form from "/client/components/FormGenerator/Form.jsx";
+
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import DatePicker from "material-ui/DatePicker";
+import Menu, {MenuItem} from "material-ui/Menu";
+// import DatePicker from "material-ui/DatePicker";
 import Checkbox from "material-ui/Checkbox";
 import TextField from "material-ui/TextField";
 import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
+import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
-import Tune from "material-ui/svg-icons/image/tune";
+import Tune from "material-ui-icons/Tune";
 
 export default class Options extends TrackerReact(React.Component) {
 
   constructor(props) {
     super(props);
+
+    this.update = this.update.bind(this);
 
     this.state = {
       subscription: {
@@ -31,7 +33,8 @@ export default class Options extends TrackerReact(React.Component) {
       },
       action: "",
       autocreate: false,
-      xDialog: false
+      xDialog: false,
+      x: []
     };
   }
 
@@ -42,236 +45,128 @@ export default class Options extends TrackerReact(React.Component) {
     this.state.subscription.fields.stop();
   }
 
-  handleChangeAction(param, event, index, value) {
-    if (param === "schemas") {
-      var schemas = [];
-      this.schemas().map((schema)=>{
-        schemas.push(schema.id);
-      });
-      var matches = [];
-      value.map((val)=>{
-        if (schemas.includes(val)) {
-          matches.push(val);
-        }
-      });
-      value = matches;
-    }
-    this.setState({[param]: value});
-    Meteor.call("updateParams", this.props.id, value, "params." + param);
-  }
-
-  handleChange(param, event, value) {
-    Meteor.call("updateParams", this.props.id, value, "params." + param);
-  }
-
-  module() {
-    if (Modules.find({id: this.props.id}).fetch()[0] === undefined) {
-      return {
-        params: {
-          entity: "",
-          schema: [],
-          autocreate: false
-        }
-      };
-    } else {
-      return Modules.find({id: this.props.id}).fetch()[0];
-    }
-  }
-
   entities() {
     return Entities.find().fetch();
   }
 
-  schemas() {
-    return Schemas.find({entity:this.module().params.entity}).fetch();
+  entitiesOptions() {
+    var options = [];
+    for (var i = 0; i < this.entities().length; i++) {
+      options[i] = {};
+      options[i].value = this.entities()[i].id;
+      options[i].label = this.entities()[i].name;
+    }
+    return options;
   }
 
-  items() {
-    return Items.find({entity:this.module().params.entity}).fetch();
+  schemas(field) {
+    var options = [];
+    if (formStore.getData("params") && formStore.getData("params").params) {
+      var schemas = Schemas.find({entity:formStore.getData("params").params.entity}).fetch();
+      for (var i = 0; i < schemas.length; i++) {
+        options[i] = {};
+        options[i].value = schemas[i].id;
+        options[i].label = schemas[i].name;
+      }
+      if (field === "x") {
+        options.push({value: "_date", label:"Date"});
+      }
+      return options;
+    } else {
+      return [];
+    }
   }
 
-  handleClose(dialog) {
-    this.setState({[dialog]: false});
+  y() {
+    var options = [];
+    if (formStore.getData("params") && formStore.getData("params").params) {
+      var schemas = Schemas.find({entity:formStore.getData("params").params.entity}).fetch();
+      for (var i = 0; i < schemas.length; i++) {
+        if (schemas[i].type === "number") {
+          options.push({value:schemas[i].id, label: schemas[i].name});
+        }
+      }
+      return options;
+    } else {
+      return [];
+    }
   }
 
-  handleOpen(dialog) {
-    this.setState({[dialog]: true});
+  update() {
+    this.forceUpdate();
   }
 
   render() {
 
-    const xDialogActions = [];
+    const fields = [
+      {type: "dropdown", name: "params.entity", label: language().entity, options:this.entitiesOptions()},
+      {type: "dropdown", name: "params.x", label: language().x, options:this.schemas("x")},
+      {type: "dropdown", name: "params.groupByDate", label: "Grouper par", options:[
+        {value: "days", label: "Jours"},
+        {value: "daysOfWeek", label:"Jours de la semaine"},
+        {value: "months", label: "Mois"},
+        {value: "monthsOfYear", label: "Mois de l'année"},
+        {value: "years", label: "Années"}
+      ], condition(data) {
+        if (data.params.x === "_date") {
+          return true;
+        }
+      }},
+      {type: "date", name: "params.afterDate", label: "Après", condition(data) {
+        if (data.params.x === "_date") {
+          return true;
+        }
+      }},
+      {type: "date", name: "params.BeforeDate", label: "Avant", condition(data) {
+        if (data.params.x === "_date") {
+          return true;
+        }
+      }},
+      {type: "dropdown", name: "params.y", label: language().y, options:this.y()},
+      {type: "dropdown", name: "params.chartType", label: language().graphType, options:[
+        {value: "line", label: "Lignes"},
+        {value: "bar", label: "Barres"},
+        {value: "radar", label: "Radar"}
+      ]},
+      {type: "dropdown", name: "params.operation", label: "Opération", options:[
+        {value: "$sum", label: "Somme"},
+        {value: "$avg", label: "Moyenne"},
+        {value: "$first", label: "Premier enregistrement"},
+        {value: "$last", label: "Dernier enregistrement"},
+        {value: "$max", label: "Maximum"},
+        {value: "$min", label: "Minimum"}
+      ]},
+      {type: "dropdown", name: "params.chartLegend", label: language().chartLegend, options:this.schemas("chartLegend")},
+    ];
 
     return (
-      <div>
-        <MuiThemeProvider>
-          <Table selectable={false} >
-            <TableBody displayRowCheckbox={false} >
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right"}} >Source des données</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu
-                    value={this.module().params.valuesSource}
-                    onChange={this.handleChangeAction.bind(this, "valuesSource")}
-                    style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                    {/*<MenuItem value="Items" primaryText="Valeur actuelle des articles" />*/}
-                    <MenuItem value="History" primaryText="Historique des articles" />
-                    <MenuItem value="HistoryVariations" primaryText="Variation des valeurs des articles" />
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right"}} >{language().entity}</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu
-                    value={this.module().params.entity}
-                    onChange={this.handleChangeAction.bind(this, "entity")}
-                    style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                    {this.entities().map((entity)=>{
-                      return <MenuItem key={entity.id} value={entity.id} primaryText={entity.name} />;
-                    })}
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right"}} >{language().x}</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu
-                    value={this.module().params.x}
-                    onChange={this.handleChangeAction.bind(this, "x")}
-                    multiple={false}
-                    style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                    {this.schemas().map((schema)=>{
-                      return <MenuItem key={schema.id} value={schema.id} primaryText={schema.name} />;
-                    })}
-                    <MenuItem value="date" primaryText="Date" />
-                  </ DropDownMenu>
-                  {this.module().params.x === "date" &&
-                    <span>
-                      <IconButton onTouchTap={this.handleOpen.bind(this, "xDialog")} style={{verticalAlign:"middle", marginRight:"-8px"}} >
-                        <Tune />
-                      </IconButton>
-                      <Dialog open={this.state.xDialog} title={"Options"} actions={xDialogActions} onRequestClose={this.handleClose.bind(this, "xDialog")}>
-                        <Table selectable={false} >
-                          <TableBody displayRowCheckbox={false} >
-                            <TableRow style={{borderBottom: "none"}}>
-                              <TableRowColumn style={{textAlign:"right"}} >Interval régulier</TableRowColumn>
-                              <TableRowColumn>
-                                <Checkbox checked={true} disabled={true} />
-                              </TableRowColumn>
-                            </TableRow>
-                            <TableRow style={{borderBottom: "none"}}>
-                              <TableRowColumn style={{textAlign:"right"}} >Grouper par</TableRowColumn>
-                              <TableRowColumn>
-                                <DropDownMenu
-                                  value={this.module().params.groupByDate}
-                                  onChange={this.handleChangeAction.bind(this, "groupByDate")}
-                                  style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                                  <MenuItem value="days" primaryText="Jours" />
-                                  <MenuItem value="daysOfWeek" primaryText="Jours de la semaine" />
-                                  <MenuItem value="months" primaryText="Mois" />
-                                  <MenuItem value="monthsOfYear" primaryText="Mois de l'année" />
-                                  <MenuItem value="years" primaryText="Années" />
-                                </ DropDownMenu>
-                              </TableRowColumn>
-                            </TableRow>
-                            <TableRow style={{borderBottom: "none"}}>
-                              <TableRowColumn style={{textAlign:"right"}} >Grouper par</TableRowColumn>
-                              <TableRowColumn>
-                                <DatePicker id="afterDate" floatingLabelText={"Après"} value={this.module().params.afterDate} onChange={this.handleChange.bind(this, "afterDate")} />
-                                <DatePicker id="beforeDate" floatingLabelText={"Avant"} value={this.module().params.beforeDate} onChange={this.handleChange.bind(this, "beforeDate")} />
-                              </TableRowColumn>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </Dialog>
-                    </span>
-                  }
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right", borderBottom: "none"}} >{language().y}</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu
-                    value={this.module().params.y}
-                    onChange={this.handleChangeAction.bind(this, "y")}
-                    multiple={false}
-                    style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                    {this.schemas().map((schema)=>{
-                      return <MenuItem key={schema.id} value={schema.id} primaryText={schema.name} />;
-                    })}
-                    <MenuItem value="date" primaryText="Date" />
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right", borderBottom: "none"}} >{language().graphType}</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu
-                    value={this.module().params.chartType}
-                    onChange={this.handleChangeAction.bind(this, "chartType")}
-                    style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                    <MenuItem value="line" primaryText="Lignes" />
-                    <MenuItem value="bar" primaryText="Barres" />
-                    <MenuItem value="radar" primaryText="Radar" />
-                    {/*<MenuItem value="pie" primaryText="Secteurs" />*/}
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right"}} >Opération</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu
-                    value={this.module().params.operation}
-                    onChange={this.handleChangeAction.bind(this, "operation")}
-                    style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                    <MenuItem value="$sum" primaryText="Somme" />
-                    <MenuItem value="$avg" primaryText="Moyenne" />
-                    <MenuItem value="$first" primaryText="Première entrée" />
-                    <MenuItem value="$last" primaryText="Dernière entrée" />
-                    <MenuItem value="$max" primaryText="Maximum" />
-                    <MenuItem value="$min" primaryText="Minimum" />
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right", borderBottom: "none"}} >{language().chartLegend}</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu
-                    value={this.module().params.chartLegend}
-                    onChange={this.handleChangeAction.bind(this, "chartLegend")}
-                    style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                    {this.schemas().map((schema)=>{
-                      return <MenuItem key={schema.id} value={schema.id} primaryText={schema.name} />;
-                    })}
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              {(this.module().params.valuesSource === "HistoryVariations" || this.module().params.valuesSource === "History") &&
-                <TableRow style={{borderBottom: "none"}}>
-                  <TableRowColumn style={{textAlign:"right"}} >Article</TableRowColumn>
-                  <TableRowColumn>
-                    <DropDownMenu
-                      value={this.module().params.items}
-                      onChange={this.handleChangeAction.bind(this, "items")}
-                      multiple={true}
-                      style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                      {this.items().map((item)=>{
-                        if (this.schemas()[0]) {
-                          return <MenuItem key={item.id} value={item.id} primaryText={item[this.schemas()[0].id]} />;
-                        } else {
-                          return <div key={item.id}></div>;
-                        }
-                      })}
-                    </ DropDownMenu>
-                  </TableRowColumn>
-                </TableRow>
-              }
-            </TableBody>
-          </Table>
-        </MuiThemeProvider>
-      </div>
+      <Form formId={"params"} fields={fields} data={{}} update={this.update} />
     );
   }
 
 }
+
+// <Table selectable={false} >
+//   <TableBody displayRowCheckbox={false} >
+//     {(this.module().params.valuesSource === "HistoryVariations" || this.module().params.valuesSource === "History") &&
+//       <TableRow style={{borderBottom: "none"}}>
+//         <TableRowColumn style={{textAlign:"right"}} >Article</TableRowColumn>
+//         <TableRowColumn>
+//           <Menu
+//             value={this.module().params.items}
+//             onChange={this.handleChangeAction.bind(this, "items")}
+//             multiple={true}
+//             style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
+//             {this.items().map((item)=>{
+//               if (this.schemas()[0]) {
+//                 return <MenuItem key={item.id} value={item.id} primaryText={item[this.schemas()[0].id]} />;
+//               } else {
+//                 return <div key={item.id}></div>;
+//               }
+//             })}
+//           </ Menu>
+//         </TableRowColumn>
+//       </TableRow>
+//     }
+//   </TableBody>
+// </Table>

@@ -1,32 +1,29 @@
-/* global AggregationResult:true */
+
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
-import language from "../../../../../languages/languages";
+import language from "/client/languages/languages";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import moment from "moment";
 import _ from "lodash";
-import * as pageActions from "../../../../../flux/actions/PageActions";
+import * as pageActions from "/client/flux/actions/PageActions";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {cyan50, red500, blue500} from "material-ui/styles/colors";
-import {Card, CardActions, CardHeader, CardText, CardMedia} from "material-ui/Card";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
+import Grid from "material-ui/Grid";
+import {red, blue} from "material-ui/colors";
+import Card, {CardActions, CardHeader, CardContent} from "material-ui/Card";
+import Table, {TableBody, TableHead, TableRow, TableCell} from "material-ui/Table";
 import Snackbar from "material-ui/Snackbar";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
+import Menu, {MenuItem} from "material-ui/Menu";
 import Checkbox from "material-ui/Checkbox";
 import TextField from "material-ui/TextField";
-import RaisedButton from "material-ui/RaisedButton";
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
-import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
-import ArrowDropUp from "material-ui/svg-icons/navigation/arrow-drop-up";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import Done from "material-ui/svg-icons/action/done";
-import AvNotInterested from "material-ui/svg-icons/av/not-interested";
-import Clear from "material-ui/svg-icons/content/clear";
-import NavNext from "material-ui/svg-icons/image/navigate-next";
-import NavPrev from "material-ui/svg-icons/image/navigate-before";
+import ArrowDropDown from "material-ui-icons/ArrowDropDown";
+import ArrowDropUp from "material-ui-icons/ArrowDropUp";
+import Done from "material-ui-icons/Done";
+import AvNotInterested from "material-ui-icons/NotInterested";
+import Clear from "material-ui-icons/Clear";
+import NavNext from "material-ui-icons/NavigateNext";
+import NavPrev from "material-ui-icons/NavigateBefore";
 
 export default class FormWrapper extends TrackerReact(React.Component) {
 
@@ -151,14 +148,10 @@ export default class FormWrapper extends TrackerReact(React.Component) {
     this.dataRequest({id: "sort", value: {date:1}});
   }
 
-  handleDropdownChange(event, i, value) {
-    this.setState({page:value});
-    this.dataRequest({id: "page", value: value});
-  }
-
-  handleChange(event, i, value) {
-    this.setState({listSize:value});
-    this.dataRequest({id: "listSize", value: value});
+  handleChange(menu, key, value) {
+    this.setState({[key]:value});
+    this.dataRequest({id: key, value: value});
+    this.closeMenu(menu);
   }
 
   pageCount() {
@@ -174,27 +167,35 @@ export default class FormWrapper extends TrackerReact(React.Component) {
     pageActions.searchItem(this.props.module.id, this.data()[index]);
   }
 
+  openMenu(menu, event) {
+    this.setState({[menu]: true, anchorEl: event.currentTarget});
+  }
+
+  closeMenu(menu) {
+    this.setState({[menu]: false});
+  }
+
   cells(data, header, id) {
     if (data[header.id]) {
       switch (header.type) {
       case "date":
         var d = moment(data[header.id]);
-        return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{d.format("D/M/YYYY")}</TableRowColumn>;
+        return <TableCell key={id + header.id} style={{textAlign: "center"}} >{d.format("D/M/YYYY")}</TableCell>;
       case "checkbox":
         return (
-          <TableRowColumn key={id + header} >
+          <TableCell key={id + header.id} >
             <Checkbox
               checked={data[header.id]}
-              checkedIcon={<Done color={blue500} />}
-              uncheckedIcon={<AvNotInterested color={red500} />}
+              checkedIcon={<Done color={blue[500]} />}
+              uncheckedIcon={<AvNotInterested color={red[500]} />}
               style={{margin:"0 auto", width:"24px"}} />
-          </TableRowColumn>
+          </TableCell>
         );
       case "dropdown":
       case "tags":
         return (
-          <TableRowColumn key={id + header} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-            <DropDownMenu value={data[header.id].join()} underlineStyle={{display:"none"}} >
+          <TableCell key={id + header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
+            <Menu value={data[header.id].join()} underlineStyle={{display:"none"}} >
               <MenuItem
                 value={data[header.id].join()}
                 primaryText={data[header.id].join(", ")}
@@ -202,161 +203,114 @@ export default class FormWrapper extends TrackerReact(React.Component) {
               {data[header.id].map((value)=>{
                 return <MenuItem key={value} primaryText={value} />;
               })}
-            </DropDownMenu>
-          </TableRowColumn>
+            </Menu>
+          </TableCell>
         );
       case "link":
-        return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{Items.findOne({id: data[header.id], entity: header.params.entity})[header.params.schema]}</TableRowColumn>;
+        return <TableCell key={id + header.id} style={{textAlign: "center"}} >{Items.findOne({id: data[header.id], entity: header.params.entity})[header.params.schema]}</TableCell>;
       default:
-        return <TableRowColumn key={id + header} style={{textAlign: "center"}} >{data[header.id]}</TableRowColumn>;
+        return <TableCell key={id + header.id} style={{textAlign: "center"}} >{data[header.id]}</TableCell>;
       }
     } else {
-      return <TableRowColumn key={id + header} ></TableRowColumn>;
+      return <TableCell key={id + header.id} ></TableCell>;
     }
   }
 
   render() {
-    const reset = <div >{this.props.module.name} <RaisedButton label="Réinitialiser le tri" onTouchTap={this.resetSort.bind(this)} style={{marginLeft: "15px"}} /></div>;
+    const reset = <div >{this.props.module.name} <Button onClick={this.resetSort.bind(this)} style={{marginLeft: "15px"}} >Réinitialiser le tri</Button></div>;
     return (
-      <div>
-        <MuiThemeProvider>
-          <Card style={{width: "99%", margin: "1% auto"}}>
-            <CardHeader
-              title={reset}
-              titleStyle={{fontWeight: "400", fontSize: "24px"}}
-              style={{paddingBottom: "8px"}}
-            />
-            <CardText style={{paddingBottom: "8px"}} >
-              <Table selectable={true} onRowSelection={this.rowSelection.bind(this)} >
-                <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
-                  <TableRow>
-                    {this.props.module.params.showDate &&
-                      <TableRowColumn style={{textAlign: "center"}} >
-                        Date
-                        {this.state.sort["date"] == 1 ? (
+      <Grid item>
+        <Card style={{width: "99%", margin: "1% auto"}}>
+          <CardHeader
+            title={reset} />
+          <CardContent style={{paddingBottom: "8px"}} >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {this.columns().map((header) => {
+                    return (
+                      <TableCell key={header.id} style={{textAlign: "center"}} >
+                        {header.name}
+                        {this.state.sort["refItem." + header.name] == 1 ? (
                           <IconButton
-                            className={"btn-sort-up-date"}
-                            onTouchTap={this.sort.bind(this,-1, "date", "date")}
+                            className={"btn-sort-up-" + header.id}
+                            onClick={this.sort.bind(this,-1, header.name, "refItem")}
                             style={{padding:0, width:30, height: 30, verticalAlign: "middle"}} >
                             <ArrowDropUp />
                           </IconButton>
                         ) : (
                           <IconButton
-                            className={"btn-sort-down-date"}
-                            onTouchTap={this.sort.bind(this,1, "date", "date")}
+                            className={"btn-sort-down-" + header.id}
+                            onClick={this.sort.bind(this,1, header.name, "refItem")}
                             style={{padding:0, width: 30, height: 30,  verticalAlign: "middle"}} >
                             <ArrowDropDown />
                           </IconButton>
                         )}
-                      </TableRowColumn>
-                    }
-                    {this.columnsCurrent().map((header) => {
-                      return (
-                        <TableRowColumn key={header.id} style={{textAlign: "center"}} >
-                          {header.name}
-                          {this.state.sort["refItem." + header.name] == 1 ? (
-                            <IconButton
-                              className={"btn-sort-up-" + header.id}
-                              onTouchTap={this.sort.bind(this,-1, header.name, "refItem")}
-                              style={{padding:0, width:30, height: 30, verticalAlign: "middle"}} >
-                              <ArrowDropUp />
-                            </IconButton>
-                          ) : (
-                            <IconButton
-                              className={"btn-sort-down-" + header.id}
-                              onTouchTap={this.sort.bind(this,1, header.name, "refItem")}
-                              style={{padding:0, width: 30, height: 30,  verticalAlign: "middle"}} >
-                              <ArrowDropDown />
-                            </IconButton>
-                          )}
-                        </TableRowColumn>
-                      );
-                    })}
-                    {this.columns().map((header) => {
-                      return (
-                        <TableRowColumn key={header.id} style={{textAlign: "center"}} >
-                          {header.name}
-                          {(this.state.sort["modifications." + header.name] == 1 || this.state.sort["item" + header.name] == 1) ? (
-                            <IconButton
-                              className={"btn-sort-up-" + header.id}
-                              onTouchTap={this.sort.bind(this,-1, header.name, "history")}
-                              style={{padding:0, width:30, height: 30, verticalAlign: "middle"}} >
-                              <ArrowDropUp />
-                            </IconButton>
-                          ) : (
-                            <IconButton
-                              className={"btn-sort-down-" + header.id}
-                              onTouchTap={this.sort.bind(this,1, header.name, "history")}
-                              style={{padding:0, width: 30, height: 30,  verticalAlign: "middle"}} >
-                              <ArrowDropDown />
-                            </IconButton>
-                          )}
-                        </TableRowColumn>
-                      );
-                    })}
-                  </TableRow>
-                </TableHeader>
-                <TableBody displayRowCheckbox={false} >
-                  {this.data().map((data)=>{
-                    var id = data.id;
-                    var dataItem;
-                    if (this.props.module.params.valuesSource === "History") {
-                      dataItem = data.item;
-                    } else if (this.props.module.params.valuesSource === "HistoryVariations") {
-                      dataItem = data.modifications;
-                    } else {
-                      dataItem = data;
-                    }
-                    var d = moment(data.date);
-                    return (
-                      <TableRow key={id} hoverable={true} selectable={true} >
-                        <TableRowColumn style={{textAlign: "center"}} >{d.format("D/M/YYYY")}</TableRowColumn>;
-                        {this.columnsCurrent().map((header)=>{
-                          return this.cells(data.refItem, header, id);
-                        })}
-                        {this.columns().map((header)=>{
-                          return this.cells(dataItem, header, id);
-                        })}
-                      </TableRow>
+                      </TableCell>
                     );
                   })}
-                </TableBody>
-              </Table>
-            </CardText>
-            <CardActions>
-              <FlatButton
-                icon={<NavPrev />}
-                onTouchTap={this.changePage.bind(this, -1)}
-                disabled={this.state.page > 1 ? false : true}
-                style={{width: "30px", minWidth: "30px", marginLeft: "10px"}} />
-              <DropDownMenu
-                value={this.state.page}
-                onChange={this.handleDropdownChange.bind(this)}
-                style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
-                {this.pageCount().map((count)=>{
-                  return <MenuItem key={count} value={count} primaryText={count} />;
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.data().map((data)=>{
+                  return (
+                    <TableRow key={data.id} onClick={this.rowSelection.bind(this)} >
+                      {this.columns().map((header)=>{
+                        return this.cells(data, header, data.id);
+                      })}
+                    </TableRow>
+                  );
                 })}
-              </DropDownMenu>
-              <FlatButton
-                icon={<NavNext />}
-                disabled={Math.ceil(this.length()/this.state.listSize) - 1 < this.state.page ? true : false}
-                onTouchTap={this.changePage.bind(this, 1)}
-                style={{width: "40px", minWidth: "40px"}} />
-              <label >Articles par pages</label>
-              <DropDownMenu
-                value={this.state.listSize}
-                onChange={this.handleChange.bind(this)}
-                style={{verticalAlign:"middle", marginBottom:"10px"}} >
-                <MenuItem value={5} primaryText="5" />
-                <MenuItem value={10} primaryText="10" />
-                <MenuItem value={25} primaryText="25" />
-                <MenuItem value={50} primaryText="50" />
-                <MenuItem value={100} primaryText="100" />
-              </DropDownMenu>
-            </CardActions>
-          </Card>
-        </MuiThemeProvider>
-      </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+          <CardActions>
+            <IconButton
+              onClick={this.changePage.bind(this, -1)}
+              disabled={this.state.page > 1 ? false : true}
+              style={{width: "30px", minWidth: "30px", marginLeft: "10px"}} >
+              <NavPrev />
+            </ IconButton>
+            <Button
+              onClick={this.openMenu.bind(this, "pageCount")}
+              style={{width:40, minWidth:40}} >
+              {this.state.page}
+            </Button>
+            <Menu
+              open={this.state.pageCount}
+              anchorEl={this.state.anchorEl}
+              onRequestClose={this.closeMenu.bind(this, "pageCount")}
+              style={{verticalAlign:"middle", marginRight:"-8px", marginBottom:"10px"}} >
+              {this.pageCount().map((count)=>{
+                return <MenuItem key={count} onClick={this.handleChange.bind(this, "pageCount", "page", count)} >{count}</MenuItem>;
+              })}
+            </Menu>
+            <IconButton
+              disabled={Math.ceil(this.length()/this.state.listSize) - 1 < this.state.page ? true : false}
+              onClick={this.changePage.bind(this, 1)}
+              style={{width: "40px", minWidth: "40px"}} >
+              <NavNext />
+            </IconButton>
+            <label >Articles par pages</label>
+            <Button
+              onClick={this.openMenu.bind(this, "perPage")}
+              style={{width:60, minWidth:60}} >
+              {this.state.listSize}
+            </Button>
+            <Menu
+              open={this.state.perPage}
+              anchorEl={this.state.anchorEl}
+              onRequestClose={this.closeMenu.bind(this, "perPage")}
+              style={{verticalAlign:"middle", marginBottom:"10px"}} >
+              <MenuItem onClick={this.handleChange.bind(this, "perPage", "listSize", 5)}>5</MenuItem>
+              <MenuItem onClick={this.handleChange.bind(this, "perPage", "listSize", 10)}>10</MenuItem>
+              <MenuItem onClick={this.handleChange.bind(this, "perPage", "listSize", 20)}>20</MenuItem>
+              <MenuItem onClick={this.handleChange.bind(this, "perPage", "listSize", 50)}>50</MenuItem>
+              <MenuItem onClick={this.handleChange.bind(this, "perPage", "listSize", 100)}>100</MenuItem>
+            </Menu>
+          </CardActions>
+        </Card>
+      </Grid>
     );
   }
 }

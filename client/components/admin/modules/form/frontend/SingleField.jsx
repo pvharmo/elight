@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import language from "../../../../../languages/languages.js";
@@ -7,14 +7,8 @@ import language from "../../../../../languages/languages.js";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import AutoComplete from "material-ui/AutoComplete";
 import Checkbox from "material-ui/Checkbox";
 import TextField from "material-ui/TextField";
-import DatePicker from "material-ui/DatePicker";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import ContentAdd from "material-ui/svg-icons/content/add";
 
 export default class SingleField extends Component {
 
@@ -51,14 +45,11 @@ export default class SingleField extends Component {
         <TableRow>
           <TableRowColumn style={{textAlign:"right"}} >{this.props.field.name}</TableRowColumn>
           <TableRowColumn>
-            <AutoComplete
+            <TextField
               id={this.props.fieldConnection.id}
-              searchText={this.props.searchText}
-              onUpdateInput={this.handleUpdateInput}
-              dataSource={this.props.data(this.props.fieldConnection.id)}
-              openOnFocus={true}
+              onChange={this.handleChange}
+              value={value}
               errorText={errorText}
-              dataSourceConfig={{text: "value", value: "value"}}
             />
           </TableRowColumn>
         </TableRow>
@@ -106,7 +97,7 @@ export default class SingleField extends Component {
         <TableRow>
           <TableRowColumn style={{textAlign:"right"}} >{this.props.field.name}</TableRowColumn>
           <TableRowColumn>
-            <DatePicker
+            <TextField
               id={this.props.fieldConnection.id}
               onChange={this.handleChange}
               value={value}

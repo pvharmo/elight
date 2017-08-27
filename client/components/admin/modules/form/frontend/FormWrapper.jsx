@@ -6,18 +6,15 @@ import TrackerReact from "meteor/ultimatejs:tracker-react";
 import * as pageActions from "../../../../../flux/actions/PageActions";
 
 import SingleField from "./SingleField.jsx";
+import Form from "/client/components/FormGenerator/Form.jsx";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {Card, CardActions, CardHeader, CardText, CardMedia} from "material-ui/Card";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
+import Grid from "material-ui/Grid";
+import Card, {CardHeader, CardContent, CardActions} from "material-ui/Card";
 import Snackbar from "material-ui/Snackbar";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import RaisedButton from "material-ui/RaisedButton";
-import FloatingActionButton from "material-ui/FloatingActionButton";
+import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
-import Done from "material-ui/svg-icons/action/done";
-import Clear from "material-ui/svg-icons/content/clear";
+import Done from "material-ui-icons/Done";
+import Clear from "material-ui-icons/Clear";
 
 export default class FormWrapper extends TrackerReact(React.Component) {
 
@@ -212,55 +209,64 @@ export default class FormWrapper extends TrackerReact(React.Component) {
     this.setState({item:{},query:{}});
   }
 
-  render() {
+  fieldsForm() {
+    var fields = [];
+    for (var i = 0; i < this.fields().length; i++) {
+      fields[i] = {};
+      fields[i].type = this.fields()[i].type;
+      fields[i].name = this.fields()[i].connection;
+      fields[i].label = this.fields()[i].name;
+    }
+    return fields;
+  }
 
+  render() {
     return (
-      <div>
-        <MuiThemeProvider>
-          <Card style={{width: "99%", margin: "1% auto"}} >
-            <CardHeader
-              title={this.props.module.name}
-              titleStyle={{fontWeight: "400", fontSize: "24px"}}
-              style={{paddingBottom: "8px"}}
-            />
-            <CardText style={{paddingTop: "8px"}} >
-              <Table selectable={false} >
-                <TableBody displayRowCheckbox={false} >
-                  {this.fields().map((field,i)=>{
-                    var fieldConnection = Schemas.find({id:field.fieldConnection}).fetch()[0];
-                    return (<SingleField
-                      key={field.id}
-                      field={field}
-                      fieldConnection={fieldConnection}
-                      updateInput={this.updateInput}
-                      item={this.state.item}
-                      error={this.state.error[field.id]}
-                      searchText={this.state.item[field.id]}
-                      data={this.AutoCompleteData}
-                      handleChange={this.handleChange} />);
-                  })}
-                  <TableRow>
-                    <TableRowColumn style={{textAlign:"right"}} >{language().confirm}</TableRowColumn>
-                    <TableRowColumn>
-                      <RaisedButton onTouchTap={this.confirm} primary={true} icon={<Done />} />
-                      <RaisedButton onTouchTap={this.cancel} secondary={true} icon={<Clear />} style={{marginLeft:"15px"}} />
-                    </TableRowColumn>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardText>
-          </Card>
-        </MuiThemeProvider>
-        <MuiThemeProvider>
+      <Grid item xs={2} >
+        <Card style={{width:"auto"}} >
+          <CardHeader style={{width:"auto"}}
+            title={this.props.module.name} />
+          <CardContent style={{width:"auto"}}>
+            <Form formId={this.props.module.id} fields={this.fieldsForm()} data={{}} />
+          </CardContent>
+          <CardActions style={{width:"auto"}}>
+            <Button onClick={this.confirm}>
+              Confirmer
+            </Button>
+          </CardActions>
           <Snackbar
             open={this.state.openSnackbar}
             style={{textAlign:"center"}}
             bodyStyle={{minWidth:"60px"}}
-            message={<Done color="#FFF" style={{marginTop: "10px"}} />}
-          />
-        </MuiThemeProvider>
-      </div>
+            message={<Done color="#FFF" style={{marginTop: "10px"}} />} />
+        </Card>
+      </Grid>
     );
   }
 
 }
+
+/*<Table selectable={false} >
+  <TableBody displayRowCheckbox={false} >
+    {this.fields().map((field,i)=>{
+      var fieldConnection = Schemas.find({id:field.fieldConnection}).fetch()[0];
+      return (<SingleField
+        key={field.id}
+        field={field}
+        fieldConnection={fieldConnection}
+        updateInput={this.updateInput}
+        item={this.state.item}
+        error={this.state.error[field.id]}
+        searchText={this.state.item[field.id]}
+        data={this.AutoCompleteData}
+        handleChange={this.handleChange} />);
+    })}
+    <TableRow>
+      <TableRowColumn style={{textAlign:"right"}} >{language().confirm}</TableRowColumn>
+      <TableRowColumn>
+        <Button onTouchTap={this.confirm} primary={true} icon={<Done />} />
+        <Button onTouchTap={this.cancel} secondary={true} icon={<Clear />} style={{marginLeft:"15px"}} />
+      </TableRowColumn>
+    </TableRow>
+  </TableBody>
+</Table>*/

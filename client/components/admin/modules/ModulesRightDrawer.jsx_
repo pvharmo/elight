@@ -8,15 +8,12 @@ import nav from "../../../flux/stores/NavigationStore.js";
 import RightDrawer from "../rightDrawer/RightDrawer.jsx";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {red500,blue500} from "material-ui/styles/colors";
 import Dialog from "material-ui/Dialog";
 import {List, ListItem} from "material-ui/List";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
 import IconButton from "material-ui/IconButton";
 import TextField from "material-ui/TextField";
-import RemoveCircleOutline from "material-ui/svg-icons/content/remove-circle-outline";
-import Create from "material-ui/svg-icons/content/create";
+import RemoveCircleOutline from "material-ui-icons/RemoveCircleOutline";
+import Create from "material-ui-icons/Create";
 
 export default class ModulesRightDrawer extends TrackerReact(React.Component) {
 

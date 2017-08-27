@@ -8,6 +8,7 @@ export var en = {
   clear: "Effacer",
   close: "Fermer",
   confirm: "Confirmer",
+  delete: "Delete",
   done: "Fait",
   edit: "Edit",
   fieldConnection: "Connection",

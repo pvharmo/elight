@@ -8,19 +8,12 @@ import UsersRow from "./Row.jsx";
 import { Scrollbars } from "react-custom-scrollbars";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Dialog from "material-ui/Dialog";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow} from "material-ui/Table";
 import {Tabs, Tab} from "material-ui/Tabs";
 import IconButton from "material-ui/IconButton";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
 import TextField from "material-ui/TextField";
 import Checkbox from "material-ui/Checkbox";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
-import ArrowDropUp from "material-ui/svg-icons/navigation/arrow-drop-up";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import ContentAdd from "material-ui/svg-icons/content/add";
+import Button from "material-ui/Button";
 
 export default class Wrapper extends TrackerReact(React.Component) {
   constructor() {
@@ -47,7 +40,7 @@ export default class Wrapper extends TrackerReact(React.Component) {
     var height = window.innerHeight - 199;
 
     const alert = [
-      <FlatButton
+      <Button
         label={language().close}
         primary={true}
         keyboardFocused={true}

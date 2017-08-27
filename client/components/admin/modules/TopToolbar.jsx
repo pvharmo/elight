@@ -1,41 +1,35 @@
 
-import React, {Component} from "react";
+import React from "react";
+import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "/client/languages/languages.js";
-import * as NavigationActions from "../../../flux/actions/NavigationActions.js";
-import nav from "../../../flux/stores/NavigationStore.js";
 import moduleTypes from "/lib/moduleTypes.json";
+import * as adminActions from "/client/flux/actions/adminActions.js";
+import adminStore from "/client/flux/stores/adminStore.js";
+import formStore from "/client/flux/stores/formStore.js";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {cyan50, cyan500, red500, blue500, grey600} from "material-ui/styles/colors";
-import Dialog from "material-ui/Dialog";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from "material-ui/Toolbar";
-import TextField from "material-ui/TextField";
-import Checkbox from "material-ui/Checkbox";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import FlatButton from "material-ui/FlatButton";
+import Options from "./chart/admin/Options.jsx";
+import ModuleSettingsWrapper from "./ModuleSettingsWrapper.jsx";
+import Form from "/client/components/FormGenerator/Form.jsx";
+
+import {grey} from "material-ui/colors";
+import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
+import Toolbar from "material-ui/Toolbar";
+import Menu, {MenuItem} from "material-ui/Menu";
+import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
-import ContentAdd from "material-ui/svg-icons/content/add";
-import Info from "material-ui/svg-icons/action/info";
+import ContentAdd from "material-ui-icons/Add";
+import Create from "material-ui-icons/Create";
 
-export default class TopToolbarPages extends Component {
+export default class TopToolbarPages extends TrackerReact(React.Component) {
   constructor() {
     super();
 
-    this.changeTitle = this.changeTitle.bind(this);
-    this.cancelNewModule = this.cancelNewModule.bind(this);
+    this.editModule = this.editModule.bind(this);
 
-    if (Session.get("selected-page-name") === undefined) {
-      Session.set("selected-page-name", "");
-    }
+    adminStore.on("edit-module", this.editModule);
 
     this.state = {
-      /*subscription: {
-        moduleTypes: Meteor.subscribe("userModuleTypes"),
-      },*/
       advancedSearchDialog: false,
-      title: Session.get("selected-page-name"),
       dialog: false,
       newFieldType: "",
       alert: false,
@@ -43,17 +37,12 @@ export default class TopToolbarPages extends Component {
     };
   }
 
-  componentWillMount() {
-    nav.on("page-selected", this.changeTitle);
-  }
-
   componentWillUnmount() {
-    //this.state.subscription.moduleTypes.stop();
-    nav.removeListener("page-selected", this.changeTitle);
+    adminStore.removeListener("edit-module", this.editModule);
   }
 
-  changeTitle() {
-    this.setState({title: Session.get("selected-page-name")});
+  sections() {
+    return Pages.find().fetch();
   }
 
   modules() {
@@ -101,94 +90,167 @@ export default class TopToolbarPages extends Component {
   }
 
   moduleTypes() {
-    return moduleTypes.types;
+    var types = [];
+    for (var i = 0; i < moduleTypes.types.length; i++) {
+      types[i] = {};
+      types[i].value = moduleTypes.types[i].name;
+      types[i].label = moduleTypes.types[i].name;
+    }
+    return types;
   }
 
   closeAlert() {
     this.setState({alert: false});
   }
 
-  test() {
-    var testCount = this.state.testCount;
-    if (this.state.testCount < 3) {
-      testCount++;
-      this.setState({testCount});
+  section() {
+    var section = Pages.findOne({id: adminStore.getSections().section});
+    if (section) {
+      return section;
     } else {
-      Meteor.call("test");
-      this.setState({testCount: 0});
+      return {name:"Sélectionnez une section"};
+    }
+  }
+
+  handleClick(event) {
+    this.setState({sectionsMenu: true, anchorEl: event.currentTarget});
+  }
+
+  onRequestClose(item) {
+    this.setState({[item]: false, anchorEl: undefined});
+  }
+
+  selectSection(section) {
+    adminActions.selectSection(section.id);
+    this.onRequestClose("sectionsMenu");
+  }
+
+  editSection() {
+    this.setState({dialog: true, edit: true, section: true, title: language().pages.editPage});
+  }
+
+  newSection() {
+    this.setState({dialog: true, edit: false, section: true, title: language().pages.newPage});
+  }
+
+  editModule() {
+    this.setState({dialog: true, edit: true, section: false, title: adminStore.getSections().module.name});
+  }
+
+  newModule() {
+    this.setState({dialog: true, edit: false, section:false, title: language().pages.modules.newModule});
+  }
+
+  cancel() {
+    this.setState({dialog: false, edit: false, title: undefined});
+  }
+
+  delete() {
+    if (this.state.section) {
+      Meteor.call("deletePage", adminStore.getSections().section);
+    } else {
+      Meteor.call("deleteModule", adminStore.getSections().module.id);
+    }
+    this.cancel();
+  }
+
+  save() {
+    if (this.state.section) {
+      if (this.state.edit) {
+        Meteor.call("editPage", adminStore.getSections().section, formStore.getData("sections").name);
+        this.forceUpdate();
+      } else {
+        Meteor.call("newPage", formStore.getData().name);
+      }
+    } else {
+      if (this.state.edit) {
+        console.log(formStore.getData("params"));
+        Meteor.call("addParams", adminStore.getSections("sections").module.id, formStore.getData("params").params);
+      } else {
+        Meteor.call("newModule", formStore.getData("sections"), adminStore.getSections().section);
+      }
+    }
+    this.cancel();
+  }
+
+  fields() {
+    if (this.state.section) {
+      return [
+        {type: "text", name: "name", label: language().name}
+      ];
+    } else {
+      return [
+        {type: "text", name: "name", label: language().name},
+        {type: "dropdown", name: "type", label: language().type, options: this.moduleTypes()}
+      ];
+    }
+  }
+
+  data() {
+    if (this.state.edit) {
+      if (this.state.section) {
+        return Pages.findOne({id:adminStore.getSections().section});
+      }
+    } else {
+      return {};
     }
   }
 
   render() {
-
-    const actions = [
-      <FlatButton
-        label={language().cancel}
-        primary={true}
-        onTouchTap={this.cancelNewModule} />,
-      <FlatButton
-        label={language().save}
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={this.saveNewModule.bind(this)} />
-    ];
-
-    const alert = [
-      <FlatButton
-        label={language().close}
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={this.closeAlert.bind(this)}
-      />
-    ];
-
     return (
       <div>
-        <MuiThemeProvider>
-          <Toolbar>
-            <ToolbarGroup>
-              <ToolbarTitle text={this.state.title} />
-              <IconButton onTouchTap={this.newModule.bind(this)} tooltip={language().pages.modules.newModule} >
-                <ContentAdd color={cyan500} />
-              </IconButton>
-            </ToolbarGroup>
-          </Toolbar>
-        </MuiThemeProvider>
-        <MuiThemeProvider>
-          <Dialog open={this.state.dialog} actions={actions} >
-            <form>
-              <Table selectable={false} >
-                <TableBody displayRowCheckbox={false} >
-                  <TableRow>
-                    <TableRowColumn>
-                      <label>{language().schemas.list.name}</label>
-                    </TableRowColumn>
-                    <TableRowColumn>
-                      <TextField hintText={language().schemas.list.name} id="new-field-name" />
-                    </TableRowColumn>
-                  </TableRow>
-                  <TableRow>
-                    <TableRowColumn onTouchTap={this.test.bind(this)} >
-                      <label>{language().schemas.list.type}</label>
-                    </TableRowColumn>
-                    <TableRowColumn>
-                      <DropDownMenu value={this.state.newFieldType} onChange={this.handleChangeType.bind(this)} ref="type" >
-                        {this.moduleTypes().map((type)=>{
-                          return <MenuItem key={type.name} value={type.name} primaryText={type.name} />;
-                        })}
-                      </DropDownMenu>
-                    </TableRowColumn>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </form>
-          </Dialog>
-        </MuiThemeProvider>
-        <MuiThemeProvider>
-          <Dialog actions={alert} open={this.state.alert} >
-            Un article avec ces propriétés existe déjà.
-          </Dialog>
-        </MuiThemeProvider>
+        <Toolbar style={{backgroundColor:grey[200]}}>
+          <Button onClick={this.handleClick.bind(this)} >
+            {this.section().name}
+          </Button>
+          <Menu
+            open={this.state.sectionsMenu}
+            anchorEl={this.state.anchorEl}
+            onRequestClose={this.onRequestClose.bind(this, "sectionsMenu")} >
+            {this.sections().map((section)=>{
+              return <MenuItem key={section.id} onClick={this.selectSection.bind(this, section)} >{section.name}</MenuItem>;
+            })}
+          </Menu>
+          <IconButton onClick={this.editSection.bind(this)} color="primary"  >
+            <Create/>
+          </IconButton>
+          <IconButton onClick={this.newSection.bind(this)} color="primary" >
+            <ContentAdd />
+          </IconButton>
+          <div style={{flex:1}}></div>
+          <Button color="accent" onClick={this.newModule.bind(this)} >
+            Nouveau module
+          </Button>
+        </Toolbar>
+        <Dialog open={this.state.dialog} onRequestClose={this.onRequestClose.bind(this, "moduleDialog")} >
+          <DialogTitle>{this.state.title}</DialogTitle>
+          <DialogContent>
+            {this.state.edit && !this.state.section ? (
+              <ModuleSettingsWrapper params={{id:adminStore.getSections().module.id, type:adminStore.getSections().module.type}} />
+            ) : (
+              <Form formId="sections" fields={this.fields()} data={this.data()} />
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              color="primary"
+              onClick={this.cancel.bind(this)} >
+              {language().cancel}
+            </Button>
+            {this.state.edit &&
+              <Button
+                color="accent"
+                onClick={this.delete.bind(this)} >
+                {language().delete}
+              </Button>
+            }
+            <Button
+              color="primary"
+              onClick={this.save.bind(this)} >
+              {language().save}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

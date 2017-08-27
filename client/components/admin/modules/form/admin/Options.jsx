@@ -1,15 +1,11 @@
-/*jshint esversion: 6 */
+
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../languages/languages.js";
+import formStore from "/client/flux/stores/formStore.js";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import Checkbox from "material-ui/Checkbox";
-import TextField from "material-ui/TextField";
+import Form from "/client/components/FormGenerator/Form.jsx";
 
 export default class Options extends TrackerReact(React.Component) {
 
@@ -58,35 +54,25 @@ export default class Options extends TrackerReact(React.Component) {
     }
   }
 
+  update() {
+    this.forceUpdate();
+  }
+
   render() {
+    const fields = [
+      {type: "dropdown", name: "params.action", label: language().actionOnConfirm, options: [
+        {value: "search", label: "Recherche"},
+        {value: "modifyItem", label: "Modifier l'enregistrement"}
+      ]},
+      {type: "checkbox", name: "params.autocreate", label: language().autocreate, condition(data) {
+        if (data.params.action === "modifyItem") {
+          return true;
+        }
+      }}
+    ];
+
     return (
-      <div>
-        <MuiThemeProvider>
-          <Table selectable={false} >
-            <TableBody displayRowCheckbox={false} >
-              <TableRow>
-                <TableRowColumn style={{textAlign:"right"}} >{language().actionOnConfirm}</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu value={this.module().params.action} onChange={this.handleChangeAction} >
-                    <MenuItem value="search" primaryText="Recherche" />
-                    <MenuItem value="modifyItem" primaryText="Modifier l'article" />
-                    {/*<MenuItem value="createItem" primaryText="Create item" />
-                    <MenuItem value="deleteItem" primaryText="Delete item" />*/}
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              {this.module().params.action === "modifyItem" &&
-                <TableRow>
-                  <TableRowColumn style={{textAlign:"right"}} >{language().autocreate}</TableRowColumn>
-                  <TableRowColumn >
-                    <Checkbox checked={this.module().params.autocreate} onCheck={this.handleCheck} />
-                  </TableRowColumn>
-                </TableRow>
-              }
-            </TableBody>
-          </Table>
-        </MuiThemeProvider>
-      </div>
+      <Form formId="params" fields={fields} data={{}} update={this.update.bind(this)} />
     );
   }
 

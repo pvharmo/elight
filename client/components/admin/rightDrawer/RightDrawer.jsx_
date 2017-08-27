@@ -1,0 +1,172 @@
+/*jshint esversion: 6 */
+import React, {Component} from "react";
+import language from "../../../languages/languages.js";
+import * as NavigationActions from "../../../flux/actions/NavigationActions.js";
+import nav from "../../../flux/stores/NavigationStore.js";
+
+import SchemasRightDrawer from "../schemas/SchemasRightDrawer.jsx";
+import ItemsRightDrawer from "../items/ItemsRightDrawer.jsx";
+import ModulesRightDrawer from "../modules/ModulesRightDrawer.jsx";
+import Elements from "./Elements.jsx";
+
+import {blue} from "material-ui/colors";
+import Drawer from "material-ui/Drawer";
+import Dialog from "material-ui/Dialog";
+import Button from "material-ui/Button";
+import {List, ListItem} from "material-ui/List";
+import Menu, {MenuItem} from "material-ui/Menu";
+import TextField from "material-ui/TextField";
+import IconButton from "material-ui/IconButton";
+import ChevronLeft from "material-ui-icons/ChevronLeft";
+import ChevronRight from "material-ui-icons/ChevronRight";
+import RemoveCircleOutline from "material-ui-icons/RemoveCircleOutline";
+import Create from "material-ui-icons/Create";
+
+export default class rightDrawer extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      "rightDrawer": false,
+      "edit": false
+    };
+  }
+
+  openRightDrawer() {
+    var rightDrawerState = this.state.rightDrawer;
+    this.setState({
+      "rightDrawer": !rightDrawerState
+    });
+    var button = document.getElementsByClassName("open-right-drawer-button")[0];
+    var chevronLeft = document.getElementsByClassName("chevron-left-open-right-drawer-button")[0];
+    var chevronRight = document.getElementsByClassName("chevron-right-open-right-drawer-button")[0];
+    if (button.style.right != "320px") {
+      button.style.right = "320px";
+      chevronLeft.style.display = "none";
+      chevronRight.style.display = "inline-block";
+    } else {
+      button.style.right = "20px";
+      chevronLeft.style.display = "inline-block";
+      chevronRight.style.display = "none";
+    }
+  }
+
+  elements() {
+    return this.state.drawerElements.body;
+  }
+
+  handleTouch(event, value) {
+    this.props.onSelectListItem(value);
+    if (window.innerWidth <= 1600) {
+      this.openRightDrawer();
+    }
+  }
+
+  handleEditItem(id) {
+    this.setState({edit: true, id});
+    this.props.onEditItem(id);
+  }
+
+  handleChange(event, value) {
+    if (this.props.onNewItemTextChange) {
+      this.props.onNewItemTextChange(value);
+    }
+  }
+
+  newItem() {
+    this.props.newItem();
+  }
+
+  handleClose() {
+    this.setState({edit: false});
+  }
+
+  save() {
+    this.handleClose();
+    if (this.props.saveEdited) {
+      this.props.saveEdited(this.state.id);
+    }
+  }
+
+  deleteItem() {
+    // var prompt = confirm("Êtes-vous sûr de vouloir supprimer ce schéma?");
+    // if (prompt) {
+    this.handleClose();
+    //   if (this.props.deleteItem) {
+    this.props.deleteItem(this.state.id);
+    //   }
+    // }
+  }
+
+  render() {
+
+    var windowWidth = window.innerWidth;
+
+    const styles = {
+      position: "fixed",
+      right: "20px",
+      bottom: "20px"
+    };
+
+    const actions = [
+      <Button
+        label={language().cancel}
+        primary={true}
+        onClick={this.handleClose.bind(this)}
+      />,
+      <Button
+        label={language().submit}
+        primary={true}
+        keyboardFocused={true}
+        onClick={this.save.bind(this)}
+      />,
+      <Button
+        label={"Supprimer"}
+
+        onClick={this.deleteItem.bind(this)} />
+    ];
+
+    return (
+      <div>
+        {windowWidth > 1600 ? true : (
+          <Button fab color="accent" aria-label="ouvrir" onClick={this.openRightDrawer.bind(this)} style={styles} >
+            <ChevronLeft className="chevron-left-open-right-drawer-button" />
+            <ChevronRight className="chevron-right-open-right-drawer-button" style={{display: "none"}} />
+          </Button>
+        )}
+        <Drawer
+          anchor="right"
+          width={300}
+          open={windowWidth > 1600 ? true : this.state.rightDrawer} >
+          <div>
+            {this.props.newItem && (<Button label={this.props.newButtonText} fullWidth={true} onClick={this.newItem.bind(this)} />)}
+            <Menu value={this.props.activeItem} onChange={this.handleTouch.bind(this)} disableAutoFocus={true} >
+              {this.props.list.map((item)=>{
+                var itemId;
+                if (!item.id) {
+                  itemId = item._id;
+                } else {
+                  itemId = item.id;
+                }
+                return (
+                  <MenuItem key={itemId}
+                    value={itemId}
+                    primaryText={item.name}
+
+                    rightIcon={this.props.edit ? (
+                      <IconButton onClick={this.handleEditItem.bind(this, itemId)} style={{padding:0}} ><Create color={blue[500]} /></IconButton>
+                    ) : (
+                      <div></div>
+                    )} />
+                );
+              })}
+            </Menu>
+            <Dialog title={this.props.dialogTitle} open={this.state.edit} actions={actions} >
+              {this.props.editDialog}
+            </Dialog>
+          </div>
+        </Drawer>
+      </div>
+    );
+  }
+}

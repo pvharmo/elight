@@ -1,14 +1,11 @@
+
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../languages/languages.js";
+import formStore from "/client/flux/stores/formStore";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import Checkbox from "material-ui/Checkbox";
-import TextField from "material-ui/TextField";
+import Form from "/client/components/FormGenerator/Form.jsx";
 
 export default class Options extends TrackerReact(React.Component) {
 
@@ -87,71 +84,46 @@ export default class Options extends TrackerReact(React.Component) {
     return Entities.find().fetch();
   }
 
+  entitiesOptions() {
+    var options = [];
+    for (var i = 0; i < this.entities().length; i++) {
+      options[i] = {};
+      options[i].value = this.entities()[i].id;
+      options[i].label = this.entities()[i].name;
+    }
+    return options;
+  }
+
   schemas() {
-    return Schemas.find({entity:this.module().params.entity}).fetch();
+    var options = [];
+    if (formStore.getData("params") && formStore.getData("params").params) {
+      var schemas = Schemas.find({entity:formStore.getData("params").params.entity}).fetch();
+      for (var i = 0; i < schemas.length; i++) {
+        options[i] = {};
+        options[i].value = schemas[i].id;
+        options[i].label = schemas[i].name;
+      }
+      return options;
+    } else {
+      return [];
+    }
+  }
+
+  update() {
+    this.forceUpdate();
   }
 
   render() {
+
+    const fields = [
+      {type: "dropdown", name: "params.entity", label: language().entity, options: this.entitiesOptions()},
+      {type: "dropdown", name: "params.schemas", label: language().schemas, options: this.schemas(), multi: true}
+    ];
+
     return (
       <div>
-        <MuiThemeProvider>
-          <Table selectable={false} >
-            <TableBody displayRowCheckbox={false} >
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right"}} >Source des données</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu value={this.module().params.valuesSource} onChange={this.handleChangeAction.bind(this, "valuesSource")} >
-                    <MenuItem value="Items" primaryText="Valeur actuelle des articles" />
-                    <MenuItem value="History" primaryText="Historique des articles" />
-                    <MenuItem value="HistoryVariations" primaryText="Variation des valeurs des articles" />
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right"}} >{language().entity}</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu value={this.module().params.entity} onChange={this.handleChangeAction.bind(this, "entity")} >
-                    {this.entities().map((entity)=>{
-                      return <MenuItem key={entity.id} value={entity.id} primaryText={entity.name} />;
-                    })}
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "none"}}>
-                <TableRowColumn style={{textAlign:"right"}} >{language().schemas}</TableRowColumn>
-                <TableRowColumn>
-                  <DropDownMenu value={this.module().params.schemas} onChange={this.handleChangeAction.bind(this, "schemas")} multiple={true} >
-                    {this.schemas().map((schema)=>{
-                      return <MenuItem key={schema.id} value={schema.id} primaryText={schema.name} />;
-                    })}
-                  </ DropDownMenu>
-                </TableRowColumn>
-              </TableRow>
-              {(this.module().params.valuesSource === "HistoryVariations" || this.module().params.valuesSource === "History") &&
-                <TableRow style={{borderBottom: "none"}}>
-                  <TableRowColumn style={{textAlign:"right"}} >{language().schemas} (valeurs actuelles)</TableRowColumn>
-                  <TableRowColumn>
-                    <DropDownMenu value={this.module().params.schemasCurrent} onChange={this.handleChangeAction.bind(this, "schemasCurrent")} multiple={true} >
-                      {this.schemas().map((schema)=>{
-                        return <MenuItem key={schema.id} value={schema.id} primaryText={schema.name} />;
-                      })}
-                    </ DropDownMenu>
-                  </TableRowColumn>
-                </TableRow>
-              }
-              {(this.module().params.valuesSource === "HistoryVariations" || this.module().params.valuesSource === "History") &&
-                <TableRow style={{borderBottom: "none"}}>
-                  <TableRowColumn style={{textAlign:"right"}} >Montrer la date de la modification</TableRowColumn>
-                  <TableRowColumn>
-                    <Checkbox checked={this.module().params.showDate} onCheck={this.handleCheck.bind(this, "showDate")} multiple={true} />
-                  </TableRowColumn>
-                </TableRow>
-              }
-            </TableBody>
-          </Table>
-        </MuiThemeProvider>
+        <Form formId="params" fields={fields} data={this.props.module} update={this.update.bind(this)} />
       </div>
     );
   }
-
 }
