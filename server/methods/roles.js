@@ -1,18 +1,20 @@
 Meteor.methods({
-  newRole(name) {
-    Roles.insert({
-      id: new Meteor.Collection.ObjectID()._str,
-      name,
-      app: Meteor.users.findOne({_id:this.userId}).selectedApp
-    });
+  newRole(role) {
+    role.id = new Meteor.Collection.ObjectID()._str;
+    role.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+    Roles.insert(role);
   },
 
-  deleteRole(_id) {
-    Roles.remove({_id});
+  deleteRole(id) {
+    Roles.remove({id, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
   },
 
   saveRole(role) {
     role.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
-    Roles.update({_id:role._id}, role);
+    Roles.update({id:role.id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, role);
+  },
+
+  toggleActive(id, checked) {
+    Roles.update({id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set: {active: checked}});
   }
 });

@@ -71,5 +71,56 @@ Meteor.methods({
       params[field] = value;
       Modules.update({id:id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:params});
     }
+  },
+
+  newFormField(field, module) {
+    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
+      throw new Meteor.Error("not-authorized");
+    } else {
+      field.module = module;
+      field.id = new Meteor.Collection.ObjectID()._str;
+      field.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+      Fields.insert(field);
+    }
+  },
+
+  updateField(id, newValue) {
+    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
+      throw new Meteor.Error("not-authorized");
+    } else {
+      Fields.update({id:id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:newValue});
+    }
+  },
+
+  moveUpField(id, orderNumber, pageName) {
+    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
+      throw new Meteor.Error("not-authorized");
+    } else {
+      id.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+      var orderItemOver = orderNumber - 1;
+      var itemOver = Fields.findOne({order: orderItemOver, module: pageName, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
+      Fields.update({id}, {
+        $set : {order: orderItemOver}
+      });
+      Fields.update(itemOver, {
+        $set : {order: orderNumber}
+      });
+    }
+  },
+
+  moveDownField(id,orderNumber, pageName) {
+    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
+      throw new Meteor.Error("not-authorized");
+    } else {
+      id.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+      var orderItemUnder = orderNumber + 1;
+      var itemUnder = Fields.find({order: orderItemUnder, module: pageName, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
+      Fields.update({id}, {
+        $set : {order: orderItemUnder}
+      });
+      Fields.update(itemUnder[0], {
+        $set : {order: orderNumber}
+      });
+    }
   }
 });

@@ -2,21 +2,21 @@ Meteor.methods({
   datatableRequest(options, module) {
     let skip = options.listSize * (options.page - 1);
     let links = Schemas.find({type: "link", entity: module.params.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
-    let lookup = {
+    /*let lookup = {
       from: "items",
-      localField: "refItem." + links[0].id,
+      localField: links[0].id,
       foreignField: "id",
       as: links[0].id
-    };
+    };*/
     let aggregation = History.aggregate([
       {
         $match: {
           app: Meteor.users.findOne({_id:this.userId}).selectedApp,
           "refItem.entity": module.params.entity
         }
-      }, {
+      }, /*{
         $lookup: lookup
-      }, {
+      }, */{
         $sort: options.sort
       }, {
         $skip: skip

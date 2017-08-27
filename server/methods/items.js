@@ -46,11 +46,11 @@ Meteor.methods({
     }
   },
 
-  updateItem(id,item) {
+  updateItem(item) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
-      Items.update({id:id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set: item});
+      Items.update({id:item.id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set: item});
     }
   },
 

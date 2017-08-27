@@ -1,12 +1,4 @@
 Meteor.methods({
-  onLogin() {
-    //Meteor.users.findOne({_id:this.userId}).selectedApp = Meteor.users.findOne({_id:this.userId}).Meteor.users.findOne({_id:this.userId}).selectedApp;
-    Meteor.users.update({_id:Meteor.userId()}, {$set:{"login": true}});
-  },
-
-  onLogout() {
-    Meteor.users.update({_id:Meteor.userId()}, {$set:{"login": false}});
-  },
 
   sendVerificationLink() {
     let userId = Meteor.userId();
@@ -32,16 +24,16 @@ Meteor.methods({
     }
   },
 
-  idleTimer() {
-    var userId = Meteor.userId();
-
-    Meteor.clearTimeout(timer);
-    var timer = Meteor.setTimeout(function () {
-      //Meteor.users.update({_id: userId}, {$set : { "services.resume.loginTokens" : [] }});
-      Meteor.users.update({_id:userId}, {$set:{"services.resume.loginTokens": []}});
-      return true;
-    }, 1850000);
-  },
+  // idleTimer() {
+  //   var userId = Meteor.userId();
+  //
+  //   Meteor.clearTimeout(timer);
+  //   var timer = Meteor.setTimeout(function () {
+  //     //Meteor.users.update({_id: userId}, {$set : { "services.resume.loginTokens" : [] }});
+  //     Meteor.users.update({_id:userId}, {$set:{"services.resume.loginTokens": []}});
+  //     return true;
+  //   }, 1850000);
+  // },
 
   importItems(keys, items) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {

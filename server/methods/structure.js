@@ -1,19 +1,17 @@
 Meteor.methods({
-  newSchema(entity) {
+  newEntity(entity) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
       var id = new Meteor.Collection.ObjectID()._str;
-      Entities.insert({
-        id,
-        name: entity,
-        app : Meteor.users.findOne({_id:this.userId}).selectedApp
-      });
+      entity.id = id;
+      entity.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+      Entities.insert(entity);
       return id;
     }
   },
 
-  deleteSchema(entity) {
+  deleteEntity(entity) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
@@ -30,6 +28,23 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     } else {
       Entities.update({id:id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:{name:name}});
+    }
+  },
+
+  moveField(idDrop, idDrag) {
+    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
+      throw new Meteor.Error("not-authorized");
+    } else {
+      const app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+      var orderDrop = Schemas.findOne({id: idDrop, app}).order;
+      var orderDrag = Schemas.findOne({id: idDrag, app}).order;
+
+      if (orderDrop < orderDrag) {
+        Schemas.update({order: {$gte:orderDrop, $lt:orderDrag}, app}, {$inc: {order: 1}}, {multi:true});
+      } else if (orderDrop > orderDrag) {
+        Schemas.update({order: {$gt:orderDrag, $lte:orderDrop}, app}, {$inc: {order: -1}}, {multi:true});
+      }
+      Schemas.update({id:idDrag, app}, {$set: {order: orderDrop}});
     }
   },
 
@@ -82,7 +97,7 @@ Meteor.methods({
   },
 
   // Create a new field
-  addField(showInList, fieldName, fieldType, entity, entityName, params) {
+  newField(field, entity) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
@@ -96,30 +111,24 @@ Meteor.methods({
 
       var id = new Meteor.Collection.ObjectID()._str;
 
-      Schemas.insert({
-        id,
-        name: fieldName,
-        type: fieldType,
-        params: params,
-        showInList: showInList,
-        order: highestOrder,
-        entity: entity,
-        entityName: entityName,
-        app: Meteor.users.findOne({_id:this.userId}).selectedApp
-      });
+      field.id = id;
+      field.order = highestOrder;
+      field.entity = entity;
+      field.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+
+      Schemas.insert(field);
     }
   },
 
   // Delete field
-  deleteField(id,ordern,entity) {
+  deleteField(field) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
-      var FieldName = Schemas.findOne({id});
-      var queryUpdate = {order: {$gt:ordern,$lt:2000}, entity: entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp};
+      var queryUpdate = {order: {$gt:field.order}, entity: field.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp};
       Schemas.update(queryUpdate,{$inc: {order:-1}},{multi:true});
-      Schemas.remove({id, app:Meteor.users.findOne({_id:this.userId}).selectedApp});
-      Fields.remove({fieldConnection: FieldName.id, fieldConnectionEntity: FieldName.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
+      Schemas.remove({id: field.id, app:Meteor.users.findOne({_id:this.userId}).selectedApp});
+      Fields.remove({fieldConnection: field.id, fieldConnectionEntity: field.entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
     }
   },
 

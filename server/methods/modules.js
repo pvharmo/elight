@@ -43,76 +43,40 @@ Meteor.methods({
     }
   },
 
-  addModule(fieldName, fieldType, pageName) {
+  newModule(module, page) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
-      var highestOrder;
+      var id = new Meteor.Collection.ObjectID()._str;
+      var order = 1;
 
-      if(Modules.find({page: pageName}).fetch().length >= 1) {
-        highestOrder = Modules.findOne({page: pageName, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {sort: {order:-1}, skip: 0}).order + 1;
-      } else {
-        highestOrder = 1;
+      if(Modules.find({page}).fetch().length >= 1) {
+        order = Modules.findOne({page, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {sort: {order:-1}, skip: 0}).order + 1;
       }
 
-      var id = new Meteor.Collection.ObjectID()._str;
-      Modules.insert({
-        id,
-        name : fieldName,
-        type : fieldType,
-        order : highestOrder,
-        page : pageName,
-        params : {},
-        app : Meteor.users.findOne({_id:this.userId}).selectedApp
-      });
+      module.order = order;
+      module.page = page;
+      module.id = id;
+      module.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+
+      Modules.insert(module);
     }
   },
 
-  moveUpModule(id, orderNumber, pageName) {
+  moveModule(idDrop, idDrag) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
-      id.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
-      var orderItemOver = orderNumber - 1;
-      var itemOver = Modules.findOne({order: orderItemOver, page: pageName, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
-      Modules.update({id}, {
-        $set : {order: orderItemOver}
-      }, function(err) {
-        if (err) {
-          console.error(err);
-        }
-      });
-      Modules.update(itemOver, {
-        $set : {order: orderNumber}
-      }, function(err) {
-        if (err) {
-          console.error(err);
-        }
-      });
-    }
-  },
+      const app = Meteor.users.findOne({_id:this.userId}).selectedApp;
+      var orderDrop = Modules.findOne({id: idDrop, app}).order;
+      var orderDrag = Modules.findOne({id: idDrag, app}).order;
 
-  moveDownModule(id,orderNumber, pageName) {
-    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
-      throw new Meteor.Error("not-authorized");
-    } else {
-      id.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
-      var orderItemUnder = orderNumber + 1;
-      var itemUnder = Modules.findOne({order: orderItemUnder, page: pageName, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
-      Modules.update({id}, {
-        $set : {order: orderItemUnder}
-      }, function(err) {
-        if (err) {
-          console.error(err);
-        }
-      });
-      Modules.update(itemUnder, {
-        $set : {order: orderNumber}
-      }, function(err) {
-        if (err) {
-          console.error(err);
-        }
-      });
+      if (orderDrop < orderDrag) {
+        Modules.update({order: {$gte:orderDrop, $lt:orderDrag}, app}, {$inc: {order: 1}}, {multi:true});
+      } else if (orderDrop > orderDrag) {
+        Modules.update({order: {$gt:orderDrag, $lte:orderDrop}, app}, {$inc: {order: -1}}, {multi:true});
+      }
+      Modules.update({id:idDrag, app}, {$set: {order: orderDrop}});
     }
   },
 
@@ -143,56 +107,6 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     } else {
       Modules.update({id:id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:{params:params}});
-    }
-  },
-
-  newField(field) {
-    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
-      throw new Meteor.Error("not-authorized");
-    } else {
-      field.id = new Meteor.Collection.ObjectID()._str;
-      field.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
-      Fields.insert(field);
-    }
-  },
-
-  updateField(id, newValue) {
-    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
-      throw new Meteor.Error("not-authorized");
-    } else {
-      Fields.update({id:id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:newValue});
-    }
-  },
-
-  moveUpField(id, orderNumber, pageName) {
-    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
-      throw new Meteor.Error("not-authorized");
-    } else {
-      id.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
-      var orderItemOver = orderNumber - 1;
-      var itemOver = Fields.findOne({order: orderItemOver, module: pageName, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
-      Fields.update({id}, {
-        $set : {order: orderItemOver}
-      });
-      Fields.update(itemOver, {
-        $set : {order: orderNumber}
-      });
-    }
-  },
-
-  moveDownField(id,orderNumber, pageName) {
-    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
-      throw new Meteor.Error("not-authorized");
-    } else {
-      id.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
-      var orderItemUnder = orderNumber + 1;
-      var itemUnder = Fields.find({order: orderItemUnder, module: pageName, app: Meteor.users.findOne({_id:this.userId}).selectedApp}).fetch();
-      Fields.update({id}, {
-        $set : {order: orderItemUnder}
-      });
-      Fields.update(itemUnder[0], {
-        $set : {order: orderNumber}
-      });
     }
   }
 });
