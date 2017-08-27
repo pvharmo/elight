@@ -13,16 +13,11 @@ import Papa from "babyparse";
 import {moment} from "moment";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import {cyan50, red500, blue500} from "material-ui/styles/colors";
+import Table, {TableBody, TableRow, TableCell} from "material-ui/Table";
 import IconButton from "material-ui/IconButton";
-import Dialog from "material-ui/Dialog";
-import Toggle from "material-ui/Toggle";
+import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
 import TextField from "material-ui/TextField";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import Create from "material-ui/svg-icons/content/create";
-import Done from "material-ui/svg-icons/action/done";
+import Button from "material-ui/Button";
 
 export default class ImportApp extends TrackerReact(React.Component) {
 
@@ -43,8 +38,7 @@ export default class ImportApp extends TrackerReact(React.Component) {
         apps: Meteor.subscribe("userApps")
       },
       editEmail: false,
-      email: "",
-      toggle: nav.getUser().admin
+      email: ""
     };
   }
 
@@ -133,41 +127,38 @@ export default class ImportApp extends TrackerReact(React.Component) {
   }
 
   render() {
-    const actions = [
-      <FlatButton
-        label={language().cancel}
-        primary={true}
-        onTouchTap={this.cancel} />,
-      <FlatButton
-        label={language().confirm}
-        primary={true}
-        onTouchTap={this.import} />
-    ];
     return (
-      <MuiThemeProvider>
-        <Dialog
-          open={this.props.open}
-          onRequestClose={this.cancel}
-          actions={actions}
-          title="Importer" >
-          <Table selectable={false} >
-            <TableBody displayRowCheckbox={false} >
-              <TableRow style={{borderBottom: "0px none"}} >
-                <TableRowColumn  style={{textAlign:"right"}} >Importer des articles</TableRowColumn>
-                <TableRowColumn >
-                  <input id="file-items" type="file" />
-                </TableRowColumn>
-              </TableRow>
-              {/*<TableRow style={{borderBottom: "0px none"}} >
-                <TableRowColumn  style={{textAlign:"right"}} >Importer une application</TableRowColumn>
-                <TableRowColumn >
-                  <input id="files-app" type="file" />
-                </TableRowColumn>
-              </TableRow>*/}
-            </TableBody>
-          </Table>
-        </Dialog>
-      </MuiThemeProvider>
+      <Dialog
+        open={this.props.open}
+        onRequestClose={this.cancel} >
+        <DialogTitle>
+          Importer
+        </DialogTitle>
+        <Table >
+          <TableBody >
+            <TableRow style={{borderBottom: "0px none"}} >
+              <TableCell  style={{textAlign:"right"}} >Importer des articles</TableCell>
+              <TableCell >
+                <input id="file-items" type="file" />
+              </TableCell>
+            </TableRow>
+            {/*<TableRow style={{borderBottom: "0px none"}} >
+              <TableCell  style={{textAlign:"right"}} >Importer une application</TableCell>
+              <TableCell >
+                <input id="files-app" type="file" />
+              </TableCell>
+            </TableRow>*/}
+          </TableBody>
+        </Table>
+        <DialogActions>
+          <Button onClick={this.cancel}>
+            {language().cancel}
+          </Button>
+          <Button onClick={this.import}>
+            {language().confirm}
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 }

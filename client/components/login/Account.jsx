@@ -3,28 +3,22 @@ import React from "react";
 import ReactDOM from "react-dom";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../../languages/languages.js";
-import { Meteor } from "meteor/meteor";
+import {Meteor} from "meteor/meteor";
 import * as NavigationActions from "../../flux/actions/NavigationActions.js";
-import nav from "../../flux/stores/NavigationStore.js";
 import json2csv from "json2csv";
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import moment from "moment";
 
-import AccountRightDrawer from "./AccountRightDrawer.jsx";
 import ImportApp from "./ImportApp.jsx";
+import NewApp from "./NewApp.jsx";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import {cyan50, red500, blue500} from "material-ui/styles/colors";
+import Table, {TableBody, TableRow, TableCell} from "material-ui/Table";
 import IconButton from "material-ui/IconButton";
-import Dialog from "material-ui/Dialog";
-import Toggle from "material-ui/Toggle";
 import TextField from "material-ui/TextField";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import Create from "material-ui/svg-icons/content/create";
-import Done from "material-ui/svg-icons/action/done";
+import Button from "material-ui/Button";
+import Create from "material-ui-icons/Create";
+import Done from "material-ui-icons/Done";
 
 User = new Mongo.Collection("user");
 Apps = new Mongo.Collection("apps");
@@ -48,7 +42,6 @@ export default class Account extends TrackerReact(React.Component) {
       },
       editEmail: false,
       email: "",
-      toggle: nav.getUser().admin,
       importAppDialog: false
     };
   }
@@ -81,7 +74,6 @@ export default class Account extends TrackerReact(React.Component) {
   handleToggle(event, value) {
     NavigationActions.adminRights(value);
     Session.set("admin-rights", value);
-    this.setState({toggle:value});
   }
 
   itemsToCSV() {
@@ -157,59 +149,107 @@ export default class Account extends TrackerReact(React.Component) {
     Meteor.call("deleteUser");
   }
 
+  newApp() {
+    this.setState({newApp:true});
+  }
+
+  cancelNewApp() {
+    this.setState({newApp:false});
+  }
+
+  apps() {
+    var options = [];
+    var apps = Apps.find().fetch();
+    for (var i = 0; i < apps.length; i++) {
+      options[i] = {};
+      options[i].label = apps[i].name;
+      options[i].value = apps[i].id;
+    }
+    return options;
+  }
+
+  data() {
+    var user = Meteor.users.find().fetch()[0];
+    if (user) {
+      var app = Apps.find({id:user.selectedApp}).fetch()[0];
+      if (app) {
+        return {id:app.name};
+      } else {
+        return "";
+      }
+    } else {
+      return "";
+    }
+  }
+
   render() {
+
     return (
       <div>
-        <AccountRightDrawer />
         <ImportApp
           open={this.state.importAppDialog}
           closeDialog={this.closeDialog.bind(this)} />
-        <MuiThemeProvider>
-          <Table selectable={false} >
-            <TableBody displayRowCheckbox={false} >
-              <TableRow style={{borderBottom: "0px none"}} >
-                <TableRowColumn style={{textAlign:"right"}} >
-                  {language().account.email}
-                </TableRowColumn>
-                <TableRowColumn style={{verticalAlign:"middle"}}>
-                  {this.state.editEmail === false ? (
-                    <div>{this.user() && this.user().emails[0].address}
-                      <IconButton onTouchTap={this.editEmail.bind(this)} ><Create color={blue500} /></IconButton>
-                    </div>
-                  ) : (
-                    <div><TextField id="email" value={this.state.email} onChange={this.handleChange.bind(this)} />
-                      <IconButton onTouchTap={this.saveEmail.bind(this)} ><Done color={blue500} /></IconButton>
-                    </div>
-                  )}
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "0px none"}} >
-                <TableRowColumn style={{textAlign:"right"}} >Télécharger les articles</TableRowColumn>
-                <TableRowColumn>
-                  <RaisedButton label={"Télécharger"} onTouchTap={this.itemsToCSV.bind(this)} />
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "0px none"}} >
-                <TableRowColumn style={{textAlign:"right"}} >Télécharger l'application (à l'exception des articles)</TableRowColumn>
-                <TableRowColumn>
-                  <RaisedButton label={"Télécharger"} onTouchTap={this.appToCSV.bind(this)} />
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "0px none"}} >
-                <TableRowColumn style={{textAlign:"right"}} >Importer des fichiers</TableRowColumn>
-                <TableRowColumn>
-                  <RaisedButton label={"Importer"} onTouchTap={this.openImportApp.bind(this)} />
-                </TableRowColumn>
-              </TableRow>
-              <TableRow style={{borderBottom: "0px none"}} >
-                <TableRowColumn style={{textAlign:"right"}} >Supprimer le compte</TableRowColumn>
-                <TableRowColumn>
-                  <RaisedButton label={"Supprimer"} onTouchTap={this.deleteAccount.bind(this)} />
-                </TableRowColumn>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </MuiThemeProvider>
+        <NewApp open={this.state.newApp} cancel={this.cancelNewApp.bind(this)} />
+        <Table >
+          <TableBody>
+            <TableRow>
+              <TableCell style={{textAlign:"right", borderBottom: "0px none"}} >Créer une application</TableCell>
+              <TableCell style={{borderBottom: "0px none"}} >
+                <Button raised onClick={this.newApp.bind(this)} >
+                  Créer
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell style={{textAlign:"right", borderBottom: "0px none"}} >
+                {language().account.email}
+              </TableCell>
+              <TableCell style={{verticalAlign:"middle", borderBottom: "0px none"}}>
+                {this.state.editEmail === false ? (
+                  <div>{this.user() && this.user().emails[0].address}
+                    <IconButton onClick={this.editEmail.bind(this)} ><Create color="primary" /></IconButton>
+                  </div>
+                ) : (
+                  <div><TextField id="email" value={this.state.email} onChange={this.handleChange.bind(this)} />
+                    <IconButton onClick={this.saveEmail.bind(this)} ><Done color="primary" /></IconButton>
+                  </div>
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell style={{textAlign:"right", borderBottom: "0px none"}} >Télécharger les enregistrements</TableCell>
+              <TableCell style={{borderBottom: "0px none"}} >
+                <Button raised onClick={this.itemsToCSV.bind(this)} >
+                  Télécharger
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell style={{textAlign:"right", borderBottom: "0px none"}} >Télécharger la structure et les sections</TableCell>
+              <TableCell style={{borderBottom: "0px none"}} >
+                <Button raised onClick={this.appToCSV.bind(this)} >
+                  Télécharger
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell style={{textAlign:"right", borderBottom: "0px none"}} >Importer des fichiers</TableCell>
+              <TableCell style={{borderBottom: "0px none"}}>
+                <Button raised onClick={this.openImportApp.bind(this)} >
+                  Importer
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell style={{textAlign:"right", borderBottom: "0px none"}} >Supprimer le compte</TableCell>
+              <TableCell style={{borderBottom: "0px none"}}>
+                <Button raised onClick={this.deleteAccount.bind(this)} >
+                  Supprimer
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     );
   }

@@ -8,7 +8,8 @@ import FormWrapper from "../admin/modules/form/frontend/FormWrapper.jsx";
 import Datatable from "../admin/modules/datatable/frontend/Datatable.jsx";
 import ChartWrapper from "../admin/modules/chart/frontend/Chart.jsx";
 
-import { Scrollbars } from "react-custom-scrollbars";
+import Grid from "material-ui/Grid";
+import {Scrollbars} from "react-custom-scrollbars";
 
 import moduleTypes from "/lib/moduleTypes.json";
 
@@ -55,7 +56,7 @@ export default class AppWrapper extends TrackerReact(React.Component) {
           renderModule.push(<ChartWrapper key={modules[i].id} id={this.props.params.id} module={modules[i]} />);
           break;
         default:
-
+          renderModule.push(<div>Erreur</div>);
         }
       }
     }
@@ -66,12 +67,14 @@ export default class AppWrapper extends TrackerReact(React.Component) {
     var height = window.innerHeight - 78;
     var width = window.innerWidth;
     if (window.innerWidth > 900) {
-      width = window.innerWidth - 200;
+      width = window.innerWidth - 250;
     }
     return (<Scrollbars style={{width, height}} >
-      {this.modules().map((module)=>{
-        return module;
-      })}
+      <Grid container spacing={24} style={{marginTop: 15, paddingLeft: 5}} >
+        {this.modules().map((module)=>{
+          return module;
+        })}
+      </Grid>
     </Scrollbars>);
   }
 }

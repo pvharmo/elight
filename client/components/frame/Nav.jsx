@@ -1,18 +1,26 @@
 
-import React, {Component} from "react";
+import React from "react";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../../languages/languages.js";
-import * as NavigationActions from "../../flux/actions/NavigationActions.js";
 import nav from "../../flux/stores/NavigationStore.js";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Drawer from "material-ui/Drawer";
+import {withTheme} from 'material-ui/styles';
 import Paper from "material-ui/Paper";
-import Menu from "material-ui/Menu";
-import MenuItem from "material-ui/MenuItem";
+import Grid from "material-ui/Grid";
+import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
+import IconButton from "material-ui/IconButton";
+import Drawer from "material-ui/Drawer";
+import Typography from "material-ui/Typography";
+import List, {ListItem, ListItemIcon, ListItemText} from "material-ui/List";
+import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
+import Menu, {MenuItem} from "material-ui/Menu";
+import ContentAdd from "material-ui-icons/Add";
+import Settings from "material-ui-icons/Settings";
+import Launch from "material-ui-icons/Launch";
 
-export default class Nav extends TrackerReact(React.Component) {
+
+class Nav extends TrackerReact(React.Component) {
 
   constructor() {
     super();
@@ -22,10 +30,13 @@ export default class Nav extends TrackerReact(React.Component) {
         modules: Meteor.subscribe("userModules"),
         moduleTypes: Meteor.subscribe("userModuleTypes"),
         schemas: Meteor.subscribe("userSchemas"),
-        pages: Meteor.subscribe("userPages")
+        pages: Meteor.subscribe("userPages"),
+        user: Meteor.subscribe("user"),
+        apps: Meteor.subscribe("userApps")
       },
       navDrawer: false,
-      page: FlowRouter.getRouteName()
+      page: FlowRouter.getRouteName(),
+      selectApp: false
     };
   }
 
@@ -44,6 +55,22 @@ export default class Nav extends TrackerReact(React.Component) {
     this.state.subscription.moduleTypes.stop();
     this.state.subscription.schemas.stop();
     this.state.subscription.pages.stop();
+    this.state.subscription.user.stop();
+    this.state.subscription.apps.stop();
+  }
+
+  title() {
+    var user = Meteor.users.find().fetch()[0];
+    if (user) {
+      var app = Apps.find({id:user.selectedApp}).fetch()[0];
+      if (app) {
+        return app;
+      } else {
+        return {name:"", subtitle: ""};
+      }
+    } else {
+      return {name:"", subtitle: ""};
+    }
   }
 
   closeNav() {
@@ -52,84 +79,146 @@ export default class Nav extends TrackerReact(React.Component) {
     });
   }
 
-  schemas() {
-    this.setState({
-      "navDrawer": false
-    });
-    NavigationActions.schemas();
-  }
-
-  items() {
-    this.setState({
-      "navDrawer": false
-    });
-    NavigationActions.items();
-  }
-
-  modules() {
-    this.setState({
-      "navDrawer": false
-    });
-    NavigationActions.modules();
-  }
-
-  frontend() {
-    this.setState({
-      "navDrawer": false
-    });
-    NavigationActions.frontend();
+  apps() {
+    return Apps.find().fetch();
   }
 
   pages() {
     return Pages.find().fetch();
   }
 
-  navigateTo(event, value) {
-    this.setState({page:value});
-    if (value === "schemas") {
-      FlowRouter.go("/admin/schemas");
-    } else if (value === "items") {
-      FlowRouter.go("/admin/items");
-    } else if (value === "modules") {
-      FlowRouter.go("/admin/modules");
-    } /*else {
-      FlowRouter.go("/page/" + value);
-    }*/
+  go(route) {
+    FlowRouter.go(route);
+  }
+
+  open() {
+    this.setState({dialog: true});
+  }
+
+  selectApp(id) {
+    Meteor.call("selectApp", id);
+    this.close();
+  }
+
+  go(route) {
+    FlowRouter.go(route);
+  }
+
+  module() {
+    var id;
+    var module = Modules.find().fetch()[0];
+    if (module) {
+      id = module.id;
+    } else {
+      id = "";
+    }
+    return id;
+  }
+
+  close() {
+    this.setState({dialog:false});
+  }
+
+  newApp() {
+    this.setState({dialog:false, newApp:true});
   }
 
   render() {
     var windowWidth = window.innerWidth;
+    const palette = this.props.theme.palette;
     return (
-      <MuiThemeProvider>
-        <Drawer
-          docked={windowWidth > 900 ? true : false}
-          width={200}
-          zDepth={1}
-          id="main-nav"
-          containerStyle={{"paddingTop":"90px", boxShadow: "rgba(0, 0, 0, 0.12) 0px 1px 6px inset, rgba(0, 0, 0, 0.12) 0px 1px 4px inset"}}
-          open={windowWidth > 900 ? true : this.state.navDrawer}
-          onRequestChange={this.closeNav.bind(this)} >
-          <MuiThemeProvider>
-            <paper>
-              <Menu autoWidth={true} value={this.state.page} onChange={this.navigateTo.bind(this)} style={{maxWidth: "200px"}} >
-                {FlowRouter.getRouteName() !== "app" ? (
-                  <div>
-                    <MenuItem value={"schemas"} href="/admin/schemas" primaryText={language().menu.schemas} onTouchTap={this.schemas.bind(this)} />
-                    <MenuItem value={"items"} href="/admin/items" primaryText={language().menu.items} onTouchTap={this.items.bind(this)} />
-                    <MenuItem value={"modules"} href="/admin/modules" primaryText={language().menu.pages} onTouchTap={this.modules.bind(this)} />
-                    <MenuItem value={"roles"} href="/admin/roles" primaryText={"Rôles"} />
-                    <MenuItem value={"users"} href="/admin/users" primaryText={"Utilisateurs"} />
-                  </div>
-                ) : (
-                  this.pages().map((page)=>{
-                    return <MenuItem value={page.id} key={page.id} href={"/app/" + page.id} primaryText={page.name} onTouchTap={this.frontend.bind(this)} />;
-                  })
-                )}
-              </Menu>
-            </paper>
-          </MuiThemeProvider>
-        </Drawer>
-      </MuiThemeProvider>
+      <Drawer
+        docked={windowWidth > 900 ? true : false}
+        anchor="left"
+        id="main-nav"
+        open={windowWidth > 900 ? true : this.state.navDrawer}
+        onRequestClose={this.closeNav.bind(this)} >
+        <Paper elevation={0} style={{height:"65px", paddingLeft:16, borderRadius:0}} >
+          <Typography type="title" gutterBottom style={{paddingTop:14}}>
+            Elight
+          </Typography>
+          <Typography type="caption">
+            v0.3.0
+          </Typography>
+        </Paper>
+
+        <Paper elevation={2} style={{backgroundColor: palette.primary[500], borderRadius:0, width: 250}} >
+          <ListItem button >
+            <Avatar style={{backgroundColor:this.props.theme.palette.accent[500]}}>GI</Avatar>
+            <ListItemText
+              disableTypography
+              onClick={this.open.bind(this)}
+              primary={<Typography type="subheading" style={{color: palette.common.white}} >{this.title().name}</Typography>}
+              secondary={
+                <Typography type="body1" style={{color: palette.common.white}} > {this.title().subtitle}</Typography>} />
+          </ListItem>
+          {FlowRouter.current().route.group.name === "admin" &&
+            <div>
+              <IconButton style={{marginLeft: 51}} onClick={this.go.bind(this, "/app/"+ this.module())}>
+                <Launch color={palette.primary[100]} />
+              </IconButton>
+              <IconButton style={{marginLeft: 50}}>
+                <Settings color={palette.primary[100]} />
+              </IconButton>
+            </div>}
+        </Paper>
+
+        <Dialog
+          open={this.state.dialog}
+          onRequestClose={this.close.bind(this)}>
+          <DialogContent>
+            <List >
+              {this.apps().map((app)=>{
+                return (
+                  <ListItem key={app.id} button onClick={this.selectApp.bind(this, app.id)} >
+                    <Avatar style={{backgroundColor:this.props.theme.palette.accent[500]}}>GI</Avatar>
+                    <ListItemText
+                      primary={app.name}
+                      secondary={app.subtitle} />
+                  </ListItem>
+                );
+              })}
+              <ListItem button onClick={this.newApp.bind(this)} >
+                <Avatar style={{backgroundColor:this.props.theme.palette.accent[500]}}><ContentAdd /></Avatar>
+                <ListItemText
+                  primary="Créer" />
+              </ListItem>
+            </List>
+          </DialogContent>
+        </Dialog>
+
+        {FlowRouter.current().route.group.name !== "app" ? (
+          <List>
+            <ListItem button onClick={this.go.bind(this,"/admin/schemas")} >
+              <ListItemText primary={/*language().menu.schemas*/ "Entités"} />
+            </ListItem>
+            <ListItem button onClick={this.go.bind(this,"/admin/items")} >
+              <ListItemText primary={language().menu.items} />
+            </ListItem>
+            <ListItem button onClick={this.go.bind(this,"/admin/modules")} >
+              <ListItemText primary={language().menu.pages} />
+            </ListItem>
+            {/*<ListItem button onClick={this.go.bind(this,"/admin/roles")} >
+              <ListItemText primary="Rôles" />
+            </ListItem>
+            <ListItem button onClick={this.go.bind(this,"/admin/users")} >
+              <ListItemText primary="Utilisateurs" />
+            </ListItem>*/}
+          </List>
+        ) : (
+          <List>
+            {this.pages().map((page)=>{
+              return (
+                <ListItem key={page.id} button onClick={this.go.bind(this,"/app/" + page.id)}>
+                  <ListItemText primary={page.name} />
+                </ListItem>
+              );
+            })}
+          </List>
+        )}
+      </Drawer>
     );
   }
 }
+
+export default withTheme(Nav);
