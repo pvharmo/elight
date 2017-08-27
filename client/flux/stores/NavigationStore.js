@@ -1,9 +1,7 @@
 
 import {EventEmitter} from "events";
 import dispatcher from "../dispatcher";
-import language from "../../languages/languages.js";
-
-import ItemsRightDrawer from "../../components/admin/items/ItemsRightDrawer.jsx";
+import language from "/client/languages/languages.js";
 
 class NavStore extends EventEmitter {
 
