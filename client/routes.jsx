@@ -1,7 +1,7 @@
 
 import React from "react";
 import {mount} from "react-mounter";
-import { Accounts } from "meteor/accounts-base";
+import {Accounts} from "meteor/accounts-base";
 import language from "./languages/languages.js";
 import * as NavigationActions from "./flux/actions/NavigationActions.js";
 
@@ -12,7 +12,7 @@ import signup from "./components/login/signup.jsx";
 import SchemasWrapper from "./components/admin/schemas/SchemasWrapper.jsx";
 import ItemsWrapper from "./components/admin/items/ItemsWrapper.jsx";
 import ModulesWrapper from "./components/admin/modules/ModulesWrapper.jsx";
-import RolesWrapper from "./components/admin/roles/Wrapper.jsx";
+import RolesWrapper from "./components/admin/roles/RolesWrapper.jsx";
 import UsersWrapper from "./components/admin/users/Wrapper.jsx";
 import AppWrapper from "./components/frame/AppWrapper.jsx";
 import ModuleSettingsWrapper from "./components/admin/modules/ModuleSettingsWrapper.jsx";
@@ -28,33 +28,35 @@ Schemas = new Mongo.Collection("schemas");
 Entities = new Mongo.Collection("entities");
 Roles = new Mongo.Collection("roles");
 
-var resetIdleTimer = function() {
-  idleTimer = 0;
-  /*if (callIdleTimer) {
-    callIdleTimer = false;
-    setTimeout(()=>{
-      Meteor.call("idleTimer", (error)=>{
-        console.log("test");
-      });
-      callIdleTimer = true;
-    }, 5000);
-  }*/
-};
-
 var admin = /\/admin\//;
 var app = /\/app\//;
 
-setInterval(function() {
-  if (!Meteor.userId() && !Meteor.loggingIn() && (window.location.pathname.match(admin) || window.location.pathname.match(app))) {
-    /*Meteor.logout(function(error) {
-    Meteor.call("onLogout");
-    location.reload();
-    });*/
-    location.reload();
-  }
-}, 500);
 
-setInterval(function() {
+// var resetIdleTimer = function() {
+//   idleTimer = 0;
+//   /*if (callIdleTimer) {
+//     callIdleTimer = false;
+//     setTimeout(()=>{
+//       Meteor.call("idleTimer", (error)=>{
+//         console.log("test");
+//       });
+//       callIdleTimer = true;
+//     }, 5000);
+//   }*/
+// };
+//
+//
+// setInterval(function() {
+//   if (!Meteor.userId() && !Meteor.loggingIn() && (window.location.pathname.match(admin) || window.location.pathname.match(app))) {
+//     /*Meteor.logout(function(error) {
+//     Meteor.call("onLogout");
+//     location.reload();
+//     });*/
+//     location.reload();
+//   }
+// }, 1800000);
+
+/*setInterval(function() {
   if (window.location.pathname.match(admin) || window.location.pathname.match(app)) {
     if (idleTimer === 0) {
       Meteor.call("idleTimer");
@@ -65,10 +67,31 @@ setInterval(function() {
       idleTimer += 5;
     }
   }
-}, 5000);
+}, 5000);*/
 
-Accounts.onLogin(function() {
+/*Accounts.onLogin(function() {
   resetIdleTimer;
+});*/
+
+var admin = FlowRouter.group({
+  prefix: "/admin",
+  name: "admin"
+});
+
+var app = FlowRouter.group({
+  prefix: "/app",
+  name: "app"
+});
+
+FlowRouter.route("/admin",{
+  name: "admin",
+  action() {
+    if(!Meteor.userId() && !Meteor.loggingIn()) {
+      FlowRouter.go("/login");
+    } else {
+      FlowRouter.go("/admin/schemas");
+    }
+  }
 });
 
 FlowRouter.route("/login",{
@@ -93,13 +116,13 @@ FlowRouter.route("/signup",{
   }
 });
 
-FlowRouter.route("/admin/account",{
+admin.route("/account",{
   name: "account",
   action() {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<Account />),
-        resetIdleTimer: resetIdleTimer
+        // resetIdleTimer: resetIdleTimer
       });
       NavigationActions.items();
     } else {
@@ -108,13 +131,13 @@ FlowRouter.route("/admin/account",{
   }
 });
 
-FlowRouter.route("/admin/schemas",{
+admin.route("/schemas",{
   name: "schemas",
   action() {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<SchemasWrapper />),
-        resetIdleTimer: resetIdleTimer
+        // resetIdleTimer: resetIdleTimer
       });
       NavigationActions.schemas();
     } else {
@@ -123,13 +146,13 @@ FlowRouter.route("/admin/schemas",{
   }
 });
 
-FlowRouter.route("/admin/items",{
+admin.route("/items",{
   name: "items",
   action() {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<ItemsWrapper />),
-        resetIdleTimer: resetIdleTimer
+        // resetIdleTimer: resetIdleTimer
       });
       NavigationActions.items();
     } else {
@@ -138,13 +161,13 @@ FlowRouter.route("/admin/items",{
   }
 });
 
-FlowRouter.route("/admin/modules",{
+admin.route("/modules",{
   name: "modules",
   action() {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<ModulesWrapper />),
-        resetIdleTimer: resetIdleTimer
+        // resetIdleTimer: resetIdleTimer
       });
       NavigationActions.modules();
     } else {
@@ -153,13 +176,13 @@ FlowRouter.route("/admin/modules",{
   }
 });
 
-FlowRouter.route("/admin/roles",{
+admin.route("/roles",{
   name: "roles",
   action() {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<RolesWrapper />),
-        resetIdleTimer: resetIdleTimer
+        // resetIdleTimer: resetIdleTimer
       });
     } else {
       FlowRouter.go("/login");
@@ -167,13 +190,13 @@ FlowRouter.route("/admin/roles",{
   }
 });
 
-FlowRouter.route("/admin/users",{
+admin.route("/users",{
   name: "users",
   action() {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<UsersWrapper />),
-        resetIdleTimer: resetIdleTimer
+        // resetIdleTimer: resetIdleTimer
       });
     } else {
       FlowRouter.go("/login");
@@ -181,13 +204,13 @@ FlowRouter.route("/admin/users",{
   }
 });
 
-FlowRouter.route("/admin/modules/:type/:id",{
+admin.route("/modules/:type/:id",{
   name: "modulesSettings",
   action(params) {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<ModuleSettingsWrapper params={params} />),
-        resetIdleTimer: resetIdleTimer
+        // resetIdleTimer: resetIdleTimer
       });
       NavigationActions.modules();
     } else {
@@ -199,20 +222,20 @@ FlowRouter.route("/admin/modules/:type/:id",{
 FlowRouter.route("/",{
   action() {
     if (Meteor.userId() || Meteor.loggingIn()) {
-      FlowRouter.go("/admin/schemas");
+      FlowRouter.go("/app");
     } else {
       FlowRouter.go("/login");
     }
   }
 });
 
-FlowRouter.route("/app/:id",{
-  name: "app",
+app.route("/:id",{
+  name: "section",
   action(params) {
     if (Meteor.userId() || Meteor.loggingIn()) {
       mount(MainLayout, {
         content: (<AppWrapper params={params} />),
-        resetIdleTimer: resetIdleTimer
+        // resetIdleTimer: resetIdleTimer
       });
       NavigationActions.frontend();
     } else {

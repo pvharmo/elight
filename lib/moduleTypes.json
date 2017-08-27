@@ -1,7 +1,13 @@
 {
   "types": [
-    {"name": "Form","tabs": ["Information", "Champs", "Options"],"tabsContent": ["Information","FormFieldsWrapper", "FormOptions"]},
-    {"name": "Datatable","tabs": ["Information", "Options"],"tabsContent": ["Information", "DatatableOptions"]},
-    {"name": "Chart","tabs": ["Information", "Options"],"tabsContent": ["Information", "ChartOptions"]}
+    {"name": "Form","tabs": [
+      {"name":"Information", "content":"Information"},
+      {"name":"Champs", "content": "FormFieldsWrapper"},
+      {"name":"Options", "content": "FormOptions"}
+    ]},
+    {"name": "Datatable","tabs": [
+      {"name":"Information", "content": "Information"},
+      {"name":"Options", "content": "DatatableOptions"}
+    ]}
   ]
 }

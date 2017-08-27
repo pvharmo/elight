@@ -1,7 +1,6 @@
-/*jshint esversion: 6 */
 
-import {fr} from "./fr_CA.js";
-import {en} from "./en_GB.js";
+import fr from "./fr_CA.json";
+import en from "./en_GB.json";
 
 export default function language() {
 
@@ -12,7 +11,7 @@ export default function language() {
     language = fr;
     break;
   case "en":
-    language = en;
+    // language = en;
     break;
   default:
     language = fr;

@@ -8,13 +8,16 @@
   "save": "Save",
   "title": "Data management system",
   "submit": "Submit",
+  "delete": "Delete",
+  "name": "name",
+  "type": "Type",
   "account": {
     "email": "Email"
   },
   "apps": {
     "newApp": "Create an application",
     "newAppName": "New application name",
-    "editApp": "Edit application",
+    "editApp": "Edit application"
   },
   "dataType": {
     "checkbox": "checkbox",
@@ -26,7 +29,7 @@
     "object": "Object",
     "tags": "Tags",
     "text": "Text",
-    "textarea": "Textarea",
+    "textarea": "Textarea"
   },
   "frontend": {
     "frontend": "Frontend"
@@ -37,7 +40,7 @@
     "items": "Items",
     "newItem": "New item",
     "newItemAlert": "You must select a schema before creating a new item.",
-    "search": "Search",
+    "search": "Search"
   },
   "menu": {
     "account": "Account",
@@ -45,7 +48,7 @@
     "items": "Items",
     "logout": "logout",
     "pages": "Pages",
-    "schemas": "Schemas",
+    "schemas": "Schemas"
   },
   "pages": {
     "action": "Action",
@@ -73,7 +76,7 @@
       "newModule": "New module",
       "newModuleAlert": "You must select an page before creating a new module.",
       "options": "Options",
-      "requiredField": "This field is required.",
+      "requiredField": "This field is required."
     }
   },
   "schemas": {
@@ -89,7 +92,7 @@
       "name": "Name",
       "order": "Order",
       "showInList": "In list",
-      "type": "Type",
+      "type": "Type"
     },
     "newField": {
       "elements": "Elements",
@@ -107,8 +110,8 @@
       "units": "Units",
       "linkOperationOptions": {
         "addition": "Addition",
-        "difference": "Difference",
+        "difference": "Difference"
       }
-    },
-  },
+    }
+  }
 }
