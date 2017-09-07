@@ -97,7 +97,8 @@ class Nav extends TrackerReact(React.Component) {
 
   selectApp(id) {
     Meteor.call("selectApp", id);
-    this.close();
+    location.reload();
+    // this.close();
   }
 
   go(route) {

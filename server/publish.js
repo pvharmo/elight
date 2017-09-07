@@ -1,3 +1,4 @@
+/* eslint babel/no-invalid-this:0 */
 
 var selectedApp;
 
@@ -147,22 +148,6 @@ Meteor.publish("appHistory", function(){
     }
   }
 });
-
-/*Meteor.publish("appHistoryAggregation", function(key) {
-  if (this.userId) {
-    selectedApp = Meteor.users.findOne({_id:this.userId}).selectedApp;
-
-    if (selectedApp) {
-      return History.aggregate([{$match: {app: selectedApp}}, {$group: {_id: "id", total: {$sum: key}}}]);
-    }
-  }
-});*/
-
-/*Meteor.publish("appHistoryAggregation", function(key) {
-  var x = History.aggregate([{$match: {app: selectedApp}}, {$group: {_id: "id", total: {$sum: key}}}]);
-  this.added();
-});*/
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Temporary
