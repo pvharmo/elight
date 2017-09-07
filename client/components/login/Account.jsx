@@ -193,14 +193,6 @@ export default class Account extends TrackerReact(React.Component) {
         <Table >
           <TableBody>
             <TableRow>
-              <TableCell style={{textAlign:"right", borderBottom: "0px none"}} >Créer une application</TableCell>
-              <TableCell style={{borderBottom: "0px none"}} >
-                <Button raised onClick={this.newApp.bind(this)} >
-                  Créer
-                </Button>
-              </TableCell>
-            </TableRow>
-            <TableRow>
               <TableCell style={{textAlign:"right", borderBottom: "0px none"}} >
                 {language().account.email}
               </TableCell>

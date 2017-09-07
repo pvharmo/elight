@@ -131,6 +131,21 @@ admin.route("/account",{
   }
 });
 
+admin.route("/new-app",{
+  name: "newApp",
+  action() {
+    if (Meteor.userId() || Meteor.loggingIn()) {
+      mount(MainLayout, {
+        content: (<Account />),
+        // resetIdleTimer: resetIdleTimer
+      });
+      NavigationActions.items();
+    } else {
+      FlowRouter.go("/login");
+    }
+  }
+});
+
 admin.route("/schemas",{
   name: "schemas",
   action() {

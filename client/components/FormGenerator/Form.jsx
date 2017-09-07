@@ -9,6 +9,7 @@ import {FormGroup, FormControlLabel} from "material-ui/Form";
 import Card, {CardActions, CardContent} from "material-ui/Card";
 import Collapse from "material-ui/transitions/Collapse";
 import Checkbox from "material-ui/Checkbox";
+import Button from "material-ui/Button";
 import Switch from "material-ui/Switch";
 import List, {ListItem, ListItemText} from "material-ui/List";
 import Menu, {MenuItem} from "material-ui/Menu";
@@ -36,6 +37,9 @@ export default class NewFieldForm extends Component {
     this.setToValue(data, value, name);
     data[name] = value;
     formActions.setData(this.props.formId, data);
+    if (this.props.update) {
+      this.props.update(name);
+    }
     this.forceUpdate();
   }
 
@@ -44,6 +48,9 @@ export default class NewFieldForm extends Component {
     this.setToValue(data, event.target.value, name);
     data[name] = event.target.value;
     formActions.setData(this.props.formId, data);
+    if (this.props.update) {
+      this.props.update(name);
+    }
     this.forceUpdate();
   }
 
@@ -94,7 +101,7 @@ export default class NewFieldForm extends Component {
       this.changeState(name, false);
     }
     if (this.props.update) {
-      this.props.update();
+      this.props.update(name);
     }
     this.forceUpdate();
   }
@@ -146,6 +153,7 @@ export default class NewFieldForm extends Component {
       case "text":
       case "number":
       case "date":
+      case "password":
         return (
           <div key={field.name}>
             <TextField
@@ -169,6 +177,11 @@ export default class NewFieldForm extends Component {
               label={field.label} />
           </FormGroup>
         );
+      case "button":
+        return (
+          <div key={field.name}>{field.label} : <Button onClick={this.props.update.bind(this, field.name)}>{value}</Button></div>
+        );
+        break;
       case "dropdown":
         if (Array.isArray(value)) {
           value = value.map((val)=>{

@@ -13,7 +13,7 @@ if (window.innerWidth > 900) {
   style.marginLeft = 250;
 }
 
-const theme = createMuiTheme();
+export const theme = createMuiTheme();
 
 export const MainLayout = ({content/*, resetIdleTimer*/}) => (
   <div id="main-container" >
