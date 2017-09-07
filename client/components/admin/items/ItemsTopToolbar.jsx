@@ -125,8 +125,13 @@ export default class TopToolbar extends Component {
       fields[i].name = schemas[i].id;
       fields[i].label = schemas[i].name;
       fields[i].type = schemas[i].type;
+      fields[i].options = [];
       if (schemas[i].params.elements) {
-        fields[i].options = schemas[i].params.elements;
+        for (var j = 0; j < schemas[i].params.elements.length; j++) {
+          fields[i].options[j] = {};
+          fields[i].options[j].value = schemas[i].params.elements[j];
+          fields[i].options[j].label = schemas[i].params.elements[j];
+        }
       }
     }
     return fields;

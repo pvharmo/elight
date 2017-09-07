@@ -222,7 +222,7 @@ export default class FormWrapper extends TrackerReact(React.Component) {
 
   render() {
     return (
-      <Grid item xs={2} >
+      <Grid item xs={3} >
         <Card style={{width:"auto"}} >
           <CardHeader style={{width:"auto"}}
             title={this.props.module.name} />

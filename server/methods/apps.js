@@ -12,11 +12,11 @@ Meteor.methods({
     }
   },
 
-  editApp(id, newName) {
+  editApp(newName) {
     if(!Meteor.userId() && !(Meteor.userId() in Apps.findOne({id}).users)) {
       throw new Meteor.Error("not-authorized");
     } else {
-      Apps.update({id}, {$set:{name:newName}});
+      Apps.update({id: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:{name:newName}});
     }
   },
 
@@ -28,10 +28,11 @@ Meteor.methods({
     }
   },
 
-  deleteApp(id) {
+  deleteApp() {
     if(!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     } else {
+      const id = Meteor.users.findOne({_id:this.userId}).selectedApp;
       Apps.remove({id:id});
       Entities.remove({app:id});
       Schemas.remove({app:id});

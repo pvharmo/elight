@@ -3,12 +3,16 @@ import React from "react";
 import TrackerReact from "meteor/ultimatejs:tracker-react";
 import language from "../../languages/languages.js";
 import nav from "../../flux/stores/NavigationStore.js";
+import formStore from "/client/flux/stores/formStore.js";
+
+import Form from "../FormGenerator/Form.jsx";
 
 import {withTheme} from 'material-ui/styles';
 import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
+import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
 import Drawer from "material-ui/Drawer";
 import Typography from "material-ui/Typography";
@@ -36,7 +40,9 @@ class Nav extends TrackerReact(React.Component) {
       },
       navDrawer: false,
       page: FlowRouter.getRouteName(),
-      selectApp: false
+      selectApp: false,
+      dialog: false,
+      editApp: false
     };
   }
 
@@ -124,7 +130,57 @@ class Nav extends TrackerReact(React.Component) {
     this.setState({dialog:false, newApp:true});
   }
 
+  saveNewApp() {
+    Meteor.call("newApp", formStore.getData("newApp").name);
+    this.cancelNewApp();
+  }
+
+  cancelNewApp() {
+    this.setState({newApp:false});
+  }
+
+  cancelEditApp() {
+    this.setState({editApp: false});
+  }
+
+  saveEditApp() {
+    Meteor.call("editApp", formStore.getData("editApp").name);
+    this.cancelEditApp();
+  }
+
+  deleteApp() {
+    Meteor.call("deleteApp");
+    this.setState({editApp: false, dialog: true});
+  }
+
+  editApp() {
+    this.setState({editApp: true});
+  }
+
+  update(field) {
+    if (field === "model") {
+      var r = confirm("Voulez-vous sauvegarder les changements?");
+      if (r) {
+        this.saveEditApp();
+        FlowRouter.go("/admin/new-app");
+      } else {
+        this.cancelEditApp();
+        FlowRouter.go("/admin/new-app");
+      }
+    }
+  }
+
   render() {
+    const fields = [
+      {type:"text", name: "name", label: "Nom"},
+      {type:"button", name: "model", label: "Modèle"},
+      {type:"checkbox", name: "isModel", label: "En faire un modèle"},
+      {type:"checkbox", name: "public", label: "Modèle publique", condition: function(data){
+        if (data.isModel) {
+          return true;
+        }
+      }}
+    ];
     var windowWidth = window.innerWidth;
     const palette = this.props.theme.palette;
     return (
@@ -158,15 +214,45 @@ class Nav extends TrackerReact(React.Component) {
               <IconButton style={{marginLeft: 51}} onClick={this.go.bind(this, "/app/"+ this.module())}>
                 <Launch color={palette.primary[100]} />
               </IconButton>
-              <IconButton style={{marginLeft: 50}}>
+              <IconButton style={{marginLeft: 50}} onClick={this.editApp.bind(this)} >
                 <Settings color={palette.primary[100]} />
               </IconButton>
             </div>}
         </Paper>
 
+        <Dialog open={this.state.newApp} onRequestClose={this.cancelNewApp.bind(this)} >
+          <DialogTitle>
+            Nouvelle application
+          </DialogTitle>
+          <DialogContent>
+            <Form formId="newApp" fields={fields} data={{}} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.cancelNewApp.bind(this)}>Annuler</Button>
+            <Button onClick={this.saveNewApp.bind(this)} >Enregistrer</Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={this.state.editApp} onRequestClose={this.cancelEditApp.bind(this)} >
+          <DialogTitle>
+            {this.title().name}
+          </DialogTitle>
+          <DialogContent>
+            <Form formId="editApp" fields={fields} data={{name:this.title().name, model: "Aucun"}} update={this.update.bind(this)} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.cancelEditApp.bind(this)} color="primary" >Annuler</Button>
+            <Button onClick={this.deleteApp.bind(this)} color="accent" >Supprimer</Button>
+            <Button onClick={this.saveEditApp.bind(this)} color="primary" >Enregistrer</Button>
+          </DialogActions>
+        </Dialog>
+
         <Dialog
           open={this.state.dialog}
           onRequestClose={this.close.bind(this)}>
+          <DialogTitle>
+            Sélectionner une application
+          </DialogTitle>
           <DialogContent>
             <List >
               {this.apps().map((app)=>{
@@ -186,6 +272,9 @@ class Nav extends TrackerReact(React.Component) {
               </ListItem>
             </List>
           </DialogContent>
+          <DialogActions>
+            <Button onClick={this.close.bind(this)} color="primary" >Annuler</Button>
+          </DialogActions>
         </Dialog>
 
         {FlowRouter.current().route.group.name !== "app" ? (

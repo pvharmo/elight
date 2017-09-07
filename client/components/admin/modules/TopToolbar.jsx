@@ -160,7 +160,7 @@ export default class TopToolbarPages extends TrackerReact(React.Component) {
         Meteor.call("editPage", adminStore.getSections().section, formStore.getData("sections").name);
         this.forceUpdate();
       } else {
-        Meteor.call("newPage", formStore.getData().name);
+        Meteor.call("newPage", formStore.getData("sections").name);
       }
     } else {
       if (this.state.edit) {
