@@ -5,20 +5,17 @@ import language from "../../languages/languages.js";
 import nav from "../../flux/stores/NavigationStore.js";
 import formStore from "/client/flux/stores/formStore.js";
 
-import Form from "../FormGenerator/Form.jsx";
+import AppForm from "./AppForm.jsx";
 
-import {withTheme} from 'material-ui/styles';
+import {withTheme} from "material-ui/styles";
 import Paper from "material-ui/Paper";
-import Grid from "material-ui/Grid";
 import Avatar from "material-ui/Avatar";
-import Divider from "material-ui/Divider";
 import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
 import Drawer from "material-ui/Drawer";
 import Typography from "material-ui/Typography";
 import List, {ListItem, ListItemIcon, ListItemText} from "material-ui/List";
 import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
-import Menu, {MenuItem} from "material-ui/Menu";
 import ContentAdd from "material-ui-icons/Add";
 import Settings from "material-ui-icons/Settings";
 import Launch from "material-ui-icons/Launch";
@@ -42,7 +39,10 @@ class Nav extends TrackerReact(React.Component) {
       page: FlowRouter.getRouteName(),
       selectApp: false,
       dialog: false,
-      editApp: false
+      editApp: false,
+      selectModel: false,
+      appForm: false,
+      newApp: false
     };
   }
 
@@ -144,7 +144,9 @@ class Nav extends TrackerReact(React.Component) {
   }
 
   saveEditApp() {
-    Meteor.call("editApp", formStore.getData("editApp").name);
+    if (formStore.getData("editApp")) {
+      Meteor.call("editApp", formStore.getData("editApp").name);
+    }
     this.cancelEditApp();
   }
 
@@ -159,33 +161,28 @@ class Nav extends TrackerReact(React.Component) {
 
   update(field) {
     if (field === "model") {
-      var r = confirm("Voulez-vous sauvegarder les changements?");
-      if (r) {
-        this.saveEditApp();
-        FlowRouter.go("/admin/new-app");
-      } else {
-        this.cancelEditApp();
-        FlowRouter.go("/admin/new-app");
-      }
+      this.setState({selectModel: true});
     }
   }
 
+  selectModel() {
+
+  }
+
+  cancelSelectModel() {
+    this.setState({selectModel: false});
+  }
+
+  closeAppForm() {
+    this.setState({newApp: false, editApp: false});
+  }
+
   render() {
-    const fields = [
-      {type:"text", name: "name", label: "Nom"},
-      {type:"button", name: "model", label: "Modèle"},
-      {type:"checkbox", name: "isModel", label: "En faire un modèle"},
-      {type:"checkbox", name: "public", label: "Modèle publique", condition: function(data){
-        if (data.isModel) {
-          return true;
-        }
-      }}
-    ];
     var windowWidth = window.innerWidth;
     const palette = this.props.theme.palette;
     return (
       <Drawer
-        docked={windowWidth > 900 ? true : false}
+        type={windowWidth > 900 ? "permanent" : "temporary"}
         anchor="left"
         id="main-nav"
         open={windowWidth > 900 ? true : this.state.navDrawer}
@@ -200,11 +197,10 @@ class Nav extends TrackerReact(React.Component) {
         </Paper>
 
         <Paper elevation={2} style={{backgroundColor: palette.primary[500], borderRadius:0, width: 250}} >
-          <ListItem button >
-            <Avatar style={{backgroundColor:this.props.theme.palette.accent[500]}}>GI</Avatar>
+          <ListItem button onClick={this.open.bind(this)} >
+            <Avatar style={{backgroundColor:this.props.theme.palette.secondary[500]}}>GI</Avatar>
             <ListItemText
               disableTypography
-              onClick={this.open.bind(this)}
               primary={<Typography type="subheading" style={{color: palette.common.white}} >{this.title().name}</Typography>}
               secondary={
                 <Typography type="body1" style={{color: palette.common.white}} > {this.title().subtitle}</Typography>} />
@@ -220,32 +216,7 @@ class Nav extends TrackerReact(React.Component) {
             </div>}
         </Paper>
 
-        <Dialog open={this.state.newApp} onRequestClose={this.cancelNewApp.bind(this)} >
-          <DialogTitle>
-            Nouvelle application
-          </DialogTitle>
-          <DialogContent>
-            <Form formId="newApp" fields={fields} data={{}} />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.cancelNewApp.bind(this)}>Annuler</Button>
-            <Button onClick={this.saveNewApp.bind(this)} >Enregistrer</Button>
-          </DialogActions>
-        </Dialog>
-
-        <Dialog open={this.state.editApp} onRequestClose={this.cancelEditApp.bind(this)} >
-          <DialogTitle>
-            {this.title().name}
-          </DialogTitle>
-          <DialogContent>
-            <Form formId="editApp" fields={fields} data={{name:this.title().name, model: "Aucun"}} update={this.update.bind(this)} />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.cancelEditApp.bind(this)} color="primary" >Annuler</Button>
-            <Button onClick={this.deleteApp.bind(this)} color="accent" >Supprimer</Button>
-            <Button onClick={this.saveEditApp.bind(this)} color="primary" >Enregistrer</Button>
-          </DialogActions>
-        </Dialog>
+        <AppForm editApp={this.state.editApp} new={this.state.newApp} close={this.closeAppForm.bind(this)} />
 
         <Dialog
           open={this.state.dialog}
@@ -258,7 +229,7 @@ class Nav extends TrackerReact(React.Component) {
               {this.apps().map((app)=>{
                 return (
                   <ListItem key={app.id} button onClick={this.selectApp.bind(this, app.id)} >
-                    <Avatar style={{backgroundColor:this.props.theme.palette.accent[500]}}>GI</Avatar>
+                    <Avatar style={{backgroundColor:this.props.theme.palette.secondary[500]}}>GI</Avatar>
                     <ListItemText
                       primary={app.name}
                       secondary={app.subtitle} />
@@ -266,7 +237,7 @@ class Nav extends TrackerReact(React.Component) {
                 );
               })}
               <ListItem button onClick={this.newApp.bind(this)} >
-                <Avatar style={{backgroundColor:this.props.theme.palette.accent[500]}}><ContentAdd /></Avatar>
+                <Avatar style={{backgroundColor:this.props.theme.palette.secondary[500]}}><ContentAdd /></Avatar>
                 <ListItemText
                   primary="Créer" />
               </ListItem>

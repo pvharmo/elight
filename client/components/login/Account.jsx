@@ -189,7 +189,6 @@ export default class Account extends TrackerReact(React.Component) {
         <ImportApp
           open={this.state.importAppDialog}
           closeDialog={this.closeDialog.bind(this)} />
-        <NewApp open={this.state.newApp} cancel={this.cancelNewApp.bind(this)} />
         <Table >
           <TableBody>
             <TableRow>

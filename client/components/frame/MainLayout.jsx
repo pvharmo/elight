@@ -2,8 +2,7 @@
 import React from "react";
 import Header from "./Header.jsx";
 import Nav from "./Nav.jsx";
-import createMuiTheme from "material-ui/styles/theme";
-import {MuiThemeProvider} from "material-ui/styles";
+import {MuiThemeProvider, createMuiTheme} from "material-ui/styles";
 /*import injectTapEventPlugin from "react-tap-event-plugin";
 injectTapEventPlugin();*/
 

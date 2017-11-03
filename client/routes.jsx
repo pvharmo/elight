@@ -1,14 +1,13 @@
 
 import React from "react";
 import {mount} from "react-mounter";
-import {Accounts} from "meteor/accounts-base";
-import language from "./languages/languages.js";
 import * as NavigationActions from "./flux/actions/NavigationActions.js";
 
 import {MainLayout} from "./components/frame/MainLayout.jsx";
 
 import login from "./components/login/login.jsx";
 import signup from "./components/login/signup.jsx";
+import NewApp from "./components/login/NewApp.jsx";
 import SchemasWrapper from "./components/admin/schemas/SchemasWrapper.jsx";
 import ItemsWrapper from "./components/admin/items/ItemsWrapper.jsx";
 import ModulesWrapper from "./components/admin/modules/ModulesWrapper.jsx";
@@ -135,10 +134,7 @@ admin.route("/new-app",{
   name: "newApp",
   action() {
     if (Meteor.userId() || Meteor.loggingIn()) {
-      mount(MainLayout, {
-        content: (<Account />),
-        // resetIdleTimer: resetIdleTimer
-      });
+      mount(NewApp);
       NavigationActions.items();
     } else {
       FlowRouter.go("/login");

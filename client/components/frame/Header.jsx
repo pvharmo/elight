@@ -12,7 +12,7 @@ import Avatar from "material-ui/Avatar";
 import IconButton from "material-ui/IconButton";
 import MenuIcon from "material-ui-icons/Menu";
 import Launch from "material-ui-icons/Launch";
-import Popover from "material-ui/internal/Popover";
+import Popover from "material-ui/Popover";
 
 export default class Header extends TrackerReact(React.Component) {
 

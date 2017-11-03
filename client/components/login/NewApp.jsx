@@ -1,77 +1,111 @@
 
-import React from "react";
-import ReactDOM from "react-dom";
-import TrackerReact from "meteor/ultimatejs:tracker-react";
+import React, {Component} from "react";
 import language from "../../languages/languages.js";
-import formStore from "/client/flux/stores/formStore.js";
+import {theme} from "../frame/MainLayout.jsx";
+import {MuiThemeProvider} from "material-ui/styles";
+import formStore from "/client/flux/stores/formStore";
 
-import Form from "/client/components/FormGenerator/Form.jsx";
+import Form from "../FormGenerator/Form.jsx";
 
-import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
-import Table, {TableBody, TableRow, TableCell} from "material-ui/Table";
-import IconButton from "material-ui/IconButton";
-import TextField from "material-ui/TextField";
+import Typography from "material-ui/Typography";
+import Card, {CardActions, CardContent} from "material-ui/Card";
+import MobileStepper from "material-ui/MobileStepper";
 import Button from "material-ui/Button";
-import Create from "material-ui-icons/Create";
-import Done from "material-ui-icons/Done";
+import KeyboardArrowLeft from "material-ui-icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "material-ui-icons/KeyboardArrowRight";
 
-export default class Account extends TrackerReact(React.Component) {
+export default class NewApp extends Component {
 
   constructor() {
     super();
 
-    this.state = {};
+    this.state = {
+      activeStep:0
+    };
   }
 
-  save() {
-    var app = formStore.getData("newApp").name;
-    console.log(app);
-    Meteor.call("newApp", app);
-    this.cancel();
+  previous() {
+    var step = this.state.activeStep - 1;
+    this.setState({activeStep:step});
   }
 
-  delete() {
-
-  }
-
-  cancel() {
-    this.props.cancel();
+  next() {
+    var step = this.state.activeStep + 1;
+    this.setState({activeStep:step});
   }
 
   render() {
 
-    const fields = [
-      {type: "text", name: "name", label: "Nom"}
+    const fieldsApp = [
+      {type:"text", name: "name", label: "Nom de l'application"},
+      {type:"text", name: "category", label: "Catégorie"}
     ];
 
-    return (
-      <Dialog open={this.props.open} onRequestClose={this.cancel.bind(this)} >
-        <DialogTitle>
-          Nouvelle application
-        </DialogTitle>
-        <DialogContent>
-          <Form formId="newApp" fields={fields} data={{}} />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            color="primary"
-            onClick={this.cancel.bind(this)} >
-            {language().cancel}
-          </Button>
-          {this.state.editEntity &&
-            <Button
-              color="accent"
-              onClick={this.delete.bind(this)} >
-              {language().delete}
-            </Button>
-          }
-          <Button
-            color="primary"
-            onClick={this.save.bind(this)} >
-            {language().save}
-          </Button>
-        </DialogActions>
-      </Dialog>
+    const fieldsEntities = [
+      {type:"text", name: "name", label: "Nom de l'application"},
+      {type:"text", name: "category", label: "Catégorie"}
+    ];
+
+    const fieldsFields = [
+      {type:"text", name: "name", label: "Nom de l'application"},
+      {type:"text", name: "category", label: "Catégorie"}
+    ];
+
+    const fieldsSections = [
+      {type:"text", name: "name", label: "Nom de l'application"},
+      {type:"text", name: "category", label: "Catégorie"}
+    ];
+
+    const fieldsModules = [
+      {type:"text", name: "name", label: "Nom de l'application"},
+      {type:"text", name: "category", label: "Catégorie"}
+    ];
+
+    return(
+      <div style={{backgroundImage: "url('/images/login-bg.jpg')", height: "99vh", paddingTop:"1vh"}} >
+        <MuiThemeProvider theme={theme} >
+          <Card style={{margin: "auto", marginTop: "34vh", width: 600}}>
+            <CardContent style={{textAlign:"center"}} >
+              {this.state.activeStep >= 1 && <Typography gutterBottom type="display1" color="accent" >Nouvelle application</Typography>}
+              {this.state.activeStep >= 1 && <Typography gutterBottom > Étape {this.state.activeStep} de 6</Typography>}
+              {this.state.activeStep === 0 &&
+                <div>
+                  <Button disabled={this.state.activeStep >= 5} onClick={this.next.bind(this)} ><KeyboardArrowRight /></Button>
+                </div>
+              }
+              {this.state.activeStep === 1 &&
+                <Form formId="NewApp" fields={fieldsApp} data={{}} />
+              }
+              {this.state.activeStep === 2 &&
+                <Form formId="NewAppEntities" fields={fieldsEntities} data={{}} />
+              }
+              {this.state.activeStep === 3 &&
+                <Form formId="NewAppFields" fields={fieldsFields} data={{}} />
+              }
+              {this.state.activeStep === 4 &&
+                <Form formId="NewAppSections" fields={fieldsSections} data={{}} />
+              }
+              {this.state.activeStep === 5 &&
+                <Form formId="NewAppModules" fields={fieldsModules} data={{}} />
+              }
+            </CardContent>
+            <CardActions>
+              {this.state.activeStep >= 1 &&
+                <div style={{margin:"auto"}}>
+                  <Button disabled={this.state.activeStep <= 0} onClick={this.previous.bind(this)} >
+                    <KeyboardArrowLeft /><Typography>Retour</Typography>
+                  </Button>
+                  <Button disabled={this.state.activeStep >= 6} onClick={this.next.bind(this)} >
+                    <Typography>Suivant</Typography><KeyboardArrowRight />
+                  </Button>
+                </div>
+              }
+            </CardActions>
+          </Card>
+        </MuiThemeProvider>
+      </div>
     );
   }
 }
+
+//

@@ -1,7 +1,5 @@
 
-import React from "react";
-import ReactDOM from "react-dom";
-import TrackerReact from "meteor/ultimatejs:tracker-react";
+import React, {Component} from "react";
 import language from "../../languages/languages.js";
 import {theme} from "../frame/MainLayout.jsx";
 import {MuiThemeProvider} from "material-ui/styles";
@@ -13,7 +11,7 @@ import Typography from "material-ui/Typography";
 import Card, {CardActions, CardContent} from "material-ui/Card";
 import Button from "material-ui/Button";
 
-export default class login extends TrackerReact(React.Component) {
+export default class login extends Component {
 
   login() {
     var email = formStore.getData("login").email;
@@ -49,11 +47,10 @@ export default class login extends TrackerReact(React.Component) {
               <Form formId="login" fields={fields} data={{}} />
             </CardContent>
             <CardActions>
-              <Button color="primary" onClick={this.login.bind(this)} >Connexion</Button>
               <Button color="accent" onClick={this.go.bind(this, "/signup")} >S'inscrire</Button>
+              <Button color="primary" onClick={this.login.bind(this)} >Connexion</Button>
             </CardActions>
           </Card>
-
         </MuiThemeProvider>
       </div>
     );

@@ -27,6 +27,12 @@ Meteor.publish("userApps", function(){
   });
 });
 
+Meteor.publish("models", function() {
+  if (this.userId) {
+    return Apps.find({isModel: true, public: true});
+  }
+});
+
 //////////////////////////////////////////////////
 
 Roles = new Mongo.Collection("roles");

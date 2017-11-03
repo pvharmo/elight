@@ -12,11 +12,11 @@ Meteor.methods({
     }
   },
 
-  editApp(newName) {
+  editApp(app) {
     if(!Meteor.userId() && !(Meteor.userId() in Apps.findOne({id}).users)) {
       throw new Meteor.Error("not-authorized");
     } else {
-      Apps.update({id: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:{name:newName}});
+      Apps.update({id: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:app});
     }
   },
 

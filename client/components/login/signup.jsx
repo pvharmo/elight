@@ -1,48 +1,61 @@
 
-import React from "react";
-import ReactDOM from "react-dom";
-import TrackerReact from "meteor/ultimatejs:tracker-react";
+import React, {Component} from "react";
 import language from "../../languages/languages.js";
-import { Meteor } from "meteor/meteor";
-import { Accounts } from "meteor/accounts-base";
+import {theme} from "../frame/MainLayout.jsx";
+import {MuiThemeProvider} from "material-ui/styles";
+import formStore from "/client/flux/stores/formStore";
 
-export default class signup extends TrackerReact(React.Component) {
+import Form from "../FormGenerator/Form.jsx";
 
-  signin() {
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value;
-    var verif = document.getElementById("password-verification").value;
-    if(verif == password) {
-      Accounts.createUser({email:email,password:password,loggin:true}, function(error) {
-        if (!error) {
-          Meteor.call("sendVerificationLink", (sendError)=>{
-            if (!sendError) {
-              Meteor.call("idleTimer");
-              FlowRouter.go("/admin/schemas");
-            } else {
-              console.error(sendError);
-            }
-          });
-        } else {
-          console.error(error.error);
-        }
-      });
-    } else {
-      alert("Passwords don't match.");
-    }
+import Typography from "material-ui/Typography";
+import Card, {CardActions, CardContent} from "material-ui/Card";
+import Button from "material-ui/Button";
+
+export default class signup extends Component {
+
+  signup() {
+    var email = formStore.getData("signup").email;
+    var password = formStore.getData("signup").password;
+    Accounts.createUser({email:email,password:password}, function(error) {
+      if (!error) {
+        Meteor.call("sendVerificationLink", (sendError)=>{
+          if (!sendError) {
+            FlowRouter.go("/admin/schemas");
+          } else {
+            console.error(sendError);
+          }
+        });
+      } else {
+        console.error(error.error);
+      }
+    });
+  }
+
+  go(route) {
+    FlowRouter.go(route);
   }
 
   render() {
+
+    const fields = [
+      {type:"text", name: "email", label: "Courriel"},
+      {type:"password", name: "password", label: "Mot de passe"}
+    ];
+
     return(
-      <div id="login">
-        <h1>Système de gestion d'inventaire</h1>
-        <p><a className="left-align-login" href="/login">Se connecter</a></p>
-        <div id="login-fields">
-          <input id="email" type="email" placeholder="Courriel" /> <br/>
-          <input id="password" type="password" placeholder="Mot de passe" />
-          <input id="password-verification" type="password" placeholder="Confirm your password" />
-          <div className="btn-rec-transparent" onClick={this.signin.bind(this)}>S'inscrire</div>
-        </div>
+      <div style={{backgroundImage: "url('images/login-bg.jpg')", height: "99vh", paddingTop:"1vh"}} >
+        <MuiThemeProvider theme={theme} >
+          <Card style={{margin: "auto", marginTop: "34vh", width: 230}}>
+            <CardContent>
+              <Typography type="display1" color="accent" >S'inscrire</Typography>
+              <Form formId="signup" fields={fields} data={{}} />
+            </CardContent>
+            <CardActions>
+              <Button color="accent" onClick={this.go.bind(this, "/login")} >Connexion</Button>
+              <Button color="primary" onClick={this.signup.bind(this)} >Inscription</Button>
+            </CardActions>
+          </Card>
+        </MuiThemeProvider>
       </div>
     );
   }
