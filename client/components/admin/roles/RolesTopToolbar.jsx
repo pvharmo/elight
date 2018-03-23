@@ -120,7 +120,7 @@ export default class RolesTopToolbar extends TrackerReact(React.Component) {
       <div>
         <Toolbar style={{backgroundColor:grey[200]}}>
           <div style={{flex:1}}></div>
-          <Button color="accent" onClick={this.new.bind(this)} >
+          <Button color="secondary" onClick={this.new.bind(this)} >
             Nouveau rôle
           </Button>
         </Toolbar>
@@ -139,7 +139,7 @@ export default class RolesTopToolbar extends TrackerReact(React.Component) {
             </Button>
             {this.state.edit &&
               <Button
-                color="accent"
+                color="secondary"
                 onClick={this.delete.bind(this)} >
                 {language().delete}
               </Button>

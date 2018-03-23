@@ -179,7 +179,9 @@ export default class NewFieldForm extends Component {
         );
       case "button":
         return (
-          <div key={field.name}>{field.label} : <Button onClick={this.props.update.bind(this, field.name)}>{value}</Button></div>
+          <div key={field.name}>{field.label} : <Button onClick={this.props.update.bind(this, field.name)}>
+            {value ? value : <div></div>}
+          </Button></div>
         );
         break;
       case "dropdown":
@@ -205,8 +207,8 @@ export default class NewFieldForm extends Component {
             <Menu
               id="lock-menu"
               anchorEl={this.state.anchorEl}
-              open={this.state[field.name]}
-              onRequestClose={this.changeState.bind(this, field.name, false)} >
+              open={this.state[field.name] ? this.state[field.name] : false}
+              onClose={this.changeState.bind(this, field.name, false)} >
               {field.options.map((option)=>{
                 return (
                   <MenuItem

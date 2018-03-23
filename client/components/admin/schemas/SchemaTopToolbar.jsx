@@ -155,13 +155,13 @@ export default class TopToolbarSchemas extends Component {
     this.setState({entitiesMenu: true, anchorEl: event.currentTarget});
   }
 
-  onRequestClose(item) {
+  onClose(item) {
     this.setState({[item]: false, anchorEl: undefined});
   }
 
   selectEntity(entity) {
     adminActions.selectEntity(entity.id);
-    this.onRequestClose("entitiesMenu");
+    this.onClose("entitiesMenu");
   }
 
   update() {
@@ -225,7 +225,7 @@ export default class TopToolbarSchemas extends Component {
           <Menu
             open={this.state.entitiesMenu}
             anchorEl={this.state.anchorEl}
-            onRequestClose={this.onRequestClose.bind(this, "entitiesMenu")} >
+            onClose={this.onClose.bind(this, "entitiesMenu")} >
             {this.entities().map((entity)=>{
               return <MenuItem key={entity.id} onClick={this.selectEntity.bind(this, entity)} >{entity.name}</MenuItem>;
             })}
@@ -237,7 +237,7 @@ export default class TopToolbarSchemas extends Component {
             <ContentAdd />
           </IconButton>
           <div style={{flex:1}}></div>
-          <Button color="accent" onClick={this.newField.bind(this)} >
+          <Button color="secondary" onClick={this.newField.bind(this)} >
             Nouveau champ
           </Button>
         </Toolbar>
@@ -254,7 +254,7 @@ export default class TopToolbarSchemas extends Component {
             </Button>
             {this.state.editField &&
               <Button
-                color="accent"
+                color="secondary"
                 onClick={this.deleteField.bind(this)} >
                 {language().delete}
               </Button>
@@ -279,7 +279,7 @@ export default class TopToolbarSchemas extends Component {
             </Button>
             {this.state.editEntity &&
               <Button
-                color="accent"
+                color="secondary"
                 onClick={this.deleteEntity.bind(this)} >
                 {language().delete}
               </Button>

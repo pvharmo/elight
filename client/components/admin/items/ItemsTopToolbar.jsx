@@ -241,7 +241,7 @@ export default class TopToolbar extends Component {
             )}
           </DialogActions>
         </Dialog>
-        <Button color="accent" onClick={this.newRecord.bind(this)} >
+        <Button color="secondary" onClick={this.newRecord.bind(this)} >
           {language().items.newItem}
         </Button>
       </Toolbar>

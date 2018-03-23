@@ -7,7 +7,7 @@ import formStore from "/client/flux/stores/formStore.js";
 import Form from "../FormGenerator/Form.jsx";
 
 import Grid from "material-ui/Grid";
-import {GridList, GridListTile} from "material-ui/GridList";
+import GridList, {GridListTile} from "material-ui/GridList";
 import Button from "material-ui/Button";
 import Card, {CardHeader, CardContent} from "material-ui/Card";
 import Typography from "material-ui/Typography";
@@ -88,7 +88,11 @@ export default class AppForm extends TrackerReact(React.Component) {
   }
 
   models() {
-    return Apps.find({isModel: true}).fetch();
+    if (Apps.find({isModel: true}).fetch()) {
+      return Apps.find({isModel: true}).fetch();
+    } else {
+      return [];
+    }
   }
 
   go(route) {
@@ -177,7 +181,7 @@ export default class AppForm extends TrackerReact(React.Component) {
 
     return (
       <div>
-        <Dialog open={this.props.new} onRequestClose={this.cancel.bind(this)} >
+        <Dialog open={this.props.new} onClose={this.cancel.bind(this)} >
           <DialogTitle>
             Nouvelle application
           </DialogTitle>
@@ -190,7 +194,7 @@ export default class AppForm extends TrackerReact(React.Component) {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={this.props.editApp} onRequestClose={this.cancel.bind(this)} >
+        <Dialog open={this.props.editApp} onClose={this.cancel.bind(this)} >
           <DialogTitle>
             {this.title().name}
           </DialogTitle>
@@ -199,12 +203,12 @@ export default class AppForm extends TrackerReact(React.Component) {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.cancel.bind(this)} color="primary" >Annuler</Button>
-            <Button onClick={this.deleteApp.bind(this)} color="accent" >Supprimer</Button>
+            <Button onClick={this.deleteApp.bind(this)} color="secondary" >Supprimer</Button>
             <Button onClick={this.saveEditApp.bind(this)} color="primary" >Enregistrer</Button>
           </DialogActions>
         </Dialog>
 
-        <Dialog open={this.state.selectModel} onRequestClose={this.cancel.bind(this)} maxWidth="md" >
+        <Dialog open={this.state.selectModel} onClose={this.cancel.bind(this)} maxWidth="md" >
           <DialogTitle>
             Sélectionner un modèle
           </DialogTitle>
@@ -280,7 +284,9 @@ export default class AppForm extends TrackerReact(React.Component) {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.cancelSelectModel.bind(this)} color="primary" >Annuler</Button>
-            {/*<Button onClick={this.selectModel.bind(this)} color="primary" >Sélectionner</Button>*/}
+            {
+              // <Button onClick={this.selectModel.bind(this)} color="primary" >Sélectionner</Button>
+            }
           </DialogActions>
         </Dialog>
       </div>

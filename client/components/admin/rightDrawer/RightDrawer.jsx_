@@ -129,7 +129,7 @@ export default class rightDrawer extends Component {
     return (
       <div>
         {windowWidth > 1600 ? true : (
-          <Button fab color="accent" aria-label="ouvrir" onClick={this.openRightDrawer.bind(this)} style={styles} >
+          <Button fab color="secondary" aria-label="ouvrir" onClick={this.openRightDrawer.bind(this)} style={styles} >
             <ChevronLeft className="chevron-left-open-right-drawer-button" />
             <ChevronRight className="chevron-right-open-right-drawer-button" style={{display: "none"}} />
           </Button>

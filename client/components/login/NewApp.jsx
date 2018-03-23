@@ -66,7 +66,7 @@ export default class NewApp extends Component {
         <MuiThemeProvider theme={theme} >
           <Card style={{margin: "auto", marginTop: "34vh", width: 600}}>
             <CardContent style={{textAlign:"center"}} >
-              {this.state.activeStep >= 1 && <Typography gutterBottom type="display1" color="accent" >Nouvelle application</Typography>}
+              {this.state.activeStep >= 1 && <Typography gutterBottom type="display1" color="secondary" >Nouvelle application</Typography>}
               {this.state.activeStep >= 1 && <Typography gutterBottom > Étape {this.state.activeStep} de 6</Typography>}
               {this.state.activeStep === 0 &&
                 <div>

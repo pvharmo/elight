@@ -21,10 +21,10 @@ import Settings from "material-ui-icons/Settings";
 import Launch from "material-ui-icons/Launch";
 
 
-class Nav extends TrackerReact(React.Component) {
+export default class Nav extends TrackerReact(React.Component) {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       subscription: {
@@ -177,16 +177,30 @@ class Nav extends TrackerReact(React.Component) {
     this.setState({newApp: false, editApp: false});
   }
 
+  appNameShort() {
+    name = this.title().name;
+    nameSplitted = name.split(" ");
+    short = "";
+    for (var i = 0; i < nameSplitted.length; i++) {
+      short += nameSplitted[i][0];
+    }
+    if (short !== "undefined") {
+      return short;
+    } else {
+      return "";
+    }
+  }
+
   render() {
     var windowWidth = window.innerWidth;
-    const palette = this.props.theme.palette;
+    const palette = "#3f51b5";
     return (
       <Drawer
-        type={windowWidth > 900 ? "permanent" : "temporary"}
+        variant={windowWidth > 900 ? "permanent" : "temporary"}
         anchor="left"
         id="main-nav"
         open={windowWidth > 900 ? true : this.state.navDrawer}
-        onRequestClose={this.closeNav.bind(this)} >
+        onClose={this.closeNav.bind(this)} >
         <Paper elevation={0} style={{height:"65px", paddingLeft:16, borderRadius:0}} >
           <Typography type="title" gutterBottom style={{paddingTop:14}}>
             Elight
@@ -196,22 +210,22 @@ class Nav extends TrackerReact(React.Component) {
           </Typography>
         </Paper>
 
-        <Paper elevation={2} style={{backgroundColor: palette.primary[500], borderRadius:0, width: 250}} >
+        <Paper elevation={2} style={{backgroundColor: palette, borderRadius:0, width: 250}} >
           <ListItem button onClick={this.open.bind(this)} >
-            <Avatar style={{backgroundColor:this.props.theme.palette.secondary[500]}}>GI</Avatar>
+            <Avatar style={{backgroundColor:"rgb(236, 64, 122)"}}>{this.appNameShort()}</Avatar>
             <ListItemText
               disableTypography
-              primary={<Typography type="subheading" style={{color: palette.common.white}} >{this.title().name}</Typography>}
+              primary={<Typography type="subheading" style={{color: "white"}} >{this.title().name}</Typography>}
               secondary={
-                <Typography type="body1" style={{color: palette.common.white}} > {this.title().subtitle}</Typography>} />
+                <Typography type="body1" style={{color: palette}} > {this.title().subtitle}</Typography>} />
           </ListItem>
           {FlowRouter.current().route.group.name === "admin" &&
             <div>
               <IconButton style={{marginLeft: 51}} onClick={this.go.bind(this, "/app/"+ this.module())}>
-                <Launch color={palette.primary[100]} />
+                <Launch style={{color: "white"}} />
               </IconButton>
               <IconButton style={{marginLeft: 50}} onClick={this.editApp.bind(this)} >
-                <Settings color={palette.primary[100]} />
+                <Settings style={{color: "white"}} />
               </IconButton>
             </div>}
         </Paper>
@@ -220,7 +234,7 @@ class Nav extends TrackerReact(React.Component) {
 
         <Dialog
           open={this.state.dialog}
-          onRequestClose={this.close.bind(this)}>
+          onClose={this.close.bind(this)}>
           <DialogTitle>
             Sélectionner une application
           </DialogTitle>
@@ -229,7 +243,7 @@ class Nav extends TrackerReact(React.Component) {
               {this.apps().map((app)=>{
                 return (
                   <ListItem key={app.id} button onClick={this.selectApp.bind(this, app.id)} >
-                    <Avatar style={{backgroundColor:this.props.theme.palette.secondary[500]}}>GI</Avatar>
+                    <Avatar style={{backgroundColor:"blue"}}>GI</Avatar>
                     <ListItemText
                       primary={app.name}
                       secondary={app.subtitle} />
@@ -237,7 +251,7 @@ class Nav extends TrackerReact(React.Component) {
                 );
               })}
               <ListItem button onClick={this.newApp.bind(this)} >
-                <Avatar style={{backgroundColor:this.props.theme.palette.secondary[500]}}><ContentAdd /></Avatar>
+                <Avatar style={{backgroundColor:"blue"}}><ContentAdd /></Avatar>
                 <ListItemText
                   primary="Créer" />
               </ListItem>
@@ -259,12 +273,14 @@ class Nav extends TrackerReact(React.Component) {
             <ListItem button onClick={this.go.bind(this,"/admin/modules")} >
               <ListItemText primary={language().menu.pages} />
             </ListItem>
-            {/*<ListItem button onClick={this.go.bind(this,"/admin/roles")} >
-              <ListItemText primary="Rôles" />
-            </ListItem>
-            <ListItem button onClick={this.go.bind(this,"/admin/users")} >
-              <ListItemText primary="Utilisateurs" />
-            </ListItem>*/}
+            {
+            // <ListItem button onClick={this.go.bind(this,"/admin/roles")} >
+            //   <ListItemText primary="Rôles" />
+            // </ListItem>
+            // <ListItem button onClick={this.go.bind(this,"/admin/users")} >
+            //   <ListItemText primary="Utilisateurs" />
+            // </ListItem>
+            }
           </List>
         ) : (
           <List>
@@ -282,4 +298,4 @@ class Nav extends TrackerReact(React.Component) {
   }
 }
 
-export default withTheme(Nav);
+// export default withTheme(Nav);

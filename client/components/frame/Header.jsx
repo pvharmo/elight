@@ -90,7 +90,7 @@ export default class Header extends TrackerReact(React.Component) {
           position="fixed" >
           <Toolbar style={{marginTop: "2px"}}>
             <div style={{width:250}}></div>
-            <IconButton color="contrast" aria-label="Menu">
+            <IconButton color="primary" aria-label="Menu">
               <MenuIcon />
             </IconButton>
             {/*<Typography type="title" color="inherit" style={{flex:1, textAlign: "left"}} >
@@ -98,13 +98,13 @@ export default class Header extends TrackerReact(React.Component) {
             </Typography>*/}
             <div style={{flex:1}}></div>
             {/*FlowRouter.current().route.group.name === "admin" &&
-              <Button color="contrast" onClick={this.go.bind(this, "/app/"+ this.module())}>
+              <Button color="primary" onClick={this.go.bind(this, "/app/"+ this.module())}>
                 Aller à l'application
                 <Launch style={{marginLeft:5}} />
               </Button>
             */}
             <IconButton
-              color="contrast"
+              color="primary"
               aria-label="More"
               aria-owns={this.state.open ? "user-menu" : null}
               aria-haspopup="true" onClick={this.handleClick.bind(this)} >
@@ -113,7 +113,7 @@ export default class Header extends TrackerReact(React.Component) {
             <Popover
               open={this.state.open}
               anchorEl={this.state.anchorEl}
-              onRequestClose={this.handleRequestClose.bind(this)} >
+              onClose={this.handleRequestClose.bind(this)} >
               <Card >
                 <CardHeader
                   avatar={
@@ -135,7 +135,7 @@ export default class Header extends TrackerReact(React.Component) {
               id="long-menu"
               anchorEl={this.state.anchorEl}
               open={this.state.openX}
-              onRequestClose={this.handleRequestClose.bind(this)}
+              onClose={this.handleRequestClose.bind(this)}
               MenuListProps={{
                 style: {
                   width: 200,

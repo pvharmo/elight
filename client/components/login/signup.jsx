@@ -47,11 +47,11 @@ export default class signup extends Component {
         <MuiThemeProvider theme={theme} >
           <Card style={{margin: "auto", marginTop: "34vh", width: 230}}>
             <CardContent>
-              <Typography type="display1" color="accent" >S'inscrire</Typography>
+              <Typography type="display1" color="secondary" >S'inscrire</Typography>
               <Form formId="signup" fields={fields} data={{}} />
             </CardContent>
             <CardActions>
-              <Button color="accent" onClick={this.go.bind(this, "/login")} >Connexion</Button>
+              <Button color="secondary" onClick={this.go.bind(this, "/login")} >Connexion</Button>
               <Button color="primary" onClick={this.signup.bind(this)} >Inscription</Button>
             </CardActions>
           </Card>

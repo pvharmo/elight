@@ -119,7 +119,7 @@ export default class FormFieldsWrapper extends TrackerReact(React.Component) {
             </Button>
             {this.state.edit &&
               <Button
-                color="accent"
+                color="secondary"
                 onClick={this.delete.bind(this)} >
                 {language().delete}
               </Button>
