@@ -8,9 +8,11 @@
   "author": "Jonathan Caron-Roberge",
   "license": "MIT",
   "dependencies": {
+    "@babel/runtime": "^7.0.0-beta.42",
     "axios": "^0.16.2",
     "babel-runtime": "^6.20.0",
     "babyparse": "^0.4.6",
+    "bcrypt": "^1.0.3",
     "body-parser": "^1.17.2",
     "chart.js": "^2.6.0",
     "express": "^4.15.3",
