@@ -19,7 +19,6 @@ shell-server@0.3.1            # Server-side component of the `meteor shell` comm
 
 react-meteor-data
 kadira:flow-router
-meteortoys:allthings
 ultimatejs:tracker-react
 stolinski:stylus-multi
 
@@ -35,3 +34,4 @@ email@1.2.3
 peerlibrary:reactive-publish
 reywood:publish-composite
 staringatlights:fast-render
+meteortoys:allthings

@@ -55,17 +55,6 @@ export default class ItemSingle extends Component {
   }
 
   render() {
-    /*if (this.props.stripState) {
-      this.style = {
-        backgroundColor: cyan[50],
-        borderBottom: "0px solid rgba(0,0,0,0)"
-      };
-    } else {
-      this.style = {
-        borderBottom: "0px solid rgba(0,0,0,0)"
-      };
-    }*/
-
     return (
       <TableRow hover onClick={this.selectRow.bind(this)} >
         {this.schemas().map((header)=>{
@@ -77,8 +66,8 @@ export default class ItemSingle extends Component {
                 <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)"}} >
                   <Checkbox
                     checked={this.props.item[header.id]}
-                    checkedIcon={<Done color={blue[500]} />}
-                    uncheckedIcon={<AvNotInterested color={red[500]} />}
+                    checkedIcon={<Done style={{color:blue[500]}} />}
+                    icon={<AvNotInterested style={{color:red[500]}} />}
                     style={{margin:"0 auto", width:"24px"}} />
                 </TableCell>
               );

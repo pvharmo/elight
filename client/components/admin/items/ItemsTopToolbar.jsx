@@ -8,7 +8,7 @@ import formStore from "/client/flux/stores/formStore.js";
 
 import Form from "/client/components/FormGenerator/Form.jsx";
 
-import {grey} from "material-ui/colors";
+import grey from "material-ui/colors/grey";
 import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
 import Toolbar from "material-ui/Toolbar";
 import TextField from "material-ui/TextField";
@@ -39,7 +39,7 @@ export default class TopToolbar extends Component {
 
   selectMenuItem(field) {
     this.setState({searchField:field});
-    this.onRequestClose("searchEntity");
+    this.onClose("searchEntity");
   }
 
   advancedSearch() {
@@ -52,7 +52,7 @@ export default class TopToolbar extends Component {
     } else {
       adminActions.searchRecords(formStore.getData("item"));
     }
-    this.onRequestClose("dialog");
+    this.onClose("dialog");
   }
 
   schema() {
@@ -75,7 +75,7 @@ export default class TopToolbar extends Component {
     this.setState({[menu]: true, anchorEl: event.currentTarget});
   }
 
-  onRequestClose(menu) {
+  onClose(menu) {
     this.setState({[menu]: false, anchorEl: undefined});
   }
 
@@ -94,7 +94,7 @@ export default class TopToolbar extends Component {
 
   selectEntity(entity) {
     adminActions.selectEntity(entity.id);
-    this.onRequestClose("entitiesMenu");
+    this.onClose("entitiesMenu");
   }
 
   update() {
@@ -108,13 +108,11 @@ export default class TopToolbar extends Component {
   saveRecord() {
     var record = formStore.getData("item");
     if (language().items.edit === this.state.dialogTitle) {
-      console.log(record);
       Meteor.call("updateItem", record);
     } else if (language().items.newItem === this.state.dialogTitle) {
-      console.log(record);
       Meteor.call("newItem", record, record, adminStore.getStructure().entity);
     }
-    this.onRequestClose("dialog");
+    this.onClose("dialog");
   }
 
   fields() {
@@ -171,7 +169,7 @@ export default class TopToolbar extends Component {
         <Menu
           open={this.state.entitiesMenu}
           anchorEl={this.state.anchorEl}
-          onRequestClose={this.onRequestClose.bind(this, "entitiesMenu")} >
+          onClose={this.onClose.bind(this, "entitiesMenu")} >
           {this.entities().map((entity)=>{
             return <MenuItem key={entity.id} onClick={this.selectEntity.bind(this, entity)} >{entity.name}</MenuItem>;
           })}
@@ -187,7 +185,7 @@ export default class TopToolbar extends Component {
             <Menu
               open={this.state.searchEntity}
               anchorEl={this.state.anchorEl}
-              onRequestClose={this.onRequestClose.bind(this, "searchEntity")} >
+              onClose={this.onClose.bind(this, "searchEntity")} >
               {this.schema().map((field) =>{
                 return (
                   <MenuItem key={field.id} onClick={this.selectMenuItem.bind(this, field)} >
@@ -198,22 +196,22 @@ export default class TopToolbar extends Component {
             </Menu>
             <TextField id="simple-search-text-field" onChange={this.search.bind(this, true)} placeholder={language().items.search} />
             <IconButton onClick={this.advancedSearch.bind(this)} >­
-              <Tune color={grey[600]} />
+              <Tune style={{color:grey[600]}} />
             </IconButton>
           </div>
         }
         {this.state.openSearch ? (
           <IconButton onClick={this.closeSearch.bind(this)} >­
-            <Clear color={grey[600]} />
+            <Clear style={{color:grey[600]}} />
           </IconButton>
         ) : (
           <IconButton onClick={this.openSearch.bind(this)} >­
-            <Search color={grey[600]} />
+            <Search style={{color:grey[600]}} />
           </IconButton>
         )}
         <Dialog
           open={this.state.dialog}
-          onRequestClose={this.onRequestClose.bind(this, "dialog")} >
+          onClose={this.onClose.bind(this, "dialog")} >
           <DialogTitle>
             {this.state.dialogTitle}
           </DialogTitle>
