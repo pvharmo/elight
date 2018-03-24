@@ -137,15 +137,22 @@ export default class TopToolbarSchemas extends Component {
     this.setState({entityDialog: false});
   }
 
-  saveNewEntity() {
+  saveEntity() {
     var double = Entities.findOne({name: formStore.getData("entity").name});
+    var entity = formStore.getData("entity");
 
     if (double) {
       this.setState({alert:true});
     } else {
-      Meteor.call("newEntity", formStore.getData("entity"), function(err, id) {
-        adminActions.selectEntity(id);
-      });
+      if(this.state.editEntity) {
+        Meteor.call("editEntity", entity.id, entity.name, function(err, id) {
+          adminActions.selectEntity(entity.id);
+        });
+      } else {
+        Meteor.call("newEntity", entity, function(err, id) {
+          adminActions.selectEntity(id);
+        });
+      }
       this.cancelNewEntity();
     }
     this.update();
@@ -286,7 +293,7 @@ export default class TopToolbarSchemas extends Component {
             }
             <Button
               color="primary"
-              onClick={this.saveNewEntity.bind(this)} >
+              onClick={this.saveEntity.bind(this)} >
               {language().save}
             </Button>
           </DialogActions>
