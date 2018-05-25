@@ -6,13 +6,22 @@ import formStore from "/client/flux/stores/formStore.js";
 
 import Form from "../FormGenerator/Form.jsx";
 
-import Grid from "material-ui/Grid";
-import GridList, {GridListTile} from "material-ui/GridList";
-import Button from "material-ui/Button";
-import Card, {CardHeader, CardContent} from "material-ui/Card";
-import Typography from "material-ui/Typography";
-import List, {ListItem, ListItemIcon, ListItemText} from "material-ui/List";
-import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
+import Grid from "@material-ui/core/Grid";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 
 export default class AppForm extends TrackerReact(React.Component) {

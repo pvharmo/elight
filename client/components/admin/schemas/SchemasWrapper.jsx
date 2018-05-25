@@ -11,7 +11,7 @@ import {DragDropContext} from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
 import {Scrollbars} from "react-custom-scrollbars";
-import List from "material-ui/List";
+import List from "@material-ui/core/List";
 
 class SchemasWrapper extends TrackerReact(React.Component) {
 

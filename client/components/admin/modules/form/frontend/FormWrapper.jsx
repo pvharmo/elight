@@ -8,13 +8,16 @@ import * as pageActions from "../../../../../flux/actions/PageActions";
 import SingleField from "./SingleField.jsx";
 import Form from "/client/components/FormGenerator/Form.jsx";
 
-import Grid from "material-ui/Grid";
-import Card, {CardHeader, CardContent, CardActions} from "material-ui/Card";
-import Snackbar from "material-ui/Snackbar";
-import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
-import Done from "material-ui-icons/Done";
-import Clear from "material-ui-icons/Clear";
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import Snackbar from "@material-ui/core/Snackbar";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import Done from "@material-ui/icons/Done";
+import Clear from "@material-ui/icons/Clear";
 
 export default class FormWrapper extends TrackerReact(React.Component) {
 

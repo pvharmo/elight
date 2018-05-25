@@ -6,8 +6,11 @@ import moment from "moment";
 import _ from "lodash";
 import Chart from "chart.js";
 
-import Grid from "material-ui/Grid";
-import Card, {CardActions, CardHeader, CardContent, CardMedia} from "material-ui/Card";
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
 
 export default class ChartWrapper extends Component {
   constructor(props) {

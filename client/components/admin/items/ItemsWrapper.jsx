@@ -9,10 +9,14 @@ import ItemSingle from "./ItemSingle.jsx";
 import TopToolbar from "./ItemsTopToolbar.jsx";
 
 import {Scrollbars} from "react-custom-scrollbars";
-import Table, {TableBody, TableHead, TableRow, TableCell} from "material-ui/Table";
-import IconButton from "material-ui/IconButton";
-import ArrowDropDown from "material-ui-icons/ArrowDropDown";
-import ArrowDropUp from "material-ui-icons/ArrowDropUp";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import IconButton from "@material-ui/core/IconButton";
+import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
+import ArrowDropUp from "@material-ui/icons/ArrowDropUp";
 
 
 export default class ItemsWrapper extends TrackerReact(React.Component) {

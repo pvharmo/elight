@@ -12,12 +12,18 @@ import FileSaver from "file-saver";
 import Papa from "babyparse";
 import {moment} from "moment";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Table, {TableBody, TableRow, TableCell} from "material-ui/Table";
-import IconButton from "material-ui/IconButton";
-import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import IconButton from "@material-ui/core/IconButton";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 export default class ImportApp extends TrackerReact(React.Component) {
 

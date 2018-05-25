@@ -12,10 +12,11 @@ import FormOptions from "./form/admin/Options.jsx";
 import DatatableOptions from "./datatable/admin/Options.jsx";
 import ChartOptions from "./chart/admin/Options.jsx";
 
-import {grey} from "material-ui/colors";
-import Toolbar from "material-ui/Toolbar";
-import Tabs, {Tab} from "material-ui/Tabs";
-import Typography from "material-ui/Typography";
+import {grey} from "@material-ui/core/colors";
+import Toolbar from "@material-ui/core/Toolbar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
 
 //import moduleImport from "./moduleImport.js";
 

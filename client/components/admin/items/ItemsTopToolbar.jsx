@@ -8,17 +8,21 @@ import formStore from "/client/flux/stores/formStore.js";
 
 import Form from "/client/components/FormGenerator/Form.jsx";
 
-import grey from "material-ui/colors/grey";
-import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
-import Toolbar from "material-ui/Toolbar";
-import TextField from "material-ui/TextField";
-import Menu, {MenuItem} from "material-ui/Menu";
-import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
-import KeyboardArrowDown from "material-ui-icons/KeyboardArrowDown";
-import Search from "material-ui-icons/Search";
-import Tune from "material-ui-icons/Tune";
-import Clear from "material-ui-icons/Clear";
+import grey from "@material-ui/core/colors/grey";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Toolbar from "@material-ui/core/Toolbar";
+import TextField from "@material-ui/core/TextField";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
+import Search from "@material-ui/icons/Search";
+import Tune from "@material-ui/icons/Tune";
+import Clear from "@material-ui/icons/Clear";
 
 export default class TopToolbar extends Component {
   constructor() {

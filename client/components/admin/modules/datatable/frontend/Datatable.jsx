@@ -7,23 +7,30 @@ import moment from "moment";
 import _ from "lodash";
 import * as pageActions from "/client/flux/actions/PageActions";
 
-import Grid from "material-ui/Grid";
-import {red, blue} from "material-ui/colors";
-import Card, {CardActions, CardHeader, CardContent} from "material-ui/Card";
-import Table, {TableBody, TableHead, TableRow, TableCell} from "material-ui/Table";
-import Snackbar from "material-ui/Snackbar";
-import Menu, {MenuItem} from "material-ui/Menu";
-import Checkbox from "material-ui/Checkbox";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
-import ArrowDropDown from "material-ui-icons/ArrowDropDown";
-import ArrowDropUp from "material-ui-icons/ArrowDropUp";
-import Done from "material-ui-icons/Done";
-import AvNotInterested from "material-ui-icons/NotInterested";
-import Clear from "material-ui-icons/Clear";
-import NavNext from "material-ui-icons/NavigateNext";
-import NavPrev from "material-ui-icons/NavigateBefore";
+import Grid from "@material-ui/core/Grid";
+import {red, blue} from "@material-ui/core/colors";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Snackbar from "@material-ui/core/Snackbar";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Checkbox from "@material-ui/core/Checkbox";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
+import ArrowDropUp from "@material-ui/icons/ArrowDropUp";
+import Done from "@material-ui/icons/Done";
+import AvNotInterested from "@material-ui/icons/NotInterested";
+import Clear from "@material-ui/icons/Clear";
+import NavNext from "@material-ui/icons/NavigateNext";
+import NavPrev from "@material-ui/icons/NavigateBefore";
 
 export default class FormWrapper extends TrackerReact(React.Component) {
 

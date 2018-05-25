@@ -1,12 +1,15 @@
 
 import React, {Component} from "react";
 
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import TextField from "material-ui/TextField";
-import Checkbox from "material-ui/Checkbox";
-import Menu, {MenuItem} from "material-ui/Menu";
-// import ChipInput from "material-ui-chip-input";
-import Button from "material-ui/Button";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+// import ChipInput from "@material-ui/core-chip-input";
+import Button from "@material-ui/core/Button";
 
 // Component that render each fields of the form that create a new item
 export default class ItemsEditForm extends Component {

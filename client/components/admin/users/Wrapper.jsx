@@ -6,14 +6,18 @@ import language from "../../../languages/languages.js";
 import UsersRow from "./Row.jsx";
 
 import { Scrollbars } from "react-custom-scrollbars";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Dialog from "material-ui/Dialog";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow} from "material-ui/Table";
-import {Tabs, Tab} from "material-ui/Tabs";
-import IconButton from "material-ui/IconButton";
-import TextField from "material-ui/TextField";
-import Checkbox from "material-ui/Checkbox";
-import Button from "material-ui/Button";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import Dialog from "@material-ui/core/Dialog";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@material-ui/core/Button";
 
 export default class Wrapper extends TrackerReact(React.Component) {
   constructor() {

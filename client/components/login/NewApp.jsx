@@ -2,17 +2,20 @@
 import React, {Component} from "react";
 import language from "../../languages/languages.js";
 import {theme} from "../frame/MainLayout.jsx";
-import {MuiThemeProvider} from "material-ui/styles";
+import {MuiThemeProvider} from "@material-ui/core/styles";
 import formStore from "/client/flux/stores/formStore";
 
 import Form from "../FormGenerator/Form.jsx";
 
-import Typography from "material-ui/Typography";
-import Card, {CardActions, CardContent} from "material-ui/Card";
-import MobileStepper from "material-ui/MobileStepper";
-import Button from "material-ui/Button";
-import KeyboardArrowLeft from "material-ui-icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "material-ui-icons/KeyboardArrowRight";
+import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import MobileStepper from "@material-ui/core/MobileStepper";
+import Button from "@material-ui/core/Button";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 export default class NewApp extends Component {
 

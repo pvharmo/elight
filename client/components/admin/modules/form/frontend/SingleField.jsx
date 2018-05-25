@@ -5,10 +5,13 @@ import language from "../../../../../languages/languages.js";
 
 //import FormFieldSingle from './FormFieldSingle.jsx';
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import Checkbox from "material-ui/Checkbox";
-import TextField from "material-ui/TextField";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Checkbox from "@material-ui/core/Checkbox";
+import TextField from "@material-ui/core/TextField";
 
 export default class SingleField extends Component {
 

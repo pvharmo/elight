@@ -4,10 +4,12 @@ import ReactDOM from "react-dom";
 import language from "../../../languages/languages.js";
 import nav from "../../../flux/stores/NavigationStore.js";
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Dialog from "material-ui/Dialog";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import Button from "material-ui/Button";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import Dialog from "@material-ui/core/Dialog";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import Button from "@material-ui/core/Button";
 
 import ItemsEditForm from "./ItemsEditForm.jsx";
 

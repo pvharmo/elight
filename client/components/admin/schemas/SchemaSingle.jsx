@@ -2,15 +2,17 @@
 import React, {Component} from "react";
 import * as adminActions from "/client/flux/actions/adminActions.js";
 import {DragSource, DropTarget} from "react-dnd";
-import flow from "lodash/flow";
+import flow from "lodash.flow";
 
-import {ListItem, ListItemSecondaryAction, ListItemText} from "material-ui/List";
-import Divider from "material-ui/Divider";
-import Checkbox from "material-ui/Checkbox";
-import IconButton from "material-ui/IconButton";
-import Toc from "material-ui-icons/Toc";
-import Visibility from "material-ui-icons/Visibility";
-import VisibilityOff from "material-ui-icons/VisibilityOff";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import Checkbox from "@material-ui/core/Checkbox";
+import IconButton from "@material-ui/core/IconButton";
+import Toc from "@material-ui/icons/Toc";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 const fieldSource = {
   beginDrag(props) {

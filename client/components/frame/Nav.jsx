@@ -7,18 +7,24 @@ import formStore from "/client/flux/stores/formStore.js";
 
 import AppForm from "./AppForm.jsx";
 
-import {withTheme} from "material-ui/styles";
-import Paper from "material-ui/Paper";
-import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
-import Drawer from "material-ui/Drawer";
-import Typography from "material-ui/Typography";
-import List, {ListItem, ListItemIcon, ListItemText} from "material-ui/List";
-import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
-import ContentAdd from "material-ui-icons/Add";
-import Settings from "material-ui-icons/Settings";
-import Launch from "material-ui-icons/Launch";
+import {withTheme} from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import Drawer from "@material-ui/core/Drawer";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import ContentAdd from "@material-ui/icons/Add";
+import Settings from "@material-ui/icons/Settings";
+import Launch from "@material-ui/icons/Launch";
 
 
 export default class Nav extends TrackerReact(React.Component) {

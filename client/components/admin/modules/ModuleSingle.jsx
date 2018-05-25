@@ -1,13 +1,15 @@
 
 import React, {Component} from "react";
 import {DragSource, DropTarget} from "react-dnd";
-import flow from "lodash/flow";
+import flow from "lodash.flow";
 import * as adminActions from "/client/flux/actions/adminActions";
 
-import {ListItem, ListItemSecondaryAction, ListItemText} from "material-ui/List";
-import Divider from "material-ui/Divider";
-import IconButton from "material-ui/IconButton";
-import Toc from "material-ui-icons/Toc";
+import ListItem from "@material-ui/core/List";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import Toc from "@material-ui/icons/Toc";
 
 const moduleSource = {
   beginDrag(props) {

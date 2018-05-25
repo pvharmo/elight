@@ -2,19 +2,24 @@
 import React, {Component} from "react";
 import nav from "../../../../../flux/stores/NavigationStore.js";
 
-import {ListItem, ListItemSecondaryAction, ListItemText} from "material-ui/List";
-import Divider from "material-ui/Divider";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {red, blue} from "material-ui/colors";
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableCell} from "material-ui/Table";
-import Checkbox from "material-ui/Checkbox";
-import TextField from "material-ui/TextField";
-import IconButton from "material-ui/IconButton";
-import Toc from "material-ui-icons/Toc";
-import ExpandLess from "material-ui-icons/ExpandLess";
-import ExpandMore from "material-ui-icons/ExpandMore";
-import Create from "material-ui-icons/Create";
-import Clear from "material-ui-icons/Clear";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import {red, blue} from "@material-ui/core/colors";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Checkbox from "@material-ui/core/Checkbox";
+import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+import Toc from "@material-ui/icons/Toc";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import Create from "@material-ui/icons/Create";
+import Clear from "@material-ui/icons/Clear";
 
 export default class FormFieldSingle extends Component {
 

@@ -4,15 +4,17 @@ import * as NavigationActions from "../../../flux/actions/NavigationActions.js";
 import * as adminActions from "/client/flux/actions/adminActions.js";
 import adminStore from "/client/flux/stores/adminStore.js";
 
-import {TableRow, TableCell} from "material-ui/Table";
-import {cyan, red, blue} from "material-ui/colors";
-import Menu, {MenuItem} from "material-ui/Menu";
-import Checkbox from "material-ui/Checkbox";
-import IconButton from "material-ui/IconButton";
-import Create from "material-ui-icons/Create";
-import Clear from "material-ui-icons/Clear";
-import Done from "material-ui-icons/Done";
-import AvNotInterested from "material-ui-icons/NotInterested";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import {cyan, red, blue} from "@material-ui/core/colors";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Checkbox from "@material-ui/core/Checkbox";
+import IconButton from "@material-ui/core/IconButton";
+import Create from "@material-ui/icons/Create";
+import Clear from "@material-ui/icons/Clear";
+import Done from "@material-ui/icons/Done";
+import AvNotInterested from "@material-ui/icons/NotInterested";
 
 
 export default class ItemSingle extends Component {

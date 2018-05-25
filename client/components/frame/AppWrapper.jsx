@@ -8,7 +8,7 @@ import FormWrapper from "../admin/modules/form/frontend/FormWrapper.jsx";
 import Datatable from "../admin/modules/datatable/frontend/Datatable.jsx";
 import ChartWrapper from "../admin/modules/chart/frontend/Chart.jsx";
 
-import Grid from "material-ui/Grid";
+import Grid from "@material-ui/core/Grid";
 import {Scrollbars} from "react-custom-scrollbars";
 
 import moduleTypes from "/lib/moduleTypes.json";

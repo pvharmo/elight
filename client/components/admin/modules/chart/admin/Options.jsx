@@ -6,15 +6,19 @@ import formStore from "/client/flux/stores/formStore.js";
 
 import Form from "/client/components/FormGenerator/Form.jsx";
 
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
-import Menu, {MenuItem} from "material-ui/Menu";
-// import DatePicker from "material-ui/DatePicker";
-import Checkbox from "material-ui/Checkbox";
-import TextField from "material-ui/TextField";
-import Dialog from "material-ui/Dialog";
-import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
-import Tune from "material-ui-icons/Tune";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+// import DatePicker from "@material-ui/core/DatePicker";
+import Checkbox from "@material-ui/core/Checkbox";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import Tune from "@material-ui/icons/Tune";
 
 export default class Options extends TrackerReact(React.Component) {
 

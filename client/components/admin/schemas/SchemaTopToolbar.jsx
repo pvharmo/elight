@@ -7,15 +7,19 @@ import formStore from "/client/flux/stores/formStore.js";
 
 import Form from "../../FormGenerator/Form.jsx";
 
-import {grey} from "material-ui/colors";
-import Typography from "material-ui/Typography";
-import Dialog, {DialogActions, DialogContent, DialogTitle} from "material-ui/Dialog";
-import Toolbar from "material-ui/Toolbar";
-import Menu, {MenuItem} from "material-ui/Menu";
-import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
-import ContentAdd from "material-ui-icons/Add";
-import Create from "material-ui-icons/Create";
+import {grey} from "@material-ui/core/colors";
+import Typography from "@material-ui/core/Typography";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Toolbar from "@material-ui/core/Toolbar";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import ContentAdd from "@material-ui/icons/Add";
+import Create from "@material-ui/icons/Create";
 
 export default class TopToolbarSchemas extends Component {
   constructor() {

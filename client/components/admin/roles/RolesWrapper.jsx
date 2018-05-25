@@ -7,7 +7,7 @@ import RoleSingle from "./RoleSingle.jsx";
 import RolesTopToolbar from "./RolesTopToolbar.jsx";
 
 import {Scrollbars} from "react-custom-scrollbars";
-import List from "material-ui/List";
+import List from "@material-ui/core/List";
 export default class RolesWrapper extends TrackerReact(React.Component) {
   constructor() {
     super();
