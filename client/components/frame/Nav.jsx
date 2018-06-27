@@ -118,7 +118,7 @@ export default class Nav extends TrackerReact(React.Component) {
   }
 
   module() {
-    var id;
+    let id;
     var module = Modules.find().fetch()[0];
     if (module) {
       id = module.id;
@@ -184,9 +184,9 @@ export default class Nav extends TrackerReact(React.Component) {
   }
 
   appNameShort() {
-    name = this.title().name;
-    nameSplitted = name.split(" ");
-    short = "";
+    let name = this.title().name;
+    let nameSplitted = name.split(" ");
+    let short = "";
     for (var i = 0; i < nameSplitted.length; i++) {
       short += nameSplitted[i][0];
     }
