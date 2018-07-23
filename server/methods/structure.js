@@ -1,8 +1,14 @@
+import {sequelize} from "../sequelize";
+
 Meteor.methods({
   newEntity(entity) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
+      /*var newTable = async function() {
+        await sequelize.query("CREATE TABLE IF NOT EXISTS " +  entity.name + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY (id))");
+        console.log("table created");
+      }();*/
       var id = new Meteor.Collection.ObjectID()._str;
       entity.id = id;
       entity.app = Meteor.users.findOne({_id:this.userId}).selectedApp;
@@ -15,6 +21,10 @@ Meteor.methods({
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
+      /*var deleteTable = async function() {
+        await sequelize.query("DROP TABLE " + entity.name);
+        console.log("table dropped");
+      }*/
       Schemas.remove({entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
       Items.remove({entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
       Fields.remove({fieldConnectionEntity:entity, app: Meteor.users.findOne({_id:this.userId}).selectedApp});
@@ -30,6 +40,15 @@ Meteor.methods({
       Entities.update({id:id, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$set:{name}});
     }
   },
+
+  /*async findEntities() {
+    if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
+      throw new Meteor.Error("not-authorized");
+    } else {
+      const result = await sequelize.query("SHOW TABLES");
+      return result;
+    }
+  },*/
 
   moveField(idDrop, idDrag) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {

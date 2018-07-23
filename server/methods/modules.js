@@ -1,29 +1,15 @@
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('sportsla_elight', 'sportsla_elight', '3l1ght3l1ght', {
-  host: 'sports-lamitis.com',
-  dialect: 'mysql',
-
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-
-  // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-  operatorsAliases: false
-});
+import {sequelize} from "../sequelize";
 
 Meteor.methods({
   newPage(name) {
-    sequelize
+    /*sequelize
     .authenticate()
     .then(() => {
       console.log('Connection has been established successfully.');
     })
     .catch(err => {
       console.error('Unable to connect to the database:', err);
-    });
+    });*/
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {

@@ -39,7 +39,7 @@ Meteor.methods({
     }
   },
 
-  /*createItem(search, item) {
+  createItem(search, item) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     }
@@ -50,7 +50,7 @@ Meteor.methods({
       modifications: modifications
     }];
     Items.insert(search, item);
-  },*/
+  },
 
   deleteItemForm(search) {
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
@@ -77,6 +77,7 @@ Meteor.methods({
     if(!Meteor.userId() && !Meteor.users.findOne({_id:this.userId}).selectedApp) {
       throw new Meteor.Error("not-authorized");
     } else {
+      // Modules.update({id:module, app: Meteor.users.findOne({_id:this.userId}).selectedApp}, {$push:{fields: field}});
       field.module = module;
       field.id = new Meteor.Collection.ObjectID()._str;
       field.app = Meteor.users.findOne({_id:this.userId}).selectedApp;

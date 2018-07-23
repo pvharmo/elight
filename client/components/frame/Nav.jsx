@@ -249,7 +249,7 @@ export default class Nav extends TrackerReact(React.Component) {
               {this.apps().map((app)=>{
                 return (
                   <ListItem key={app.id} button onClick={this.selectApp.bind(this, app.id)} >
-                    <Avatar style={{backgroundColor:"blue"}}>GI</Avatar>
+                    <Avatar style={{backgroundColor:"#3f51b5"}}>GI</Avatar>
                     <ListItemText
                       primary={app.name}
                       secondary={app.subtitle} />
@@ -257,7 +257,7 @@ export default class Nav extends TrackerReact(React.Component) {
                 );
               })}
               <ListItem button onClick={this.newApp.bind(this)} >
-                <Avatar style={{backgroundColor:"blue"}}><ContentAdd /></Avatar>
+                <Avatar style={{backgroundColor:"#3f51b5"}}><ContentAdd /></Avatar>
                 <ListItemText
                   primary="Créer" />
               </ListItem>

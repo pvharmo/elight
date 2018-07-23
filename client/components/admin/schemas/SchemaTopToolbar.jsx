@@ -65,7 +65,7 @@ export default class TopToolbarSchemas extends Component {
   schemasArray() {
     var schemasArray = [];
     if (formStore.getData("newField")) {
-      var schemas = Schemas.find({entity:formStore.getData("newField").linkedEntity}).fetch();
+      var schemas = Schemas.find({entity:formStore.getData("newField").params.entity}).fetch();
       for (var i = 0; i < schemas.length; i++) {
         schemasArray.push({label: schemas[i].name, value: schemas[i].id});
       }

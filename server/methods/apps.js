@@ -1,3 +1,4 @@
+
 Meteor.methods({
   newApp(name) {
     if(!Meteor.userId()) {

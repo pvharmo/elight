@@ -62,7 +62,8 @@ export default class Options extends TrackerReact(React.Component) {
     const fields = [
       {type: "dropdown", name: "params.action", label: language().actionOnConfirm, options: [
         {value: "search", label: "Recherche"},
-        {value: "modifyItem", label: "Modifier l'enregistrement"}
+        {value: "modifyItem", label: "Modifier l'enregistrement"},
+        {value: "createItem", label: "Créer l'enregistrement"}
       ]},
       {type: "checkbox", name: "params.autocreate", label: language().autocreate, condition(data) {
         if (data.params.action === "modifyItem") {

@@ -77,7 +77,7 @@ export default class ItemSingle extends Component {
             case "date":
               return (
                 <TableCell key={header.id} style={{fontSize:16, color: "rgba(0,0,0,0.9)", textAlign: "center"}} >
-                  {this.props.item[header.id].toLocaleDateString()}
+                  {this.props.item[header.id]}
                 </TableCell>
               );
 
